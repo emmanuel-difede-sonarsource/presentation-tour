@@ -89,6 +89,25 @@
   .runs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
   .run { background: var(--bg); border-radius: 20px; padding: 22px 26px; font: 400 25px/1.42 Inter, sans-serif; }
   .run b { display: block; font: 600 25px Inter, sans-serif; color: var(--purple); margin-bottom: 8px; }
+  .run.wip { grid-column: 1 / -1; background: none; border: 3px dashed var(--purple); padding: 16px 26px; font-size: 23px; }
+  .run.wip b { display: inline; font-size: 21px; text-transform: uppercase; letter-spacing: .08em; margin: 0 12px 0 0; }
+  .slider { pointer-events: auto; margin-top: 8px; padding-top: 40px; border-top: 3px solid #E3E9F2; }
+  .slider input { -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 72px; margin: 0; background: none; cursor: grab; }
+  .slider input:active { cursor: grabbing; }
+  .slider input::-webkit-slider-runnable-track { height: 16px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--purple), var(--blue)) 0 / var(--v, 0%) 100% no-repeat, #E3E9F2; }
+  .slider input::-moz-range-track { height: 16px; border-radius: 999px;
+    background: linear-gradient(90deg, var(--purple), var(--blue)) 0 / var(--v, 0%) 100% no-repeat, #E3E9F2; }
+  .slider input::-webkit-slider-thumb { -webkit-appearance: none; width: 64px; height: 64px; margin-top: -24px; border-radius: 50%;
+    background: #fff; border: 8px solid var(--blue); box-shadow: 0 6px 20px rgba(0, 0, 0, .18); }
+  .slider input::-moz-range-thumb { box-sizing: border-box; width: 64px; height: 64px; border-radius: 50%;
+    background: #fff; border: 8px solid var(--blue); box-shadow: 0 6px 20px rgba(0, 0, 0, .18); }
+  .slider .stops { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 16px; }
+  .slider .stops span { font: 600 25px 'IBM Plex Mono', monospace; letter-spacing: 3px; text-transform: uppercase; color: var(--label); transition: color .25s; }
+  .slider .stops span:nth-child(2) { text-align: center; }
+  .slider .stops span:nth-child(3) { text-align: right; }
+  .slider .stops span.on { color: var(--purple); }
+  .slider p { font: 400 30px/1.42 Inter, sans-serif; margin: 20px 0 0; text-align: center; min-height: 1.42em; }
   .runs.link { display: flex; align-items: center; }
   .runs.link .run { flex: 1; }
   .link-arrow { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--blue); font: 500 21px Inter, sans-serif; white-space: nowrap; }
@@ -281,8 +300,17 @@ const LOOPS = [
                'Catches <b>business-logic issues, edge cases, omissions</b>, performance issues and testing gaps',
                '<b>Diagnoses CI failures</b>, de-duplicates noise, catches flaky tests, fixes build, lint & test errors',
                '<b>Plain-language policies</b> (no scripts or YAML) enforced on every PR',
+               '<b>Findings get more relevant over time</b>: knowledge base, cross-repo and cross-PR context',
                '“Gitar, please fix” → automatic fix'],
         runs: [['With SonarQube', '8K+ deterministic rules for security, reliability & maintainability'], ['With Gitar', 'Agentic review of intent, logic and CI health on the same PR']],
+        wip: 'Gitar automatically fixing the quality gate',   // small box below `runs`
+        // mouse-driven slider at the bottom of the panel: [label, caption] per stop, left to right
+        slider: {
+          title: 'From human-led review to a fully autonomous software factory',
+          stops: [['Human in control', 'Better reviews on every PR, while your team keeps <b>full manual control</b> of what merges.'],
+                  ['Assisted', '“Gitar, please fix”: fixes and CI repairs <b>applied on request</b>.'],
+                  ['Fully autonomous', 'Software factory: autonomous agents’ PRs <b>remediate and build themselves</b>.']],
+        },
         stat: ['2×', 'layers of verification on one PR: algorithmic (Sonar) and agentic (Gitar), each with automatic fixes.'],
       },
     ],
@@ -655,17 +683,35 @@ LOOPS.forEach((L, i) => {
           <h4>${p.key === 'gitar' ? 'Better together' : 'Where it runs'}</h4>
           ${p.flow ? `<div class="flow">${p.flow.map(([l, t, c]) => `<div class="node">${l ? `<img src="${LOGO(l)}" alt="" draggable="false">` : ''}${t}${c.map(x => `<span>${x}</span>`).join('')}</div>`)
             .join('<svg viewBox="0 0 52 24"><path d="M2 12H44M34 3l10 9-10 9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>')}</div>` : `
-          <div class="runs${p.connects ? ' link' : ''}">${p.runs.map(([h, t]) => `<div class="run"><b>${h}</b>${t}</div>`).join('')}${p.connects ? `
+          <div class="runs${p.connects ? ' link' : ''}">${p.runs.map(([h, t]) => `<div class="run"><b>${h}</b>${t}</div>`).join('')}${p.wip ? `<div class="run wip"><b>Work in progress</b>${p.wip}</div>` : ''}${p.connects ? `
             <div class="link-arrow"><svg viewBox="0 0 110 24"><path d="M2 12H100M88 2l12 10-12 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>connected to</div>
             <div class="link-logos">${p.connects.map(([l, n]) => `<img src="${LOGO(l)}" alt="${n}" draggable="false">`).join('')}</div>` : ''}</div>`}`}
           ${p.runsNote ? `<p style="font:400 25px/1.4 Inter;margin:-20px 0 36px">${p.runsNote}</p>` : ''}
           ${(Array.isArray(p.stat[0]) ? p.stat : [p.stat]).map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join('')}
         </div>
-      </div>`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
+      </div>${p.slider ? `
+      <div class="slider">
+        <h4>${p.slider.title}</h4>
+        <input type="range" min="0" max="100" value="0" aria-label="${p.slider.title}">
+        <div class="stops">${p.slider.stops.map(([t]) => `<span>${t}</span>`).join('')}</div>
+        <p></p>
+      </div>` : ''}`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
     panel.k = 0; panel.target = 0; panel.from = card.o.position.clone(); panel.fromScale = S * lay.w * (lay.zoom || 1) / 1700;
     panel.loopIdx = i; panel.prodIdx = j;
     panels.push(panel);
     p.panel = panel;
+    if (p.slider) {
+      const input = panel.el.querySelector('.slider input'), stops = panel.el.querySelectorAll('.slider .stops span');
+      const show = () => {
+        const v = +input.value, k = Math.round(v / 100 * (stops.length - 1));
+        input.style.setProperty('--v', v + '%');
+        stops.forEach((s, n) => s.classList.toggle('on', n === k));
+        panel.el.querySelector('.slider p').innerHTML = p.slider.stops[k][1];
+      };
+      input.addEventListener('input', show);
+      input.addEventListener('change', () => input.blur());   // keep ←/→ for the tour
+      show();
+    }
 
     if (!p.deep) return;
     const D = p.deep;
@@ -796,7 +842,7 @@ addEventListener('pointermove', e => {
   document.body.style.cursor = hovered >= 0 && !(state.level === 'loop' && state.loop === hovered) ? 'pointer' : '';
 });
 addEventListener('pointerdown', e => {
-  if (e.button !== 0 || e.target.closest('#hud,#legend')) return;
+  if (e.button !== 0 || e.target.closest('#hud,#legend,.slider')) return;
   pointer.down = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; pointer.moved = false;
 });
 addEventListener('pointerup', e => {
@@ -807,7 +853,7 @@ addEventListener('pointerup', e => {
   const i = pickLoop(e.clientX, e.clientY);
   if (i >= 0 && !(state.level === 'loop' && state.loop === i)) go({ level: 'loop', loop: i });
 });
-addEventListener('dblclick', e => { if (!e.target.closest('[data-act],#hud')) back(); });
+addEventListener('dblclick', e => { if (!e.target.closest('[data-act],#hud,.slider')) back(); });
 addEventListener('wheel', e => {
   e.preventDefault();
   flight = null;
