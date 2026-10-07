@@ -620,7 +620,7 @@ function advanceToken(tk, dt) {
     }
   }
 }
-function writeTokens(dims) {
+function writeTokens(dims, run) {
   tAlpha.fill(0);
   tokens.forEach((tk, ti) => {
     for (let k = 0; k < TRAIL; k++) {
@@ -631,7 +631,7 @@ function writeTokens(dims) {
       tCol[j * 3] = tk.col.r; tCol[j * 3 + 1] = tk.col.g; tCol[j * 3 + 2] = tk.col.b;
       const f = 1 - k / TRAIL;
       const near = LOOPS.reduce((b, L, li) => Math.abs(_v.x - L.cx) < Math.abs(_v.x - LOOPS[b].cx) ? li : b, 0);
-      tAlpha[j] = f * f * Math.max(0, tk.fade) * (0.25 + 0.75 * dims[near]);
+      tAlpha[j] = f * f * Math.max(0, tk.fade) * (0.25 + 0.75 * dims[near]) * run;
       tSize[j] = tk.size * (0.35 + 0.65 * f);
     }
   });
@@ -983,6 +983,8 @@ function frame() {
   const dims = LOOPS.map((_, i) => 1 - 0.78 * Math.max(...focusW.filter((_, j) => j !== i), 0));
   [...panels, ...deeps].forEach(p => { p.k = clamp(p.k + (p.target ? dt : -dt) * 2.4, 0, 1); });
   const detail = LOOPS.map((_, i) => Math.max(0, ...panels.filter(p => p.loopIdx === i).map(p => ease(p.k))));
+  const run = 1 - Math.max(...detail);   // 1 = free flow, 0 = a product panel is open
+  const flowDt = dt * run;
 
   // WebGL dimming, hover & flow
   LOOPS.forEach((L, i) => {
@@ -991,12 +993,12 @@ function frame() {
     L.halo.material.opacity = 0.05 * d + (hovered === i ? 0.08 : 0);
     L.glow.material.opacity = 0.35 + 0.65 * d;
     L.hover.material.opacity = lerp(L.hover.material.opacity, hovered === i ? 1 : 0, Math.min(1, dt * 6));
-    L.ring.material.dashOffset = (L.ring.material.dashOffset - FLOW_SPEED * dt) % 0.4189;
+    L.ring.material.dashOffset = (L.ring.material.dashOffset - FLOW_SPEED * flowDt) % 0.4189;
   });
   connectors.forEach(c => {
     const d = Math.min(dims[c.between[0]], dims[c.between[1]]) * (1 - 0.6 * Math.max(detail[c.between[0]], detail[c.between[1]]));
     c.line.material.opacity = d; c.arrow.material.opacity = d; c.head.material.opacity = d; c.node.mat.opacity = d;
-    c.line.material.dashOffset = (c.line.material.dashOffset - FLOW_SPEED * dt) % 0.4189;
+    c.line.material.dashOffset = (c.line.material.dashOffset - FLOW_SPEED * flowDt) % 0.4189;
     c.dim = d;
   });
   for (const n of [...nodes, ...connectors.map(c => c.node)]) {
@@ -1004,7 +1006,7 @@ function frame() {
     if (n.loop !== undefined) n.mat.opacity = dims[n.loop] * (1 - 0.55 * detail[n.loop]);
   }
   flows.forEach(f => {
-    f.phase = (f.phase + FLOW_SPEED * dt / f.len) % 1;
+    f.phase = (f.phase + FLOW_SPEED * flowDt / f.len) % 1;
     const base = f.connector ? f.connector.dim : dims[f.loop] * (1 - 0.55 * detail[f.loop]);
     f.chev.forEach((m, k) => {
       const u = (f.phase + k / f.n) % 1;
@@ -1016,11 +1018,11 @@ function frame() {
   });
 
   // tokens
-  spawnTimer -= dt;
+  spawnTimer -= flowDt;
   if (spawnTimer <= 0) { spawnJourney(); spawnTimer = 3.4; }
-  tokens.forEach(tk => advanceToken(tk, dt));
+  tokens.forEach(tk => advanceToken(tk, flowDt));
   for (let k = tokens.length - 1; k >= 0; k--) if (tokens[k].fade <= 0) tokens.splice(k, 1);
-  writeTokens(dims);
+  writeTokens(dims, run);
 
   // CSS3D opacity per semantic level
   for (const it of cssItems) {
