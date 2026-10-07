@@ -3,7 +3,7 @@
 An alternative to slide decks for Sonar Solutions Engineers: a single HTML page to introduce Sonar to a customer, then go into detail on each product only when the customer wants to.
 
 - **Introduction**: an overview of the three verification-powered coding loops (Agentic, CI verification, Code maintenance), presented step by step.
-- **Product detail**: each product opens a panel with what it does, where it runs (SonarQube Server / Cloud), a key stat, and discovery questions to ask the customer.
+- **Product detail**: each product opens a panel with what it does, where it runs (SonarQube Server / Cloud), and a key stat.
 
 ## Presenting
 

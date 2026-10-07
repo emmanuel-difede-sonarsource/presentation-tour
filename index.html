@@ -18,7 +18,6 @@
     --n6: #A8B3C2;
     --label: #8A94A3;
     --amber: #F5A524;
-    --gitar: #5B2A86;
   }
   html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--n8); font-family: Inter, system-ui, sans-serif; }
   #stage { position: fixed; inset: 0; touch-action: none; }
@@ -41,16 +40,16 @@
   .gitl.flash span { transform: scale(1.16); color: var(--blue); }
 
   .wm { display: inline-flex; align-items: center; gap: .3em; font-family: Poppins, Inter, sans-serif; font-size: 88px; white-space: nowrap; color: var(--purple); user-select: none; }
-  .wm .mk { width: 1.2em; height: 1.2em; color: var(--blue); flex: none; }
-  .wm .wt { display: flex; flex-direction: column; line-height: 1; }
+  /* logo height 1.6em; the assembled lockup (mark + text) follows the official SonarQube logo proportions */
+  .wm .lg { height: 1.6em; width: auto; flex: none; }
+  .wm .lg.gitar { height: 1.41em; }
+  .wm .mk { width: auto; height: 1.6em; flex: none; }
+  .wm .wt { display: flex; flex-direction: column; line-height: 1; font-size: .77em; }
   .wm b { font-weight: 500; color: var(--purple); }
   .wm em { font-style: normal; font-weight: 500; color: var(--blue); }
-  .wm small { font-size: .5em; font-weight: 400; color: var(--blue); margin-top: .06em; }
-  .wm.gitar i { font-weight: 800; font-style: italic; color: var(--gitar); letter-spacing: -.02em; }
+  .wm small { font-size: .72em; font-weight: 400; color: var(--blue); margin-top: .12em; }
   .wmhit { padding: 14px 24px; border-radius: 24px; transition: background .25s; }
   .wmhit:hover { background: rgba(18,110,211,.08); }
-  .spin { animation: spin 9s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
 
   /* ---------- 3D layer: loop focus ---------- */
   .tagline { width: 1380px; text-align: center; font: italic 500 54px/1.3 Lora, serif; color: var(--purple); user-select: none; }
@@ -87,15 +86,22 @@
   .panel li { font: 400 30px/1.42 Inter, sans-serif; padding-left: 46px; position: relative; }
   .panel li::before { content: ''; position: absolute; left: 4px; top: .35em; width: 22px; height: 12px; border-left: 5px solid var(--blue); border-bottom: 5px solid var(--blue); transform: rotate(-45deg); }
   .panel code { font: 500 .9em 'IBM Plex Mono', monospace; background: #F3F6FB; padding: 2px 10px; border-radius: 8px; color: var(--purple); }
-  .panel .ask li::before { content: '?'; border: none; transform: none; width: auto; height: auto; top: 0; font: 700 30px Lora, serif; color: var(--blue); }
-  .panel .ask li { font-style: italic; }
   .runs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
   .run { background: var(--bg); border-radius: 20px; padding: 22px 26px; font: 400 25px/1.42 Inter, sans-serif; }
   .run b { display: block; font: 600 25px Inter, sans-serif; color: var(--purple); margin-bottom: 8px; }
+  .runs.link { display: flex; align-items: center; }
+  .runs.link .run { flex: 1; }
+  .link-arrow { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--blue); font: 500 21px Inter, sans-serif; white-space: nowrap; }
+  .link-arrow svg { width: 110px; height: 24px; }
+  .link-logos { display: flex; flex-direction: column; gap: 24px; }
+  .link-logos img { display: block; height: 50px; }
+  .diagram { display: block; width: 100%; height: auto; margin-bottom: 40px; }
   .stat { display: flex; gap: 30px; align-items: center; background: linear-gradient(135deg, var(--purple), var(--blue)); color: #fff;
           border-radius: 24px; padding: 28px 36px; margin-bottom: 40px; }
   .stat b { font: 500 80px/1 Lora, serif; white-space: nowrap; }
   .stat span { font: 400 26px/1.42 Inter, sans-serif; }
+  .stat b small { display: block; font: 500 24px/1 Inter, sans-serif; text-transform: uppercase; letter-spacing: .08em; opacity: .8; margin-bottom: 8px; }
+  .stat + .stat { margin-top: -20px; }
 
   /* ---------- HUD ---------- */
   #hud { position: fixed; inset: auto 0 0 0; padding: 0 28px 22px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; pointer-events: none; }
@@ -158,13 +164,9 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    Content — edit here. Wording follows the 2026 SonarQube deck and the
    Server-vs-Cloud comparison (SonarQube Server 2026.5 / Cloud, Oct 2026).
    ===================================================================== */
-const MARK = {
-  waves: `<svg class="mk" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 27a11 11 0 0 1 11-11"/><path d="M4 20a17 17 0 0 1 17-17"/><path d="M11 29a18 18 0 0 1 18-18"/></svg>`,
-  vortex: `<svg class="mk spin" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">${
-    [0, 60, 120, 180, 240, 300].map(a => `<path d="M16 4a12 12 0 0 1 9 4" transform="rotate(${a} 16 16)"/><path d="M16 10a6 6 0 0 1 5 2.7" transform="rotate(${a + 30} 16 16)" opacity=".55"/>`).join('')}</svg>`,
-  hunter: `<svg class="mk" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M28 16A12 12 0 1 1 16 4"/><path d="M23 16a7 7 0 1 1-7-7"/><circle cx="16" cy="16" r="2.2" fill="currentColor" stroke="none"/></svg>`,
-  gitar: `<svg class="mk" viewBox="0 0 32 32"><path d="M9 3h12l8 8v10l-8 8H9l-7-8V11z" fill="#5B2A86"/><path d="M12 10h6a4 4 0 0 1 0 8h-6v6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-};
+// Official logos from the Sonar brand guide (zeroheight), light-background variants.
+// Products without an official logo use the SonarQube Server mark + `brand`/`sub` text.
+const LOGO = name => `assets/logos/${name}.png`;
 
 const LOOPS = [
   {
@@ -176,7 +178,7 @@ const LOOPS = [
       solve: 'The agent fixes confirmed issues itself and re-verifies, so what reaches git push is already clean.',
     },
     products: [{
-      key: 'vortex', mark: 'vortex', brand: 'Vortex', name: 'Sonar Vortex', pos: [0, -0.5],
+      key: 'vortex', logo: 'sonar-vortex', name: 'Sonar Vortex', pos: [0, -0.5],
       tag: 'The verification layer for coding agents',
       bullets: ['Coding guidelines & architecture context for agents', 'Agentic analysis on every change the agent makes', 'Third-party dependency health & safety checks'],
       what: ['<b>Coding guidelines</b> — your standards, delivered to the agent before it writes code',
@@ -184,11 +186,11 @@ const LOOPS = [
              '<b>Dependency health & safety</b> before a third-party package gets pulled in',
              '<b>Agentic analysis</b> — <code>sonar analyze agentic</code> runs on every edit',
              'Delivered through the SonarQube <b>CLI & MCP Server</b>, with agents such as Claude Code'],
-      runs: [['SonarQube Server', 'Vortex context + Vortex analysis, as a self-deployed service'], ['SonarQube Cloud', 'Vortex context + Vortex analysis, fully managed']],
+      runs: [['Your coding agent', 'Vortex is installed as a plugin inside the agent, such as Claude Code']],
+      connects: [['sonarqube-server', 'SonarQube Server'], ['sonarqube-cloud', 'SonarQube Cloud']],
       runsNote: 'No LLM key in SonarQube — Vortex uses the developer’s own coding agent.',
-      stat: ['30×', 'more costly to fix an issue found in production than while the code is being written.'],
-      ask: ['Which coding agents do your developers use today, and how do those agents learn your standards?',
-            'What happens today when an agent pulls in a risky dependency?'],
+      stat: [['<small>up to</small>36%', 'fewer tokens and lower cost on navigation-heavy tasks.'],
+             ['<small>up to</small>92%', 'fewer issues produced by a coding agent.']],
     }],
   },
   {
@@ -201,7 +203,7 @@ const LOOPS = [
     },
     products: [
       {
-        key: 'sq', mark: 'waves', brand: 'Qube', name: 'SonarQube', pos: [-4.3, -0.5],
+        key: 'sq', logo: 'sonarqube-server', name: 'SonarQube', pos: [-4.3, -0.5],
         tag: 'Algorithmic verification on every pull request',
         bullets: ['8,000+ rules: security, reliability, maintainability', 'SAST & cross-file taint analysis', 'Quality gate status on every PR / MR'],
         what: ['<b>8,000+ deterministic rules</b> for security, reliability and maintainability',
@@ -209,13 +211,12 @@ const LOOPS = [
                '<b>Secrets detection</b>: 400+ patterns across all file types',
                '<b>IaC scanning</b> for cloud misconfigurations',
                '<b>Quality gates</b> decorate every PR / MR and block what shouldn’t merge'],
-        runs: [['SonarQube Server', 'Self-managed, in your infrastructure'], ['SonarQube Cloud', 'SaaS, with automatic analysis available']],
-        stat: ['+30%', 'more security, reliability & maintainability issues after AI-assisted coding was adopted (Carnegie Mellon, 2025).'],
-        ask: ['What has to be true today for a pull request to merge?',
-              'How do you measure the quality of AI-generated code entering your repositories?'],
+        diagram: ['assets/img/devops-cycle.jpg', 'SonarQube in the DevOps cycle: IDE, build & test, quality gate, merge'],
+        stat: [['44%', 'less likely to report outages due to AI coding.'],
+               ['24%', 'more often, SonarQube users report lower vulnerability rates due to AI coding.']],
       },
       {
-        key: 'advsec', mark: 'waves', brand: 'Qube', sub: 'advanced security', name: 'SonarQube Advanced Security', pos: [4.6, -0.5],
+        key: 'advsec', mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'advanced security', name: 'SonarQube Advanced Security', pos: [4.6, -0.5],
         tag: 'Secure first-party, AI-generated and open-source code',
         bullets: ['SCA: vulnerable, malicious & mis-licensed dependencies', 'Advanced SAST: taint analysis into open-source libraries', 'Configurable branch rescans'],
         what: ['<b>SCA</b>: vulnerabilities, license policy and malicious-package risks across your dependencies',
@@ -224,11 +225,9 @@ const LOOPS = [
                '<b>Configurable branch rescans</b> surface newly disclosed risks on unchanged code'],
         runs: [['SonarQube Server', 'SCA + Advanced SAST · requires internet access (no air-gapped installs)'], ['SonarQube Cloud', 'SCA + Advanced SAST · SCA also works with automatic analysis (no CI)']],
         stat: ['92%', 'of applications contain open-source components, and 70–90% of an average application is open-source code.'],
-        ask: ['How do you find out that a dependency you already shipped has a new CVE?',
-              'Do you enforce license policies on open-source packages?'],
       },
       {
-        key: 'gitar', mark: 'gitar', name: 'Gitar', pos: [0, -2.75],
+        key: 'gitar', logo: 'gitar', name: 'Gitar', pos: [0, -2.75],
         tag: 'Agentic code review and CI repair on every PR',
         bullets: ['Reviews every PR: logic, edge cases, omissions, performance', 'Diagnoses & fixes CI failures and flaky tests', 'Review policies in plain language, no YAML'],
         what: ['<b>Reviews every PR</b>, answers questions in context and applies fixes, across time zones',
@@ -238,8 +237,6 @@ const LOOPS = [
                '“Gitar, please fix” → automatic fix'],
         runs: [['With SonarQube', '8K+ deterministic rules for security, reliability & maintainability'], ['With Gitar', 'Agentic review of intent, logic and CI health on the same PR']],
         stat: ['2×', 'layers of verification on one PR: algorithmic (Sonar) and agentic (Gitar), each with automatic fixes.'],
-        ask: ['How long does a PR wait for its first review today?',
-              'How much engineering time goes into triaging red CI builds and flaky tests?'],
       },
     ],
   },
@@ -253,7 +250,7 @@ const LOOPS = [
     },
     products: [
       {
-        key: 'remediation', mark: 'waves', brand: 'Qube', sub: 'remediation agent', name: 'SonarQube Remediation Agent', pos: [-3.7, -0.5],
+        key: 'remediation', mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'remediation agent', name: 'SonarQube Remediation Agent', pos: [-3.7, -0.5],
         tag: 'Autonomous repair of issues and technical debt',
         bullets: ['Fixes issues inline with code review', 'Assign the backlog, and the agent pays down debt', 'Fixes follow your standards, verified before the PR'],
         what: ['<b>Automated resolution</b> of pre-merge findings, inline with code review',
@@ -262,11 +259,9 @@ const LOOPS = [
                'Shift effort from triage and fixing to <b>new feature work</b>'],
         runs: [['SonarQube Server', 'Bring any LLM provider & model · GitHub, GitLab, Azure DevOps'], ['SonarQube Cloud', 'OpenAI or Anthropic key · dependency-bump PRs for SCA risks']],
         stat: ['+41%', 'increase in code complexity persists after the 3–5× AI velocity spike fades (Carnegie Mellon, 2025).'],
-        ask: ['How big is your technical-debt backlog, and who owns paying it down?',
-              'How many findings get marked “won’t fix” simply for lack of time?'],
       },
       {
-        key: 'hunter', mark: 'hunter', brand: 'Qube', sub: 'hunter agent', name: 'SonarQube Hunter Agent', pos: [3.9, -0.5],
+        key: 'hunter', logo: 'sonarqube-hunter-agent', name: 'SonarQube Hunter Agent', pos: [3.9, -0.5],
         tag: 'Finds the vulnerabilities static analysis can’t see',
         bullets: ['Broken access control & IDOR', 'Business-logic & authentication flaws', 'A structured multi-phase agent, not just a prompt'],
         what: ['Targets <b>broken access control, IDOR, business-logic and authentication flaws</b>',
@@ -275,8 +270,6 @@ const LOOPS = [
                '<b>Extensible</b>: built on the Sonar Foundation Agent with your own context'],
         runs: [['SonarQube Server', 'GA · bring your own LLM key · scan units'], ['SonarQube Cloud', 'GA · Sonar-provided models · scan units']],
         stat: ['“', 'Can I skip the payment step? Can I read another tenant’s data? Is MFA actually enforced? Valid code that does the wrong thing.'],
-        ask: ['When did a pentest last find an access-control or business-logic flaw?',
-              'How do you test authorization logic across tenants and roles today?'],
       },
     ],
   },
@@ -415,7 +408,7 @@ connectors.forEach(c => {
   c.node = makeNode(c.marker, { r0: 0.98, r1: 1.1, color: new THREE.Color(0x0B0B0F) });
   c.node.fillMat.opacity = 0;                       // open ring, like the slide
   const a = c.marker.clone().add(new THREE.Vector3(0.1, 1.05, 0));
-  const b = new THREE.Vector3(c.labelPos[0] - 0.35, c.labelPos[1] - 1.85, 1.2);
+  const b = new THREE.Vector3(c.labelPos[0], c.labelPos[1] - 1.85, 1.2);
   c.arrow = makeLine([a, b], { color: new THREE.Color(0x0B0B0F), width: 2.4, dashed: false });
   const head = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.55, 3), new THREE.MeshBasicMaterial({ color: 0x0B0B0F, transparent: true }));
   head.position.copy(b);
@@ -562,9 +555,9 @@ function css3d(html, cls, x, y, z = 0.08, extra = {}) {
   cssItems.push(item);
   return item;
 }
-const wordmark = p => p.mark === 'gitar'
-  ? `<span class="wm gitar">${MARK.gitar}<i>gitar</i></span>`
-  : `<span class="wm">${MARK[p.mark]}<span class="wt"><span><b>Sonar</b><em>${p.brand}</em></span>${p.sub ? `<small>${p.sub}</small>` : ''}</span></span>`;
+const wordmark = p => p.logo
+  ? `<span class="wm"><img class="lg ${p.logo}" src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"></span>`
+  : `<span class="wm"><img class="mk" src="${LOGO(p.mark)}" alt="" draggable="false"><span class="wt"><span><b>Sonar</b><em>${p.brand}</em></span>${p.sub ? `<small>${p.sub}</small>` : ''}</span></span>`;
 
 css3d(`<div class="eb">OUR SOLUTION</div><h1>Three verification-powered coding loops</h1>`, 'ttl', 0, 16.4, 0, { kind: 'title' });
 
@@ -609,11 +602,13 @@ LOOPS.forEach((L, i) => {
       <div class="cols">
         <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul></div>
         <div>
+          ${p.diagram ? `<img class="diagram" src="${p.diagram[0]}" alt="${p.diagram[1]}" draggable="false">` : `
           <h4>${p.key === 'gitar' ? 'Better together' : 'Where it runs'}</h4>
-          <div class="runs">${p.runs.map(([h, t]) => `<div class="run"><b>${h}</b>${t}</div>`).join('')}</div>
+          <div class="runs${p.connects ? ' link' : ''}">${p.runs.map(([h, t]) => `<div class="run"><b>${h}</b>${t}</div>`).join('')}${p.connects ? `
+            <div class="link-arrow"><svg viewBox="0 0 110 24"><path d="M2 12H100M88 2l12 10-12 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>connected to</div>
+            <div class="link-logos">${p.connects.map(([l, n]) => `<img src="${LOGO(l)}" alt="${n}" draggable="false">`).join('')}</div>` : ''}</div>`}
           ${p.runsNote ? `<p style="font:400 25px/1.4 Inter;margin:-20px 0 36px">${p.runsNote}</p>` : ''}
-          <div class="stat"><b>${p.stat[0]}</b><span>${p.stat[1]}</span></div>
-          <h4>Ask the customer</h4><ul class="ask">${p.ask.map(a => `<li>${a}</li>`).join('')}</ul>
+          ${(Array.isArray(p.stat[0]) ? p.stat : [p.stat]).map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join('')}
         </div>
       </div>`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
     panel.k = 0; panel.target = 0; panel.from = card.o.position.clone(); panel.fromScale = S * lay.w * (lay.zoom || 1) / 1700;
