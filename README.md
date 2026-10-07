@@ -4,6 +4,7 @@ An alternative to slide decks for Sonar Solutions Engineers: a single HTML page 
 
 - **Introduction**: an overview of the three verification-powered coding loops (Agentic, CI verification, Code maintenance), presented step by step.
 - **Product detail**: each product opens a panel with what it does, where it runs (SonarQube Server / Cloud), and a key stat.
+- **Deep dive**: some products go one level further (SonarQube Advanced Security: Detect / Fix / Governance and supported ecosystems).
 
 ## Presenting
 
@@ -24,7 +25,7 @@ An internet connection is required (Three.js and fonts are loaded from CDNs).
 | Fullscreen | `F` |
 | Free navigation | Scroll to zoom, drag to pan, click a loop or product |
 
-Deep links open a specific view directly: `#2` (loop 2), `#2.1` (loop 2, first product). Add `?instant` to skip the intro animation.
+Deep links open a specific view directly: `#2` (loop 2), `#2.1` (loop 2, first product), `#2.2.1` (the Advanced Security deep dive). Add `?instant` to skip the intro animation.
 
 ## Editing the content
 
