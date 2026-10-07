@@ -95,6 +95,12 @@
   .link-arrow svg { width: 110px; height: 24px; }
   .link-logos { display: flex; flex-direction: column; gap: 24px; }
   .link-logos img { display: block; height: 50px; }
+  .flow { display: flex; align-items: stretch; gap: 10px; margin-bottom: 40px; }
+  .flow .node { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center;
+                background: var(--bg); border-radius: 20px; padding: 24px 14px; font: 600 25px/1.25 Inter, sans-serif; color: var(--purple); }
+  .flow .node img { height: 64px; }
+  .flow .node span { font: 500 19px 'IBM Plex Mono', monospace; color: var(--blue); background: #fff; border-radius: 999px; padding: 4px 14px; }
+  .flow svg { flex: none; align-self: center; width: 52px; height: 24px; color: var(--blue); }
   .diagram { display: block; width: 100%; height: auto; margin-bottom: 40px; }
   .stat { display: flex; gap: 30px; align-items: center; background: linear-gradient(135deg, var(--purple), var(--blue)); color: #fff;
           border-radius: 24px; padding: 28px 36px; margin-bottom: 40px; }
@@ -239,10 +245,11 @@ const LOOPS = [
         tag: 'Mitigate risks coming from open-source dependencies',
         bullets: ['SCA: vulnerable, malicious & mis-licensed dependencies', 'Advanced SAST: taint analysis into open-source libraries', 'Configurable branch rescans'],
         what: ['<b>SCA</b>: vulnerabilities, license policy and malicious-package risks across your dependencies',
-               '<b>Advanced SAST</b> follows tainted data into the open-source code you call, a black box for traditional SAST',
                'Real finding: <b>CVE-2024-23897</b> in Jenkins (CVSS 9.8)',
                '<b>Configurable branch rescans</b> surface newly disclosed risks on unchanged code'],
-        runs: [['SonarQube Server', 'SCA + Advanced SAST · requires internet access (no air-gapped installs)'], ['SonarQube Cloud', 'SCA + Advanced SAST · SCA also works with automatic analysis (no CI)']],
+        // simple diagram shown instead of `runs`: [logo, title, chips]
+        flow: [['sonarqube-server-mark', 'SonarQube', ['Advanced Security']], [null, 'Sonar backend', []], [null, 'Public databases', ['OSV', 'NVD', 'CISA KEV', '…']]],
+        runsNote: 'SonarQube Server needs internet access to reach the Sonar backend (no air-gapped installs).',
         stat: ['92%', 'of applications contain open-source components, and 70–90% of an average application is open-source code.'],
         // optional level below the product panel (#2.2.1)
         deep: {
@@ -646,9 +653,11 @@ LOOPS.forEach((L, i) => {
         <div>
           ${p.diagram ? `<img class="diagram" src="${p.diagram[0]}" alt="${p.diagram[1]}" draggable="false">` : `
           <h4>${p.key === 'gitar' ? 'Better together' : 'Where it runs'}</h4>
+          ${p.flow ? `<div class="flow">${p.flow.map(([l, t, c]) => `<div class="node">${l ? `<img src="${LOGO(l)}" alt="" draggable="false">` : ''}${t}${c.map(x => `<span>${x}</span>`).join('')}</div>`)
+            .join('<svg viewBox="0 0 52 24"><path d="M2 12H44M34 3l10 9-10 9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>')}</div>` : `
           <div class="runs${p.connects ? ' link' : ''}">${p.runs.map(([h, t]) => `<div class="run"><b>${h}</b>${t}</div>`).join('')}${p.connects ? `
             <div class="link-arrow"><svg viewBox="0 0 110 24"><path d="M2 12H100M88 2l12 10-12 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>connected to</div>
-            <div class="link-logos">${p.connects.map(([l, n]) => `<img src="${LOGO(l)}" alt="${n}" draggable="false">`).join('')}</div>` : ''}</div>`}
+            <div class="link-logos">${p.connects.map(([l, n]) => `<img src="${LOGO(l)}" alt="${n}" draggable="false">`).join('')}</div>` : ''}</div>`}`}
           ${p.runsNote ? `<p style="font:400 25px/1.4 Inter;margin:-20px 0 36px">${p.runsNote}</p>` : ''}
           ${(Array.isArray(p.stat[0]) ? p.stat : [p.stat]).map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join('')}
         </div>
