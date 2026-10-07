@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sonar Coding Loops</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,500;1,500&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F3F6FB;
+    --purple: #290042;
+    --blue: #126ED3;
+    --blue-hover: #0C5DB5;
+    --uranium: #B7D3F2;
+    --n8: #3B3F44;
+    --n6: #A8B3C2;
+    --label: #8A94A3;
+    --amber: #F5A524;
+    --gitar: #5B2A86;
+  }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--n8); font-family: Inter, system-ui, sans-serif; }
+  #stage { position: fixed; inset: 0; touch-action: none; }
+  #stage > div, #stage canvas { position: absolute; inset: 0; }
+  #css { pointer-events: none; }
+  .act { pointer-events: auto; cursor: pointer; }
+  body.dragging, body.dragging .act { cursor: grabbing; }
+
+  /* ---------- 3D layer: overview ---------- */
+  .ttl { width: 6400px; color: #0B0B0F; user-select: none; }
+  .ttl .eb { font: 500 78px 'IBM Plex Mono', monospace; letter-spacing: 6px; margin-bottom: 46px; }
+  .ttl h1 { font: 500 300px/1 Lora, serif; margin: 0; letter-spacing: -3px; }
+  .lbox { font: 400 100px 'IBM Plex Mono', monospace; letter-spacing: 6px; text-transform: uppercase; color: #6C7889;
+          border: 6px solid #A3ADBB; padding: 18px 64px; background: rgba(243,246,251,.9); white-space: nowrap;
+          transition: border-color .25s, color .25s, background .25s; }
+  .lbox:hover { border-color: var(--blue); color: var(--blue); background: #fff; }
+  .stl { font: 400 96px 'IBM Plex Mono', monospace; color: var(--label); white-space: nowrap; user-select: none; }
+  .gitl { font: 700 132px/1.05 'IBM Plex Mono', monospace; color: #000; text-align: center; user-select: none; }
+  .gitl span { display: inline-block; transition: transform .3s ease, color .3s ease; }
+  .gitl.flash span { transform: scale(1.16); color: var(--blue); }
+
+  .wm { display: inline-flex; align-items: center; gap: .3em; font-family: Poppins, Inter, sans-serif; font-size: 88px; white-space: nowrap; color: var(--purple); user-select: none; }
+  .wm .mk { width: 1.2em; height: 1.2em; color: var(--blue); flex: none; }
+  .wm .wt { display: flex; flex-direction: column; line-height: 1; }
+  .wm b { font-weight: 500; color: var(--purple); }
+  .wm em { font-style: normal; font-weight: 500; color: var(--blue); }
+  .wm small { font-size: .5em; font-weight: 400; color: var(--blue); margin-top: .06em; }
+  .wm.gitar i { font-weight: 800; font-style: italic; color: var(--gitar); letter-spacing: -.02em; }
+  .wmhit { padding: 14px 24px; border-radius: 24px; transition: background .25s; }
+  .wmhit:hover { background: rgba(18,110,211,.08); }
+  .spin { animation: spin 9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---------- 3D layer: loop focus ---------- */
+  .tagline { width: 1380px; text-align: center; font: italic 500 54px/1.3 Lora, serif; color: var(--purple); user-select: none; }
+  .chip { font: 500 40px 'IBM Plex Mono', monospace; letter-spacing: 5px; color: var(--blue); text-transform: uppercase; white-space: nowrap; user-select: none; }
+  .cap { box-sizing: border-box; width: 740px; font: 400 33px/1.4 Inter, sans-serif; color: var(--n8); background: rgba(255,255,255,.94);
+         padding: 24px 30px; border-left: 7px solid var(--blue); border-radius: 10px; box-shadow: 0 14px 40px rgba(41,0,66,.08); user-select: none; }
+  .cap b { display: block; font: 600 28px 'IBM Plex Mono', monospace; letter-spacing: 4px; color: var(--blue); text-transform: uppercase; margin-bottom: 8px; }
+  .cap.r { border-left: none; border-right: 7px solid var(--blue); text-align: right; }
+  .cap.top { width: 1300px; text-align: center; border-left: none; border-top: 7px solid var(--blue); }
+  .card { box-sizing: border-box; height: 500px; background: #fff; border: 3px solid #DFE6F0; border-radius: 28px; padding: 32px 36px;
+          box-shadow: 0 20px 50px rgba(41,0,66,.10); display: flex; flex-direction: column; gap: 18px; user-select: none;
+          transition: border-color .25s, box-shadow .25s; }
+  .card:hover { border-color: var(--blue); box-shadow: 0 26px 64px rgba(18,110,211,.24); }
+  .card .wm { font-size: 46px; }
+  .card p { margin: 0; font: 600 28px/1.3 Inter, sans-serif; color: var(--purple); }
+  .card ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .card li { font: 400 24px/1.36 Inter, sans-serif; padding-left: 30px; position: relative; }
+  .card li::before { content: ''; position: absolute; left: 4px; top: .5em; width: 11px; height: 11px; border-radius: 50%; background: var(--blue); }
+  .card .more { margin-top: auto; font: 500 22px 'IBM Plex Mono', monospace; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; }
+
+  /* ---------- 3D layer: product detail ---------- */
+  .panel { box-sizing: border-box; width: 1700px; background: #fff; border-radius: 40px; padding: 60px 72px 64px; position: relative;
+           border: 3px solid #E3E9F2; box-shadow: 0 60px 140px rgba(41,0,66,.22); font-family: Inter, sans-serif; color: var(--n8); }
+  .panel .x { position: absolute; top: 40px; right: 44px; width: 76px; height: 76px; border-radius: 50%; border: 3px solid #DFE6F0;
+              background: #fff; font: 400 36px Inter, sans-serif; color: var(--n8); display: grid; place-items: center; }
+  .panel .x:hover { border-color: var(--blue); color: var(--blue); }
+  .panel .ph { display: flex; align-items: center; justify-content: space-between; gap: 30px; margin-right: 110px; }
+  .panel .wm { font-size: 84px; }
+  .panel .lc { font: 500 28px/1.5 'IBM Plex Mono', monospace; letter-spacing: 4px; color: var(--blue); text-transform: uppercase; text-align: right; }
+  .panel h2 { font: 500 60px/1.2 Lora, serif; color: var(--purple); margin: 30px 0 44px; }
+  .panel .cols { display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; }
+  .panel h4 { font: 600 25px 'IBM Plex Mono', monospace; letter-spacing: 5px; color: var(--label); text-transform: uppercase; margin: 0 0 20px; }
+  .panel ul { margin: 0 0 40px; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 18px; }
+  .panel li { font: 400 30px/1.42 Inter, sans-serif; padding-left: 46px; position: relative; }
+  .panel li::before { content: ''; position: absolute; left: 4px; top: .35em; width: 22px; height: 12px; border-left: 5px solid var(--blue); border-bottom: 5px solid var(--blue); transform: rotate(-45deg); }
+  .panel code { font: 500 .9em 'IBM Plex Mono', monospace; background: #F3F6FB; padding: 2px 10px; border-radius: 8px; color: var(--purple); }
+  .panel .ask li::before { content: '?'; border: none; transform: none; width: auto; height: auto; top: 0; font: 700 30px Lora, serif; color: var(--blue); }
+  .panel .ask li { font-style: italic; }
+  .runs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+  .run { background: var(--bg); border-radius: 20px; padding: 22px 26px; font: 400 25px/1.42 Inter, sans-serif; }
+  .run b { display: block; font: 600 25px Inter, sans-serif; color: var(--purple); margin-bottom: 8px; }
+  .stat { display: flex; gap: 30px; align-items: center; background: linear-gradient(135deg, var(--purple), var(--blue)); color: #fff;
+          border-radius: 24px; padding: 28px 36px; margin-bottom: 40px; }
+  .stat b { font: 500 80px/1 Lora, serif; white-space: nowrap; }
+  .stat span { font: 400 26px/1.42 Inter, sans-serif; }
+
+  /* ---------- HUD ---------- */
+  #hud { position: fixed; inset: auto 0 0 0; padding: 0 28px 22px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; pointer-events: none; }
+  #hud > * { pointer-events: auto; }
+  #crumbs { font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: 1.5px; text-transform: uppercase; color: var(--label);
+            background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 10px 18px; display: flex; gap: 10px; align-items: center; }
+  #crumbs a { color: var(--label); text-decoration: none; cursor: pointer; }
+  #crumbs a:hover, #crumbs a.cur { color: var(--purple); }
+  #nav { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 6px; }
+  #nav button { width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: var(--purple); font-size: 17px; cursor: pointer; }
+  #nav button:hover { background: var(--bg); color: var(--blue); }
+  #dots { display: flex; gap: 6px; padding: 0 4px; }
+  #dots i { width: 8px; height: 8px; border-radius: 50%; background: #D3DAE5; cursor: pointer; transition: background .2s, transform .2s; }
+  #dots i.loop { width: 12px; border-radius: 4px; }
+  #dots i.on { background: var(--blue); transform: scale(1.25); }
+  #legend { position: fixed; top: 22px; right: 28px; display: flex; gap: 18px; font: 500 12px 'IBM Plex Mono', monospace; letter-spacing: 1px;
+            color: var(--n8); background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 9px 16px; }
+  #legend span { display: inline-flex; align-items: center; gap: 7px; }
+  #legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  #help { font: 400 12px Inter, sans-serif; color: var(--label); text-align: right; line-height: 1.6; transition: opacity 1s; }
+  #help kbd { font: 500 11px 'IBM Plex Mono', monospace; background: #fff; border: 1px solid #DCE3EC; border-radius: 5px; padding: 1px 6px; color: var(--n8); }
+  @media (max-width: 760px) { #help, #legend { display: none; } #hud { padding: 0 16px 16px; } }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="stage"><div id="gl"></div><div id="css"></div></div>
+
+<div id="legend">
+  <span><i style="background:var(--amber)"></i>AI-generated change</span>
+  <span><i style="background:var(--blue)"></i>Verified change</span>
+</div>
+<div id="hud">
+  <div id="crumbs"></div>
+  <div id="help">
+    <kbd>scroll</kbd> zoom · <kbd>drag</kbd> pan · click a loop or product<br>
+    <kbd>←</kbd> <kbd>→</kbd> present · <kbd>Esc</kbd> zoom out · <kbd>F</kbd> fullscreen
+  </div>
+  <div id="nav">
+    <button data-act="prev" title="Previous (←)">←</button>
+    <div id="dots"></div>
+    <button data-act="next" title="Next (→)">→</button>
+  </div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { CSS3DRenderer, CSS3DObject } from 'three/addons/renderers/CSS3DRenderer.js';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+
+/* =====================================================================
+   Content — edit here. Wording follows the 2026 SonarQube deck and the
+   Server-vs-Cloud comparison (SonarQube Server 2026.5 / Cloud, Oct 2026).
+   ===================================================================== */
+const MARK = {
+  waves: `<svg class="mk" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 27a11 11 0 0 1 11-11"/><path d="M4 20a17 17 0 0 1 17-17"/><path d="M11 29a18 18 0 0 1 18-18"/></svg>`,
+  vortex: `<svg class="mk spin" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">${
+    [0, 60, 120, 180, 240, 300].map(a => `<path d="M16 4a12 12 0 0 1 9 4" transform="rotate(${a} 16 16)"/><path d="M16 10a6 6 0 0 1 5 2.7" transform="rotate(${a + 30} 16 16)" opacity=".55"/>`).join('')}</svg>`,
+  hunter: `<svg class="mk" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M28 16A12 12 0 1 1 16 4"/><path d="M23 16a7 7 0 1 1-7-7"/><circle cx="16" cy="16" r="2.2" fill="currentColor" stroke="none"/></svg>`,
+  gitar: `<svg class="mk" viewBox="0 0 32 32"><path d="M9 3h12l8 8v10l-8 8H9l-7-8V11z" fill="#5B2A86"/><path d="M12 10h6a4 4 0 0 1 0 8h-6v6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+};
+
+const LOOPS = [
+  {
+    title: 'Agentic loop', dir: -1, stage: 'Stage 1 · Before the commit',
+    tagline: 'Verification inside the coding agent’s own loop — before a single line is pushed.',
+    caps: {
+      guide: 'Agents receive your coding guidelines, architecture rules and dependency health context before they write a line.',
+      verify: 'Every change the agent makes is analyzed on the spot — <code>sonar analyze agentic</code>, wired into the agent through CLI hooks or a local MCP server.',
+      solve: 'The agent fixes confirmed issues itself and re-verifies, so what reaches git push is already clean.',
+    },
+    products: [{
+      key: 'vortex', mark: 'vortex', brand: 'Vortex', name: 'Sonar Vortex', pos: [0, -0.5],
+      tag: 'The verification layer for coding agents',
+      bullets: ['Coding guidelines & architecture context for agents', 'Agentic analysis on every change the agent makes', 'Third-party dependency health & safety checks'],
+      what: ['<b>Coding guidelines</b> — your standards, delivered to the agent before it writes code',
+             '<b>Architecture & semantic navigation</b> so agents respect the shape of your codebase',
+             '<b>Dependency health & safety</b> before a third-party package gets pulled in',
+             '<b>Agentic analysis</b> — <code>sonar analyze agentic</code> runs on every edit',
+             'Delivered through the SonarQube <b>CLI & MCP Server</b>, with agents such as Claude Code'],
+      runs: [['SonarQube Server', 'Vortex context + Vortex analysis, as a self-deployed service'], ['SonarQube Cloud', 'Vortex context + Vortex analysis, fully managed']],
+      runsNote: 'No LLM key in SonarQube — Vortex uses the developer’s own coding agent.',
+      stat: ['30×', 'more costly to fix an issue found in production than while the code is being written.'],
+      ask: ['Which coding agents do your developers use today, and how do those agents learn your standards?',
+            'What happens today when an agent pulls in a risky dependency?'],
+    }],
+  },
+  {
+    title: 'CI verification loop', dir: 1, stage: 'Stage 2 · During the pull request',
+    tagline: 'Every pull request is verified, algorithmically and agentically, before it can merge.',
+    caps: {
+      guide: 'Quality profiles and quality gates define what “mergeable” means for every repository.',
+      verify: 'Each PR is analyzed against 8,000+ rules, taint analysis and the quality gate. Algorithmic and agentic verification work together.',
+      solve: 'Findings land on the PR with automatic fixes, so issues are resolved before the merge.',
+    },
+    products: [
+      {
+        key: 'sq', mark: 'waves', brand: 'Qube', name: 'SonarQube', pos: [-4.3, -0.5],
+        tag: 'Algorithmic verification on every pull request',
+        bullets: ['8,000+ rules: security, reliability, maintainability', 'SAST & cross-file taint analysis', 'Quality gate status on every PR / MR'],
+        what: ['<b>8,000+ deterministic rules</b> for security, reliability and maintainability',
+               '<b>SAST & taint analysis</b> across functions, files and frameworks: XSS, injections, SSRF, XXE…',
+               '<b>Secrets detection</b>: 400+ patterns across all file types',
+               '<b>IaC scanning</b> for cloud misconfigurations',
+               '<b>Quality gates</b> decorate every PR / MR and block what shouldn’t merge'],
+        runs: [['SonarQube Server', 'Self-managed, in your infrastructure'], ['SonarQube Cloud', 'SaaS, with automatic analysis available']],
+        stat: ['+30%', 'more security, reliability & maintainability issues after AI-assisted coding was adopted (Carnegie Mellon, 2025).'],
+        ask: ['What has to be true today for a pull request to merge?',
+              'How do you measure the quality of AI-generated code entering your repositories?'],
+      },
+      {
+        key: 'advsec', mark: 'waves', brand: 'Qube', sub: 'advanced security', name: 'SonarQube Advanced Security', pos: [4.6, -0.5],
+        tag: 'Secure first-party, AI-generated and open-source code',
+        bullets: ['SCA: vulnerable, malicious & mis-licensed dependencies', 'Advanced SAST: taint analysis into open-source libraries', 'Configurable branch rescans'],
+        what: ['<b>SCA</b>: vulnerabilities, license policy and malicious-package risks across your dependencies',
+               '<b>Advanced SAST</b> follows tainted data into the open-source code you call, a black box for traditional SAST',
+               'Real finding: <b>CVE-2024-23897</b> in Jenkins (CVSS 9.8)',
+               '<b>Configurable branch rescans</b> surface newly disclosed risks on unchanged code'],
+        runs: [['SonarQube Server', 'SCA + Advanced SAST · requires internet access (no air-gapped installs)'], ['SonarQube Cloud', 'SCA + Advanced SAST · SCA also works with automatic analysis (no CI)']],
+        stat: ['92%', 'of applications contain open-source components, and 70–90% of an average application is open-source code.'],
+        ask: ['How do you find out that a dependency you already shipped has a new CVE?',
+              'Do you enforce license policies on open-source packages?'],
+      },
+      {
+        key: 'gitar', mark: 'gitar', name: 'Gitar', pos: [0, -2.75],
+        tag: 'Agentic code review and CI repair on every PR',
+        bullets: ['Reviews every PR: logic, edge cases, omissions, performance', 'Diagnoses & fixes CI failures and flaky tests', 'Review policies in plain language, no YAML'],
+        what: ['<b>Reviews every PR</b>, answers questions in context and applies fixes, across time zones',
+               'Catches <b>business-logic issues, edge cases, omissions</b>, performance issues and testing gaps',
+               '<b>Diagnoses CI failures</b>, de-duplicates noise, catches flaky tests, fixes build, lint & test errors',
+               '<b>Plain-language policies</b> (no scripts or YAML) enforced on every PR',
+               '“Gitar, please fix” → automatic fix'],
+        runs: [['With SonarQube', '8K+ deterministic rules for security, reliability & maintainability'], ['With Gitar', 'Agentic review of intent, logic and CI health on the same PR']],
+        stat: ['2×', 'layers of verification on one PR: algorithmic (Sonar) and agentic (Gitar), each with automatic fixes.'],
+        ask: ['How long does a PR wait for its first review today?',
+              'How much engineering time goes into triaging red CI builds and flaky tests?'],
+      },
+    ],
+  },
+  {
+    title: 'Code maintenance loop', dir: -1, stage: 'Stage 3 · Once code is merged',
+    tagline: 'Continuously pay down debt and hunt the flaws static analysis can’t see.',
+    caps: {
+      guide: 'Your standards and backlog priorities decide which issues and debt the agents take on.',
+      verify: 'Merged code is re-verified, and agentic discovery looks for flaws beyond pattern-based rules.',
+      solve: 'Agents open fix PRs that follow your standards and are verified before they reach review.',
+    },
+    products: [
+      {
+        key: 'remediation', mark: 'waves', brand: 'Qube', sub: 'remediation agent', name: 'SonarQube Remediation Agent', pos: [-3.7, -0.5],
+        tag: 'Autonomous repair of issues and technical debt',
+        bullets: ['Fixes issues inline with code review', 'Assign the backlog, and the agent pays down debt', 'Fixes follow your standards, verified before the PR'],
+        what: ['<b>Automated resolution</b> of pre-merge findings, inline with code review',
+               '<b>Assign your backlog</b> to the agent to resolve technical debt',
+               'Fixes consistent with your standards, <b>verified by Vortex</b> before the PR opens',
+               'Shift effort from triage and fixing to <b>new feature work</b>'],
+        runs: [['SonarQube Server', 'Bring any LLM provider & model · GitHub, GitLab, Azure DevOps'], ['SonarQube Cloud', 'OpenAI or Anthropic key · dependency-bump PRs for SCA risks']],
+        stat: ['+41%', 'increase in code complexity persists after the 3–5× AI velocity spike fades (Carnegie Mellon, 2025).'],
+        ask: ['How big is your technical-debt backlog, and who owns paying it down?',
+              'How many findings get marked “won’t fix” simply for lack of time?'],
+      },
+      {
+        key: 'hunter', mark: 'hunter', brand: 'Qube', sub: 'hunter agent', name: 'SonarQube Hunter Agent', pos: [3.9, -0.5],
+        tag: 'Finds the vulnerabilities static analysis can’t see',
+        bullets: ['Broken access control & IDOR', 'Business-logic & authentication flaws', 'A structured multi-phase agent, not just a prompt'],
+        what: ['Targets <b>broken access control, IDOR, business-logic and authentication flaws</b>',
+               '<b>Not just a prompt</b>: a tailored agent with structured, multi-phase analysis',
+               '<b>Higher precision</b> from custom tools and Sonar’s proprietary analysis',
+               '<b>Extensible</b>: built on the Sonar Foundation Agent with your own context'],
+        runs: [['SonarQube Server', 'GA · bring your own LLM key · scan units'], ['SonarQube Cloud', 'GA · Sonar-provided models · scan units']],
+        stat: ['“', 'Can I skip the payment step? Can I read another tenant’s data? Is MFA actually enforced? Valid code that does the wrong thing.'],
+        ask: ['When did a pentest last find an access-control or business-logic flaw?',
+              'How do you test authorization logic across tenants and roles today?'],
+      },
+    ],
+  },
+];
+
+/* =====================================================================
+   Geometry constants & helpers
+   ===================================================================== */
+const R = 10, GAP = 21.5, S = 0.01;              // loop radius, loop spacing, CSS px → world units
+const ANG = { verify: 90, solve: -35, guide: 215 }; // stage node angles (deg)
+const BLUE = new THREE.Color('#126ED3'), AMBER = new THREE.Color('#F5A524');
+const BG = 0xF3F6FB, FLOW_SPEED = 1.3;
+
+const deg = d => d * Math.PI / 180;
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const smooth = (e0, e1, x) => { const t = clamp((x - e0) / (e1 - e0), 0, 1); return t * t * (3 - 2 * t); };
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+
+LOOPS.forEach((L, i) => { L.cx = (i - 1) * GAP; });
+const nodePos = (L, a) => new THREE.Vector3(L.cx + R * Math.cos(deg(a)), R * Math.sin(deg(a)), 0);
+
+/* ---------- renderers ---------- */
+const glHost = document.getElementById('gl'), cssHost = document.getElementById('css');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setClearColor(BG);
+glHost.appendChild(renderer.domElement);
+const cssRenderer = new CSS3DRenderer();
+cssHost.appendChild(cssRenderer.domElement);
+
+const scene = new THREE.Scene(), cssScene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, innerWidth / innerHeight, 0.1, 600);
+
+/* ---------- WebGL helpers ---------- */
+const lineMats = [];
+function makeLine(points, { color = BLUE, width = 2, dashed = true, dash = 0.2, gap = 0.2189, opacity = 1 } = {}) {
+  const g = new LineGeometry();
+  g.setPositions(points.flatMap(p => [p.x, p.y, p.z]));
+  const m = new LineMaterial({ color, linewidth: width, dashed, dashSize: dash, gapSize: gap, transparent: true, opacity, depthWrite: false });
+  m.resolution.set(innerWidth, innerHeight);
+  lineMats.push(m);
+  const l = new Line2(g, m);
+  l.computeLineDistances();
+  scene.add(l);
+  return l;
+}
+function arcPoints(cx, a0, a1, n) {
+  const pts = [];
+  for (let k = 0; k <= n; k++) { const a = deg(lerp(a0, a1, k / n)); pts.push(new THREE.Vector3(cx + R * Math.cos(a), R * Math.sin(a), 0)); }
+  return pts;
+}
+function radialTexture(stops) {
+  const c = document.createElement('canvas'); c.width = c.height = 256;
+  const g = c.getContext('2d'), grd = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+  stops.forEach(([o, col]) => grd.addColorStop(o, col));
+  g.fillStyle = grd; g.fillRect(0, 0, 256, 256);
+  return new THREE.CanvasTexture(c);
+}
+const whiteGlow = radialTexture([[0, 'rgba(255,255,255,1)'], [0.62, 'rgba(255,255,255,.75)'], [1, 'rgba(255,255,255,0)']]);
+const blueGlow = radialTexture([[0, 'rgba(18,110,211,.10)'], [0.7, 'rgba(18,110,211,.07)'], [1, 'rgba(18,110,211,0)']]);
+
+function chevronGeometry(s = 0.46, t = 0.1) {
+  const a = new THREE.PlaneGeometry(s, t); a.translate(-s / 2 + t / 2, 0, 0); a.rotateZ(deg(45));
+  const b = new THREE.PlaneGeometry(s, t); b.translate(-s / 2 + t / 2, 0, 0); b.rotateZ(deg(-45));
+  return mergeGeometries([a, b]);
+}
+const chevGeo = chevronGeometry();
+
+function makeNode(pos, { r0 = 0.3, r1 = 0.43, color = BLUE } = {}) {
+  const mat = new THREE.MeshBasicMaterial({ color, transparent: true });
+  const g = new THREE.Group(); g.position.copy(pos);
+  const fill = new THREE.Mesh(new THREE.CircleGeometry(r0, 40), new THREE.MeshBasicMaterial({ color: BG, transparent: true }));
+  const ring = new THREE.Mesh(new THREE.RingGeometry(r0, r1, 48), mat);
+  const haloMat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0, depthWrite: false });
+  const halo = new THREE.Mesh(new THREE.RingGeometry(r1, r1 + 0.09, 48), haloMat);
+  fill.position.z = ring.position.z = 0.03; halo.position.z = 0.02;
+  g.add(fill, ring, halo); scene.add(g);
+  return { g, mat, fillMat: fill.material, halo, haloMat, pulse: 0, pos: pos.clone() };
+}
+
+/* ---------- background: parallax dot field ---------- */
+{
+  const pts = [];
+  for (let x = -150; x <= 150; x += 3.2) for (let y = -95; y <= 95; y += 3.2) pts.push(x, y, -32);
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: 0xCBD5E3, size: 2.2, sizeAttenuation: false })));
+}
+
+/* ---------- loops ---------- */
+const flows = [], nodes = [], hitDiscs = [];
+LOOPS.forEach((L, i) => {
+  L.glow = new THREE.Mesh(new THREE.CircleGeometry(R * 1.3, 64), new THREE.MeshBasicMaterial({ map: whiteGlow, transparent: true, depthWrite: false }));
+  L.glow.position.set(L.cx, 0, -0.3);
+  L.hover = new THREE.Mesh(new THREE.CircleGeometry(R * 1.35, 64), new THREE.MeshBasicMaterial({ map: blueGlow, transparent: true, depthWrite: false, opacity: 0 }));
+  L.hover.position.set(L.cx, 0, -0.2);
+  scene.add(L.glow, L.hover);
+
+  const pts = arcPoints(L.cx, 90, 90 + L.dir * 360, 240);   // drawn in flow direction
+  L.ring = makeLine(pts, { width: 2 });
+  L.halo = makeLine(pts, { width: 7, dashed: false, opacity: 0.05 });
+
+  const hit = new THREE.Mesh(new THREE.CircleGeometry(R, 48), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
+  hit.position.set(L.cx, 0, 0); hit.userData.loop = i; scene.add(hit); hitDiscs.push(hit);
+
+  flows.push({
+    loop: i, len: 2 * Math.PI * R, n: 4, phase: i * 0.11,
+    at: (u, p, t) => {
+      const a = deg(90 + L.dir * 360 * u);
+      p.set(L.cx + R * Math.cos(a), R * Math.sin(a), 0.05);
+      t.set(-Math.sin(a) * L.dir, Math.cos(a) * L.dir, 0);
+    },
+  });
+
+  L.nodes = {};
+  for (const [type, a] of Object.entries(ANG)) {
+    const n = makeNode(nodePos(L, a)); n.type = type; n.loop = i;
+    nodes.push(n); L.nodes[type] = n;
+  }
+});
+
+/* ---------- git push / git merge connectors ---------- */
+const [L1, L2, L3] = LOOPS;
+const pushCurve = new THREE.CatmullRomCurve3([
+  nodePos(L1, 90), new THREE.Vector3(L1.cx + 5.2, 9.15, 0.5), new THREE.Vector3(-12.0, 5.85, 1.2),
+  new THREE.Vector3(-10.25, 1.2, 0.9), new THREE.Vector3(-9.55, -2.6, 0.4), nodePos(L2, 215),
+]);
+const mergeCurve = new THREE.CatmullRomCurve3([
+  nodePos(L2, -10), new THREE.Vector3(10.35, 1.6, 0.5), new THREE.Vector3(11.9, 6.1, 1.2),
+  new THREE.Vector3(14.9, 8.95, 0.9), new THREE.Vector3(18.3, 9.9, 0.4), nodePos(L3, 90),
+]);
+const connectors = [
+  { curve: pushCurve, label: 'git<br>push', marker: new THREE.Vector3(-12.0, 5.85, 1.2), labelPos: [-10.2, 10.5], between: [0, 1] },
+  { curve: mergeCurve, label: 'git<br>merge', marker: new THREE.Vector3(11.9, 6.1, 1.2), labelPos: [9.9, 10.4], between: [1, 2] },
+];
+connectors.forEach(c => {
+  c.line = makeLine(c.curve.getSpacedPoints(160), { width: 2 });
+  c.node = makeNode(c.marker, { r0: 0.98, r1: 1.1, color: new THREE.Color(0x0B0B0F) });
+  c.node.fillMat.opacity = 0;                       // open ring, like the slide
+  const a = c.marker.clone().add(new THREE.Vector3(0.45, 1.05, 0));
+  const b = new THREE.Vector3(c.labelPos[0] - 0.35, c.labelPos[1] - 1.85, 1.2);
+  c.arrow = makeLine([a, b], { color: new THREE.Color(0x0B0B0F), width: 2.4, dashed: false });
+  const head = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.55, 3), new THREE.MeshBasicMaterial({ color: 0x0B0B0F, transparent: true }));
+  head.position.copy(b);
+  head.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), b.clone().sub(a).normalize());
+  scene.add(head); c.head = head;
+  flows.push({
+    connector: c, len: c.curve.getLength(), n: 2, phase: 0, fadeEnds: true,
+    at: (u, p, t) => { c.curve.getPointAt(u, p); c.curve.getTangentAt(u, t); p.z += 0.05; },
+  });
+});
+
+/* ---------- moving arrowheads ---------- */
+flows.forEach(f => {
+  f.chev = [];
+  for (let k = 0; k < f.n; k++) {
+    const m = new THREE.Mesh(chevGeo, new THREE.MeshBasicMaterial({ color: BLUE, transparent: true, depthWrite: false }));
+    scene.add(m); f.chev.push(m);
+  }
+});
+
+/* =====================================================================
+   Tokens — changes flowing through the loops
+   ===================================================================== */
+const MAX_TOKENS = 48, TRAIL = 16, TRAIL_GAP = 0.2;
+const NP = MAX_TOKENS * TRAIL;
+const tPos = new Float32Array(NP * 3), tCol = new Float32Array(NP * 3), tAlpha = new Float32Array(NP), tSize = new Float32Array(NP);
+const tokGeo = new THREE.BufferGeometry();
+tokGeo.setAttribute('position', new THREE.BufferAttribute(tPos, 3));
+tokGeo.setAttribute('tcolor', new THREE.BufferAttribute(tCol, 3));
+tokGeo.setAttribute('alpha', new THREE.BufferAttribute(tAlpha, 1));
+tokGeo.setAttribute('size', new THREE.BufferAttribute(tSize, 1));
+const tokMat = new THREE.ShaderMaterial({
+  uniforms: { uScale: { value: 1 } },
+  vertexShader: `
+    uniform float uScale; attribute vec3 tcolor; attribute float alpha; attribute float size;
+    varying vec3 vC; varying float vA;
+    void main() {
+      vC = tcolor; vA = alpha;
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      gl_Position = projectionMatrix * mv;
+      gl_PointSize = size * uScale / -mv.z;
+    }`,
+  fragmentShader: `
+    varying vec3 vC; varying float vA;
+    void main() {
+      float d = length(gl_PointCoord - 0.5);
+      float a = smoothstep(0.5, 0.0, d);
+      float core = smoothstep(0.2, 0.0, d);
+      gl_FragColor = vec4(mix(vC, vec3(1.0), core * 0.45), a * a * vA);
+    }`,
+  transparent: true, depthWrite: false,
+});
+const tokPoints = new THREE.Points(tokGeo, tokMat);
+tokPoints.frustumCulled = false;
+tokPoints.position.z = 0.15;
+scene.add(tokPoints);
+
+const arcSeg = (L, a0, a1) => ({
+  len: R * Math.abs(deg(a1 - a0)),
+  at(s, out) { const a = deg(lerp(a0, a1, s / this.len)); return out.set(L.cx + R * Math.cos(a), R * Math.sin(a), 0); },
+});
+const curveSeg = c => ({ len: c.getLength(), at(s, out) { return c.getPointAt(clamp(s / this.len, 0, 1), out); } });
+
+const tokens = [];
+function spawnLoopToken(i, offset) {
+  const L = LOOPS[i];
+  tokens.push({ route: [arcSeg(L, 90, 90 + L.dir * 360)], idx: 0, s: offset, dist: 1e9, repeat: true,
+                speed: 3.2, size: 0.55, col: BLUE.clone(), target: BLUE, fade: 1 });
+}
+function spawnJourney() {
+  if (tokens.length >= MAX_TOKENS) return;
+  // Guide → Verify → Solve (fix) → Guide → Verify → git push → CI loop → git merge → one maintenance cycle
+  tokens.push({ route: [arcSeg(L1, 215, -270), curveSeg(pushCurve), arcSeg(L2, 215, 350), curveSeg(mergeCurve), arcSeg(L3, 90, -270)],
+                idx: 0, s: 0, dist: 0, repeat: false, speed: 6.2, size: 0.95, col: AMBER.clone(), target: AMBER, fade: 1, journey: true });
+}
+LOOPS.forEach((_, i) => { spawnLoopToken(i, 0); spawnLoopToken(i, Math.PI * R); });
+
+const _v = new THREE.Vector3();
+function tokenPos(tk, back, out) {
+  let i = tk.idx, s = tk.s - back;
+  while (s < 0) {
+    if (i > 0) { i--; s += tk.route[i].len; }
+    else if (tk.repeat) { i = tk.route.length - 1; s += tk.route[i].len; }
+    else { s = 0; break; }
+  }
+  return tk.route[i].at(s, out);
+}
+function advanceToken(tk, dt) {
+  if (tk.ended) { tk.fade -= dt * 1.4; return; }
+  tk.s += tk.speed * dt; tk.dist += tk.speed * dt;
+  while (tk.s > tk.route[tk.idx].len) {
+    tk.s -= tk.route[tk.idx].len; tk.idx++;
+    if (tk.idx >= tk.route.length) {
+      if (tk.repeat) tk.idx = 0;
+      else { tk.idx = tk.route.length - 1; tk.s = tk.route[tk.idx].len; tk.ended = true; break; }
+    }
+  }
+  tk.col.lerp(tk.target, Math.min(1, dt * 3));
+  tokenPos(tk, 0, _v);
+  for (const n of nodes) {
+    if (n.pulse < 0.35 && _v.distanceToSquared(n.pos) < 0.3) {
+      n.pulse = 1;
+      if (tk.journey && n.type === 'solve') tk.target = BLUE;   // fixed → verified
+    }
+  }
+  if (tk.journey) for (const c of connectors) {
+    if (c.node.pulse < 0.35 && Math.hypot(_v.x - c.marker.x, _v.y - c.marker.y) < 0.6) {
+      c.node.pulse = 1;
+      c.labelEl.classList.add('flash');
+      setTimeout(() => c.labelEl.classList.remove('flash'), 500);
+    }
+  }
+}
+function writeTokens(dims) {
+  tAlpha.fill(0);
+  tokens.forEach((tk, ti) => {
+    for (let k = 0; k < TRAIL; k++) {
+      const j = ti * TRAIL + k, back = k * TRAIL_GAP;
+      if (!tk.repeat && back > tk.dist) continue;
+      tokenPos(tk, back, _v);
+      tPos[j * 3] = _v.x; tPos[j * 3 + 1] = _v.y; tPos[j * 3 + 2] = _v.z;
+      tCol[j * 3] = tk.col.r; tCol[j * 3 + 1] = tk.col.g; tCol[j * 3 + 2] = tk.col.b;
+      const f = 1 - k / TRAIL;
+      const near = LOOPS.reduce((b, L, li) => Math.abs(_v.x - L.cx) < Math.abs(_v.x - LOOPS[b].cx) ? li : b, 0);
+      tAlpha[j] = f * f * Math.max(0, tk.fade) * (0.25 + 0.75 * dims[near]);
+      tSize[j] = tk.size * (0.35 + 0.65 * f);
+    }
+  });
+  for (const a of ['position', 'tcolor', 'alpha', 'size']) tokGeo.attributes[a].needsUpdate = true;
+}
+
+/* =====================================================================
+   CSS3D layer — crisp HTML that zooms with the scene
+   ===================================================================== */
+const cssItems = [];
+function css3d(html, cls, x, y, z = 0.08, extra = {}) {
+  const el = document.createElement('div');
+  el.className = cls; el.innerHTML = html;
+  if (extra.act) { el.dataset.act = extra.act; el.classList.add('act'); }
+  const o = new CSS3DObject(el);
+  o.position.set(x, y, z); o.scale.setScalar(S);
+  cssScene.add(o);
+  const item = { o, el, kind: extra.kind || 'static', loop: extra.loop, interactive: !!extra.act };
+  cssItems.push(item);
+  return item;
+}
+const wordmark = p => p.mark === 'gitar'
+  ? `<span class="wm gitar">${MARK.gitar}<i>gitar</i></span>`
+  : `<span class="wm">${MARK[p.mark]}<span class="wt"><span><b>Sonar</b><em>${p.brand}</em></span>${p.sub ? `<small>${p.sub}</small>` : ''}</span></span>`;
+
+css3d(`<div class="eb">OUR SOLUTION</div><h1>Three verification-powered coding loops</h1>`, 'ttl', 0, 16.4, 0, { kind: 'title' });
+
+connectors.forEach(c => {
+  const it = css3d(`<span>${c.label}</span>`, 'gitl', c.labelPos[0], c.labelPos[1], 1.2, { kind: 'connector' });
+  it.between = c.between; c.labelEl = it.el;
+});
+
+const CARD_LAYOUT = { 1: { w: 640, xs: [0], zoom: 1.35, y: -2.6 }, 2: { w: 640, xs: [-3.35, 3.35] }, 3: { w: 520, xs: [-5.55, 0, 5.55] } };
+const panels = [];
+
+LOOPS.forEach((L, i) => {
+  // overview-level, always present (dimmed when another loop is in focus)
+  css3d(L.title, 'lbox', L.cx, 2.2, 0.08, { kind: 'loopStatic', loop: i, act: `loop:${i}` });
+  const vp = nodePos(L, ANG.verify), gp = nodePos(L, ANG.guide), sp = nodePos(L, ANG.solve);
+  css3d('Verify', 'stl', vp.x, vp.y - 1.35, 0.08, { kind: 'loopStatic', loop: i });
+  css3d('Guide', 'stl', gp.x + 2.15, gp.y + 0.35, 0.08, { kind: 'loopStatic', loop: i });
+  css3d('Solve', 'stl', sp.x - 2.05, sp.y + 0.35, 0.08, { kind: 'loopStatic', loop: i });
+
+  // overview wordmarks (fade out as the loop's cards fade in)
+  L.products.forEach((p, j) => css3d(wordmark(p), 'wmhit', L.cx + p.pos[0], p.pos[1], 0.08, { kind: 'wordmark', loop: i, act: `prod:${i}:${j}` }));
+
+  // loop-focus level
+  css3d(L.stage, 'chip', L.cx, 7.05, 0.08, { kind: 'focus', loop: i });
+  css3d(L.tagline, 'tagline', L.cx, 5.15, 0.08, { kind: 'focus', loop: i });
+  css3d(`<b>Verify</b>${L.caps.verify}`, 'cap top', L.cx, 12.05, 0.1, { kind: 'focus', loop: i });
+  css3d(`<b>Guide</b>${L.caps.guide}`, 'cap r', gp.x - 0.6 - 3.7, gp.y - 2.0, 0.1, { kind: 'focus', loop: i });
+  css3d(`<b>Solve</b>${L.caps.solve}`, 'cap', sp.x + 0.6 + 3.7, sp.y - 2.0, 0.1, { kind: 'focus', loop: i });
+
+  const lay = CARD_LAYOUT[L.products.length];
+  L.products.forEach((p, j) => {
+    const card = css3d(
+      `${wordmark(p)}<p>${p.tag}</p><ul>${p.bullets.map(b => `<li>${b}</li>`).join('')}</ul><div class="more">Explore →</div>`,
+      'card', L.cx + lay.xs[j], lay.y ?? -2.05, 0.2, { kind: 'focus', loop: i, act: `prod:${i}:${j}` });
+    card.el.style.width = lay.w + 'px';
+    card.o.scale.setScalar(S * (lay.zoom || 1));
+
+    const panel = css3d(`
+      <button class="x act" data-act="close" title="Back (Esc)">✕</button>
+      <div class="ph">${wordmark(p)}<div class="lc">${L.title}<br>${L.stage}</div></div>
+      <h2>${p.tag}</h2>
+      <div class="cols">
+        <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul></div>
+        <div>
+          <h4>${p.key === 'gitar' ? 'Better together' : 'Where it runs'}</h4>
+          <div class="runs">${p.runs.map(([h, t]) => `<div class="run"><b>${h}</b>${t}</div>`).join('')}</div>
+          ${p.runsNote ? `<p style="font:400 25px/1.4 Inter;margin:-20px 0 36px">${p.runsNote}</p>` : ''}
+          <div class="stat"><b>${p.stat[0]}</b><span>${p.stat[1]}</span></div>
+          <h4>Ask the customer</h4><ul class="ask">${p.ask.map(a => `<li>${a}</li>`).join('')}</ul>
+        </div>
+      </div>`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
+    panel.k = 0; panel.target = 0; panel.from = card.o.position.clone(); panel.fromScale = S * lay.w * (lay.zoom || 1) / 1700;
+    panel.loopIdx = i; panel.prodIdx = j;
+    panels.push(panel);
+    p.panel = panel;
+  });
+});
+
+/* =====================================================================
+   Camera, framing & navigation state
+   ===================================================================== */
+let Zo, Zf, Zd;
+const OY = 3.6, FY = 0.9, PY = 0.6, PZ = 4;
+function fitZ(w, h) { const t = 2 * Math.tan(deg(camera.fov / 2)); return Math.max(h / t, w / (t * camera.aspect)); }
+function computeFraming() { Zo = fitZ(76, 34); Zf = fitZ(48, 27.5); Zd = fitZ(20, 15.5); }
+
+const cam = { x: 0, y: OY, z: 200 };
+let flight = null;
+function flyTo(to, dur = 1.5) {
+  const from = { ...cam };
+  const lateral = Math.hypot(to.x - from.x, to.y - from.y);
+  const lift = Math.max(0, Math.min(lateral * 0.55, 30) - Math.abs(to.z - from.z) * 0.5);
+  flight = { from, to, t: 0, dur, lift };
+}
+
+let state = { level: 'overview' };
+const tour = [{ level: 'overview' }];
+LOOPS.forEach((L, i) => { tour.push({ level: 'loop', loop: i }); L.products.forEach((_, j) => tour.push({ level: 'product', loop: i, prod: j })); });
+const sameState = (a, b) => a.level === b.level && a.loop === b.loop && a.prod === b.prod;
+
+function go(st) {
+  state = st;
+  panels.forEach(p => { p.target = (st.level === 'product' && p.loopIdx === st.loop && p.prodIdx === st.prod) ? 1 : 0; });
+  if (st.level === 'overview') flyTo({ x: 0, y: OY, z: Zo });
+  else if (st.level === 'loop') flyTo({ x: LOOPS[st.loop].cx, y: FY, z: Zf });
+  else flyTo({ x: LOOPS[st.loop].cx, y: PY, z: PZ + Zd }, 1.3);
+  updateHud();
+}
+function step(d) {
+  let k = tour.findIndex(t => sameState(t, state));
+  k = k < 0 ? 0 : (k + d + tour.length) % tour.length;
+  go(tour[k]);
+}
+function back() {
+  if (state.level === 'product') go({ level: 'loop', loop: state.loop });
+  else go({ level: 'overview' });
+}
+
+/* ---------- HUD ---------- */
+const crumbsEl = document.getElementById('crumbs'), dotsEl = document.getElementById('dots');
+dotsEl.innerHTML = tour.map((t, k) => `<i data-act="step:${k}" class="${t.level === 'product' ? '' : 'loop'}" title="${
+  t.level === 'overview' ? 'Overview' : t.level === 'loop' ? LOOPS[t.loop].title : LOOPS[t.loop].products[t.prod].name}"></i>`).join('');
+function updateHud() {
+  const parts = [`<a data-act="overview" class="${state.level === 'overview' ? 'cur' : ''}">Overview</a>`];
+  if (state.level !== 'overview') parts.push(`<a data-act="loop:${state.loop}" class="${state.level === 'loop' ? 'cur' : ''}">${LOOPS[state.loop].title}</a>`);
+  if (state.level === 'product') parts.push(`<a class="cur">${LOOPS[state.loop].products[state.prod].name}</a>`);
+  crumbsEl.innerHTML = parts.join('<span>›</span>');
+  const k = tour.findIndex(t => sameState(t, state));
+  history.replaceState(null, '', location.pathname + location.search + (state.level === 'overview' ? '' : `#${state.loop + 1}${state.level === 'product' ? '.' + (state.prod + 1) : ''}`));
+  [...dotsEl.children].forEach((d, i) => d.classList.toggle('on', i === k));
+}
+
+/* ---------- input ---------- */
+const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
+const pointer = { x: 0, y: 0, down: null, moved: false };
+let hovered = -1;
+
+function act(a) {
+  if (!a) return false;
+  const [k, x, y] = a.split(':');
+  if (k === 'loop') go({ level: 'loop', loop: +x });
+  else if (k === 'prod') go({ level: 'product', loop: +x, prod: +y });
+  else if (k === 'step') go(tour[+x]);
+  else if (k === 'overview') go({ level: 'overview' });
+  else if (k === 'close') back();
+  else if (k === 'next') step(1);
+  else if (k === 'prev') step(-1);
+  return true;
+}
+function pickLoop(cx, cy) {
+  ndc.set(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1);
+  raycaster.setFromCamera(ndc, camera);
+  const hit = raycaster.intersectObjects(hitDiscs)[0];
+  return hit ? hit.object.userData.loop : -1;
+}
+function syncStateFromCamera() {
+  const t = (cam.z - Zf) / (Zo - Zf);
+  if (t > 0.7) { if (state.level !== 'overview') { state = { level: 'overview' }; updateHud(); } return; }
+  const near = LOOPS.reduce((b, L, i) => Math.abs(cam.x - L.cx) < Math.abs(cam.x - LOOPS[b].cx) ? i : b, 0);
+  if (t < 0.35 && Math.abs(cam.x - LOOPS[near].cx) < 8 && state.level === 'overview') { state = { level: 'loop', loop: near }; updateHud(); }
+}
+
+addEventListener('pointermove', e => {
+  pointer.x = e.clientX / innerWidth * 2 - 1; pointer.y = e.clientY / innerHeight * 2 - 1;
+  if (pointer.down) {
+    const dx = e.clientX - pointer.down.x, dy = e.clientY - pointer.down.y;
+    if (Math.hypot(dx, dy) > 5) { pointer.moved = true; document.body.classList.add('dragging'); }
+    if (pointer.moved) {
+      const k = 2 * cam.z * Math.tan(deg(camera.fov / 2)) / innerHeight;
+      cam.x = pointer.down.cx - dx * k; cam.y = pointer.down.cy + dy * k; flight = null;
+    }
+    return;
+  }
+  hovered = e.target.closest('#hud,#legend') ? -1 : pickLoop(e.clientX, e.clientY);
+  document.body.style.cursor = hovered >= 0 && !(state.level === 'loop' && state.loop === hovered) ? 'pointer' : '';
+});
+addEventListener('pointerdown', e => {
+  if (e.button !== 0 || e.target.closest('#hud,#legend')) return;
+  pointer.down = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; pointer.moved = false;
+});
+addEventListener('pointerup', e => {
+  const wasDown = pointer.down; pointer.down = null; document.body.classList.remove('dragging');
+  if (pointer.moved) { pointer.moved = false; syncStateFromCamera(); return; }
+  if (act(e.target.closest('[data-act]')?.dataset.act)) return;
+  if (!wasDown) return;
+  const i = pickLoop(e.clientX, e.clientY);
+  if (i >= 0 && !(state.level === 'loop' && state.loop === i)) go({ level: 'loop', loop: i });
+});
+addEventListener('dblclick', e => { if (!e.target.closest('[data-act],#hud')) back(); });
+addEventListener('wheel', e => {
+  e.preventDefault();
+  flight = null;
+  const factor = Math.exp(e.deltaY * (e.ctrlKey ? 0.01 : 0.0016));
+  if (factor > 1 && state.level === 'product') { panels.forEach(p => { p.target = 0; }); state = { level: 'loop', loop: state.loop }; updateHud(); }
+  const halfH = cam.z * Math.tan(deg(camera.fov / 2));
+  const px = cam.x + (e.clientX / innerWidth * 2 - 1) * halfH * camera.aspect;
+  const py = cam.y - (e.clientY / innerHeight * 2 - 1) * halfH;
+  const z = clamp(cam.z * factor, 6, Zo * 1.7), k = z / cam.z;
+  cam.x = px + (cam.x - px) * k; cam.y = py + (cam.y - py) * k; cam.z = z;
+  syncStateFromCamera();
+}, { passive: false });
+addEventListener('keydown', e => {
+  if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); step(1); }
+  else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); step(-1); }
+  else if (e.key === 'Escape' || e.key === 'Backspace') back();
+  else if (e.key === '0' || e.key === 'Home') go({ level: 'overview' });
+  else if (['1', '2', '3'].includes(e.key)) go({ level: 'loop', loop: +e.key - 1 });
+  else if (e.key === 'f' || e.key === 'F') document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+});
+setTimeout(() => { document.getElementById('help').style.opacity = 0.45; }, 9000);
+
+function onResize() {
+  const w = innerWidth, h = innerHeight;
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+  renderer.setSize(w, h); cssRenderer.setSize(w, h);
+  lineMats.forEach(m => m.resolution.set(w, h));
+  tokMat.uniforms.uScale.value = h * renderer.getPixelRatio() / (2 * Math.tan(deg(camera.fov / 2)));
+  computeFraming();
+}
+addEventListener('resize', () => { onResize(); go(state); });
+onResize();
+
+/* =====================================================================
+   Frame loop
+   ===================================================================== */
+const clock = new THREE.Clock();
+const _p = new THREE.Vector3(), _t = new THREE.Vector3();
+let spawnTimer = 0.4, elapsed = 0;
+// deep links: #2 → loop 2, #2.1 → loop 2, first product
+function stateFromHash() {
+  const m = location.hash.match(/^#([1-3])(?:\.([1-9]))?$/);
+  if (!m) return { level: 'overview' };
+  const loop = +m[1] - 1, prod = m[2] ? +m[2] - 1 : undefined;
+  return prod !== undefined && prod < LOOPS[loop].products.length ? { level: 'product', loop, prod } : { level: 'loop', loop };
+}
+cam.z = Zo * 2.3;
+go(stateFromHash());
+flight.dur = 2.6;
+if (new URLSearchParams(location.search).has('instant')) {   // skip intro flight + panel animation (screenshots, slow machines)
+  Object.assign(cam, flight.to); flight = null; panels.forEach(p => { p.k = p.target; });
+}
+
+function setOpacity(item, a) {
+  const vis = a > 0.01;
+  item.el.style.opacity = a.toFixed(3);
+  item.el.style.visibility = vis ? 'visible' : 'hidden';
+  if (item.interactive) item.el.style.pointerEvents = a > 0.5 ? 'auto' : 'none';
+}
+
+function frame() {
+  const dt = Math.min(clock.getDelta(), 0.05);
+  elapsed += dt;
+
+  // camera flight
+  if (flight) {
+    flight.t = Math.min(1, flight.t + dt / flight.dur);
+    const k = ease(flight.t);
+    cam.x = lerp(flight.from.x, flight.to.x, k);
+    cam.y = lerp(flight.from.y, flight.to.y, k);
+    cam.z = lerp(flight.from.z, flight.to.z, k) + flight.lift * Math.sin(Math.PI * k);
+    if (flight.t >= 1) flight = null;
+  }
+  const sway = 0.012 * cam.z;
+  camera.position.set(
+    cam.x + pointer.x * cam.z * 0.035 + Math.sin(elapsed * 0.23) * sway,
+    cam.y - pointer.y * cam.z * 0.035 + Math.cos(elapsed * 0.19) * sway * 0.6,
+    cam.z);
+  camera.lookAt(cam.x, cam.y, 0);
+
+  // semantic zoom weights
+  const tz = clamp((cam.z - Zf) / (Zo - Zf), -1, 2);
+  const focusW = LOOPS.map(L => (1 - smooth(0.3, 0.72, tz)) * (1 - smooth(7, 13, Math.abs(cam.x - L.cx))));
+  const dims = LOOPS.map((_, i) => 1 - 0.78 * Math.max(...focusW.filter((_, j) => j !== i), 0));
+  panels.forEach(p => { p.k = clamp(p.k + (p.target ? dt : -dt) * 2.4, 0, 1); });
+  const detail = LOOPS.map((_, i) => Math.max(0, ...panels.filter(p => p.loopIdx === i).map(p => ease(p.k))));
+
+  // WebGL dimming, hover & flow
+  LOOPS.forEach((L, i) => {
+    const d = dims[i] * (1 - 0.55 * detail[i]);
+    L.ring.material.opacity = d;
+    L.halo.material.opacity = 0.05 * d + (hovered === i ? 0.08 : 0);
+    L.glow.material.opacity = 0.35 + 0.65 * d;
+    L.hover.material.opacity = lerp(L.hover.material.opacity, hovered === i ? 1 : 0, Math.min(1, dt * 6));
+    L.ring.material.dashOffset = (L.ring.material.dashOffset - FLOW_SPEED * dt) % 0.4189;
+  });
+  connectors.forEach(c => {
+    const d = Math.min(dims[c.between[0]], dims[c.between[1]]) * (1 - 0.6 * Math.max(detail[c.between[0]], detail[c.between[1]]));
+    c.line.material.opacity = d; c.arrow.material.opacity = d; c.head.material.opacity = d; c.node.mat.opacity = d;
+    c.line.material.dashOffset = (c.line.material.dashOffset - FLOW_SPEED * dt) % 0.4189;
+    c.dim = d;
+  });
+  for (const n of [...nodes, ...connectors.map(c => c.node)]) {
+    n.pulse = Math.max(0, n.pulse - dt * 1.6);
+    const s = 1 + n.pulse * 0.28;
+    n.g.scale.setScalar(s);
+    n.halo.scale.setScalar(1 + (1 - n.pulse) * 2.4);
+    n.haloMat.opacity = n.pulse * 0.55;
+    if (n.loop !== undefined) n.mat.opacity = dims[n.loop] * (1 - 0.55 * detail[n.loop]);
+  }
+  flows.forEach(f => {
+    f.phase = (f.phase + FLOW_SPEED * dt / f.len) % 1;
+    const base = f.connector ? f.connector.dim : dims[f.loop] * (1 - 0.55 * detail[f.loop]);
+    f.chev.forEach((m, k) => {
+      const u = (f.phase + k / f.n) % 1;
+      f.at(u, _p, _t);
+      m.position.copy(_p);
+      m.rotation.z = Math.atan2(_t.y, _t.x);
+      m.material.opacity = base * (f.fadeEnds ? smooth(0, 0.12, u) * (1 - smooth(0.88, 1, u)) : 1);
+    });
+  });
+
+  // tokens
+  spawnTimer -= dt;
+  if (spawnTimer <= 0) { spawnJourney(); spawnTimer = 3.4; }
+  tokens.forEach(tk => advanceToken(tk, dt));
+  for (let k = tokens.length - 1; k >= 0; k--) if (tokens[k].fade <= 0) tokens.splice(k, 1);
+  writeTokens(dims);
+
+  // CSS3D opacity per semantic level
+  for (const it of cssItems) {
+    let a = 1;
+    switch (it.kind) {
+      case 'title': a = smooth(0.35, 0.8, tz); break;
+      case 'connector': a = Math.min(dims[it.between[0]], dims[it.between[1]]) * (1 - 0.7 * Math.max(...detail)); break;
+      case 'loopStatic': a = dims[it.loop] * (1 - 0.7 * detail[it.loop]); break;
+      case 'wordmark': a = (1 - smooth(0.15, 0.85, focusW[it.loop])) * dims[it.loop]; break;
+      case 'focus': a = smooth(0.25, 0.9, focusW[it.loop]) * (1 - 0.88 * detail[it.loop]); break;
+      case 'panel': {
+        const k = ease(it.k);
+        it.o.position.lerpVectors(it.from, _p.set(LOOPS[it.loopIdx].cx, PY, PZ), k);
+        it.o.scale.setScalar(lerp(it.fromScale, S, k));
+        a = smooth(0, 0.6, it.k);
+        break;
+      }
+    }
+    setOpacity(it, a);
+  }
+
+  renderer.render(scene, camera);
+  cssRenderer.render(cssScene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
