@@ -120,6 +120,22 @@
   .flow .node img { height: 64px; }
   .flow .node span { font: 500 19px 'IBM Plex Mono', monospace; color: var(--blue); background: #fff; border-radius: 999px; padding: 4px 14px; }
   .flow svg { flex: none; align-self: center; width: 52px; height: 24px; color: var(--blue); }
+  .hunt { margin-bottom: 40px; font-family: Inter, sans-serif; }
+  .hunt .hn { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 0 auto; width: 64%; box-sizing: border-box;
+              border-radius: 20px; padding: 18px 24px; text-align: center; background: var(--bg); color: var(--n8); font: 400 23px/1.3 Inter, sans-serif; }
+  .hunt .hn b { font: 600 26px Inter, sans-serif; color: var(--purple); }
+  .hunt .hn.start { background: var(--purple); color: #fff; }
+  .hunt .hn.report { background: linear-gradient(135deg, var(--purple), var(--blue)); color: #fff; }
+  .hunt .hn.start b, .hunt .hn.report b { color: #fff; }
+  .hunt svg { display: block; width: 100%; height: auto; color: var(--blue); overflow: visible; }
+  .hunt svg .dash { stroke-dasharray: 10 9; animation: hunt-flow 1.1s linear infinite; }
+  @keyframes hunt-flow { to { stroke-dashoffset: -19; } }
+  .hunt .lanes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .hunt .lane { display: flex; flex-direction: column; align-items: stretch; gap: 0; border: 3px solid #DFE6F0; border-top: 7px solid var(--blue);
+                border-radius: 20px; padding: 16px 16px 18px; background: #fff; }
+  .hunt .lane b { font: 600 23px/1.25 Inter, sans-serif; color: var(--purple); text-align: center; min-height: 2.5em; display: grid; place-items: center; margin-bottom: 12px; }
+  .hunt .lane span { font: 500 19px 'IBM Plex Mono', monospace; color: var(--blue); background: var(--bg); border-radius: 999px; padding: 8px 10px; text-align: center; }
+  .hunt .lane svg { width: 24px; height: 26px; margin: 4px auto; }
   .diagram { display: block; width: 100%; height: auto; margin-bottom: 40px; }
   .stat { display: flex; gap: 30px; align-items: center; background: linear-gradient(135deg, var(--purple), var(--blue)); color: #fff;
           border-radius: 24px; padding: 28px 36px; margin-bottom: 40px; }
@@ -343,7 +359,14 @@ const LOOPS = [
                '<b>Not just a prompt</b>: a tailored agent with structured, multi-phase analysis',
                '<b>Higher precision</b> from custom tools and Sonar’s proprietary analysis',
                '<b>Extensible</b>: built on the Sonar Foundation Agent with your own context'],
-        runs: [['SonarQube Server', 'GA · bring your own LLM key · scan units'], ['SonarQube Cloud', 'GA · Sonar-provided models · scan units']],
+        // multi-phase pipeline diagram shown instead of `runs`
+        pipeline: {
+          title: 'How it hunts',
+          start: ['Discover', 'Identify the threat model'],
+          lanes: ['Broken access control', 'Business logic', 'Authentication & session'],
+          steps: ['Detect', 'Verify'],
+          end: [['Consolidate', 'Merge findings across categories'], ['Report', 'Raise findings as SonarQube issues']],
+        },
         stat: ['“', 'Can I skip the payment step? Can I read another tenant’s data? Is MFA actually enforced? Valid code that does the wrong thing.'],
       },
     ],
@@ -645,6 +668,22 @@ const OY = 3.6, FY = 0.9, PY = 0.6, PZ = 4, DZ = 1;   // camera y per level; pan
 const CARD_LAYOUT = { 1: { w: 640, xs: [0], zoom: 1.35, y: -2.6 }, 2: { w: 640, xs: [-3.35, 3.35] }, 3: { w: 520, xs: [-5.55, 0, 5.55] } };
 const panels = [], deeps = [];
 
+const stats = p => (Array.isArray(p.stat[0]) ? p.stat : [p.stat]).map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join('');
+
+// Hunter-style pipeline: one start step fans out to parallel lanes, which fan back in to the end steps
+function pipeline(P) {
+  const X = [112, 355, 598], ah = (x, y) => `<path d="M${x - 9} ${y - 11}L${x} ${y}L${x + 9} ${y - 11}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const fan = out => `<svg viewBox="0 0 710 64">${X.map(x => `<path class="dash" d="${out ? `M355 0C355 34 ${x} 22 ${x} 60` : `M${x} 0C${x} 38 355 26 355 60`}" fill="none" stroke="currentColor" stroke-width="4"/>${out ? ah(x, 62) : ''}`).join('')}${out ? '' : ah(355, 62)}</svg>`;
+  const down = `<svg viewBox="0 0 710 44"><path class="dash" d="M355 0V40" fill="none" stroke="currentColor" stroke-width="4"/>${ah(355, 42)}</svg>`;
+  const node = ([t, d], cls = '') => `<div class="hn ${cls}"><b>${t}</b>${d}</div>`;
+  const lane = `<svg viewBox="0 0 24 26"><path d="M12 2V22M4 14l8 8 8-8" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  return `<h4>${P.title}</h4><div class="hunt">
+    ${node(P.start, 'start')}${fan(true)}
+    <div class="lanes">${P.lanes.map(l => `<div class="lane"><b>${l}</b>${P.steps.map(s => `<span>${s}</span>`).join(lane)}</div>`).join('')}</div>
+    ${fan(false)}${P.end.map((e, k) => node(e, k === P.end.length - 1 ? 'report' : '')).join(down)}
+  </div>`;
+}
+
 LOOPS.forEach((L, i) => {
   // overview-level, always present (dimmed when another loop is in focus)
   css3d(L.title, 'lbox', L.cx, 2.2, 0.08, { kind: 'loopStatic', loop: i, act: `loop:${i}` });
@@ -677,9 +716,9 @@ LOOPS.forEach((L, i) => {
       <h2>${p.tag}</h2>
       <div class="cols">
         <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deep ? `
-          <button class="deeper act" data-act="deep:${i}:${j}" title="Deep dive">${p.deep.cta}</button>` : ''}</div>
+          <button class="deeper act" data-act="deep:${i}:${j}" title="Deep dive">${p.deep.cta}</button>` : ''}${p.pipeline ? stats(p) : ''}</div>
         <div>
-          ${p.diagram ? `<img class="diagram" src="${p.diagram[0]}" alt="${p.diagram[1]}" draggable="false">` : `
+          ${p.diagram ? `<img class="diagram" src="${p.diagram[0]}" alt="${p.diagram[1]}" draggable="false">` : p.pipeline ? pipeline(p.pipeline) : `
           <h4>${p.key === 'gitar' ? 'Better together' : 'Where it runs'}</h4>
           ${p.flow ? `<div class="flow">${p.flow.map(([l, t, c]) => `<div class="node">${l ? `<img src="${LOGO(l)}" alt="" draggable="false">` : ''}${t}${c.map(x => `<span>${x}</span>`).join('')}</div>`)
             .join('<svg viewBox="0 0 52 24"><path d="M2 12H44M34 3l10 9-10 9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>')}</div>` : `
@@ -687,7 +726,7 @@ LOOPS.forEach((L, i) => {
             <div class="link-arrow"><svg viewBox="0 0 110 24"><path d="M2 12H100M88 2l12 10-12 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>connected to</div>
             <div class="link-logos">${p.connects.map(([l, n]) => `<img src="${LOGO(l)}" alt="${n}" draggable="false">`).join('')}</div>` : ''}</div>`}`}
           ${p.runsNote ? `<p style="font:400 25px/1.4 Inter;margin:-20px 0 36px">${p.runsNote}</p>` : ''}
-          ${(Array.isArray(p.stat[0]) ? p.stat : [p.stat]).map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join('')}
+          ${p.pipeline ? '' : stats(p)}
         </div>
       </div>${p.slider ? `
       <div class="slider">
