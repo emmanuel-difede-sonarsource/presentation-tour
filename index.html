@@ -357,8 +357,7 @@ const LOOPS = [
         bullets: ['Broken access control & IDOR', 'Business-logic & authentication flaws', 'A structured multi-phase agent, not just a prompt'],
         what: ['Targets <b>broken access control, IDOR, business-logic and authentication flaws</b>',
                '<b>Not just a prompt</b>: a tailored agent with structured, multi-phase analysis',
-               '<b>Higher precision</b> from custom tools and Sonar’s proprietary analysis',
-               '<b>Extensible</b>: built on the Sonar Foundation Agent with your own context'],
+               '<b>Higher precision</b> from custom tools and Sonar’s proprietary analysis'],
         // multi-phase pipeline diagram shown instead of `runs`
         pipeline: {
           title: 'How it hunts',
@@ -367,7 +366,8 @@ const LOOPS = [
           steps: ['Detect', 'Verify'],
           end: [['Consolidate', 'Merge findings across categories'], ['Report', 'Raise findings as SonarQube issues']],
         },
-        stat: ['“', 'Can I skip the payment step? Can I read another tenant’s data? Is MFA actually enforced? Valid code that does the wrong thing.'],
+        stat: [['200+', 'confirmed, previously unknown vulnerabilities, found across 25+ open-source projects with 1k+ stars.'],
+               ['80–90%', 'average precision, at ~30% lower cost than naive LLM workflows, whose results swing wildly.']],
       },
     ],
   },
