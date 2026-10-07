@@ -8,12 +8,7 @@ An alternative to slide decks for Sonar Solutions Engineers: a single HTML page 
 
 ## Presenting
 
-Serve the folder over HTTP (opening the file directly won't work) and open it in a browser:
-
-```bash
-python3 -m http.server
-# http://localhost:8000/
-```
+Open the `index.html` file. That's it.
 
 An internet connection is required (Three.js and fonts are loaded from CDNs).
 
