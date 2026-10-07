@@ -351,11 +351,9 @@ function makeNode(pos, { r0 = 0.3, r1 = 0.43, color = BLUE } = {}) {
   const g = new THREE.Group(); g.position.copy(pos);
   const fill = new THREE.Mesh(new THREE.CircleGeometry(r0, 40), new THREE.MeshBasicMaterial({ color: BG, transparent: true }));
   const ring = new THREE.Mesh(new THREE.RingGeometry(r0, r1, 48), mat);
-  const haloMat = new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0, depthWrite: false });
-  const halo = new THREE.Mesh(new THREE.RingGeometry(r1, r1 + 0.09, 48), haloMat);
-  fill.position.z = ring.position.z = 0.03; halo.position.z = 0.02;
-  g.add(fill, ring, halo); scene.add(g);
-  return { g, mat, fillMat: fill.material, halo, haloMat, pulse: 0, pos: pos.clone() };
+  fill.position.z = ring.position.z = 0.03;
+  g.add(fill, ring); scene.add(g);
+  return { g, mat, fillMat: fill.material, pulse: 0, pos: pos.clone() };
 }
 
 /* ---------- background: parallax dot field ---------- */
@@ -416,7 +414,7 @@ connectors.forEach(c => {
   c.line = makeLine(c.curve.getSpacedPoints(160), { width: 2 });
   c.node = makeNode(c.marker, { r0: 0.98, r1: 1.1, color: new THREE.Color(0x0B0B0F) });
   c.node.fillMat.opacity = 0;                       // open ring, like the slide
-  const a = c.marker.clone().add(new THREE.Vector3(0.45, 1.05, 0));
+  const a = c.marker.clone().add(new THREE.Vector3(0.1, 1.05, 0));
   const b = new THREE.Vector3(c.labelPos[0] - 0.35, c.labelPos[1] - 1.85, 1.2);
   c.arrow = makeLine([a, b], { color: new THREE.Color(0x0B0B0F), width: 2.4, dashed: false });
   const head = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.55, 3), new THREE.MeshBasicMaterial({ color: 0x0B0B0F, transparent: true }));
@@ -839,11 +837,7 @@ function frame() {
     c.dim = d;
   });
   for (const n of [...nodes, ...connectors.map(c => c.node)]) {
-    n.pulse = Math.max(0, n.pulse - dt * 1.6);
-    const s = 1 + n.pulse * 0.28;
-    n.g.scale.setScalar(s);
-    n.halo.scale.setScalar(1 + (1 - n.pulse) * 2.4);
-    n.haloMat.opacity = n.pulse * 0.55;
+    n.pulse = Math.max(0, n.pulse - dt * 1.6);   // cooldown only: no visual burst
     if (n.loop !== undefined) n.mat.opacity = dims[n.loop] * (1 - 0.55 * detail[n.loop]);
   }
   flows.forEach(f => {
