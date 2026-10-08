@@ -137,6 +137,14 @@
   .hunt .lane span { font: 500 19px 'IBM Plex Mono', monospace; color: var(--blue); background: var(--bg); border-radius: 999px; padding: 8px 10px; text-align: center; }
   .hunt .lane svg { width: 24px; height: 26px; margin: 4px auto; }
   .diagram { display: block; width: 100%; height: auto; margin-bottom: 40px; }
+  .cycle { overflow: visible; }
+  .cycle .lp { fill: none; stroke: var(--blue); stroke-width: 14; stroke-linejoin: round; }
+  .cycle .br { stroke-width: 13; }
+  .cycle .fl { stroke: rgba(255,255,255,.7); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 2 32; animation: cycle-flow 1.8s linear infinite; }
+  @keyframes cycle-flow { from { stroke-dashoffset: var(--o, 0px); } to { stroke-dashoffset: calc(var(--o, 0px) - 34px); } }
+  .cycle .pl { fill: #fff; stroke: var(--purple); stroke-width: 2.5; }
+  .cycle .tl { fill: var(--bg); stroke: #DFE6F0; stroke-width: 2; }
+  .cycle .ld { fill: none; stroke: var(--purple); stroke-width: 2; stroke-dasharray: 3 5; stroke-linecap: round; }
   .stat { display: flex; gap: 30px; align-items: center; background: linear-gradient(135deg, var(--purple), var(--blue)); color: #fff;
           border-radius: 24px; padding: 28px 36px; margin-bottom: 40px; }
   .stat b { font: 500 80px/1 Lora, serif; white-space: nowrap; }
@@ -271,7 +279,8 @@ const LOOPS = [
                '<b>Secrets detection</b>: 400+ patterns across all file types',
                '<b>IaC scanning</b> for cloud misconfigurations',
                '<b>Quality gates</b> decorate every PR / MR and block what shouldn’t merge'],
-        diagram: ['assets/img/devops-cycle.jpg', 'SonarQube in the DevOps cycle: IDE, build & test, quality gate, merge'],
+        // DevOps-cycle diagram shown instead of `runs`: IDEs and CI/CD platforms SonarQube plugs into
+        cycle: { ide: [['VS Code', 'Visual Studio'], ['JetBrains', 'Eclipse']], ci: [['GitHub', 'GitLab', 'Azure DevOps'], ['Bitbucket', 'Jenkins']] },
         stat: [['44%', 'less likely to report outages due to AI coding.'],
                ['24%', 'more often, SonarQube users report lower vulnerability rates due to AI coding.']],
       },
@@ -671,6 +680,59 @@ const panels = [], deeps = [];
 const stats = p => (Array.isArray(p.stat[0]) ? p.stat : [p.stat]).map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join('');
 
 // Hunter-style pipeline: one start step fans out to parallel lanes, which fan back in to the end steps
+// DevOps infinity loop: code in the IDE, build & test in CI, quality gate, then merge or back to the developer
+function cycle(C) {
+  const MONO = "font-family='IBM Plex Mono', monospace";
+  // tool chips (15px mono = 9px per char), one row per array, centered on cx
+  const chips = (rows, cx) => rows.map((row, r) => {
+    const ws = row.map(t => t.length * 9 + 20), tot = ws.reduce((a, b) => a + b) + 8 * (row.length - 1);
+    let x = cx - tot / 2;
+    return row.map((t, k) => { const w = ws[k], g = `<rect x="${x}" y="${4 + r * 32}" width="${w}" height="26" rx="13" class="tl"/>
+      <text x="${x + w / 2}" y="${22 + r * 32}" text-anchor="middle" font-size="15" ${MONO} fill="var(--purple)">${t}</text>`; x += w + 8; return g; }).join('');
+  }).join('');
+  // callout pill (17px mono = 10.2px per char) centered on (cx, cy)
+  const pill = (t, cx, cy) => { const w = t.length * 10.2 + 30;
+    return `<rect x="${cx - w / 2}" y="${cy - 17}" width="${w}" height="34" rx="17" class="pl"/>
+      <text x="${cx}" y="${cy + 6}" text-anchor="middle" font-size="17" font-weight="500" ${MONO} fill="var(--purple)">${t}</text>`; };
+  const arrow = (x, y, a) => `<path d="M-9 -16 L15 0 L-9 16 Z" transform="translate(${x} ${y}) rotate(${a})" fill="var(--blue)"/>`;
+  const lead = pts => `<polyline points="${pts}" class="ld"/>`;
+  // loop drawn as A (everything but the crossing) + B (the stroke crossing on top), so the flow dashes stay continuous
+  const A = 'M490 150C555 150 600 200 600 260C600 320 555 370 490 370C445 370 410 335 360 260C310 185 275 150 230 150C165 150 120 200 120 260C120 320 165 370 230 370';
+  const B = 'M230 370C275 370 310 335 360 260C410 185 445 150 490 150';
+  const BR = 'M612 285C640 350 620 425 520 425', BD = 'M500 425C460 425 432 400 422 366';   // merge branch: solid, then dashed
+  // length of an absolute M/C path, to offset the flow dashes of the next segment
+  const len = d => { const n = d.match(/-?[\d.]+/g).map(Number); let [x, y] = n, L = 0;
+    for (let i = 2; i < n.length; i += 6) for (let k = 1; k <= 40; k++) {
+      const t = k / 40, u = 1 - t, b = [u * u * u, 3 * u * u * t, 3 * u * t * t, t * t * t];
+      const X = b[0] * n[i - 2] + b[1] * n[i] + b[2] * n[i + 2] + b[3] * n[i + 4], Y = b[0] * n[i - 1] + b[1] * n[i + 1] + b[2] * n[i + 3] + b[3] * n[i + 5];
+      L += Math.hypot(X - x, Y - y); x = X; y = Y; }
+    return L; };
+  return `<svg class="diagram cycle" viewBox="0 0 780 500" role="img" aria-label="SonarQube in the DevOps cycle: code in the IDE, build and test, quality gate, merge or promote">
+    ${chips(C.ide, 210)}${chips(C.ci, 510)}
+    ${lead('230,62 230,75')}${lead('490,62 490,75')}${lead('230,109 230,143')}${lead('490,109 490,143')}
+    ${lead('99,260 113,260')}${lead('230,337 230,363')}${lead('623,361 623,405 680,405 680,423')}
+    ${lead('375,440 432,440 432,404')}${lead('500,432 500,459')}
+    <path d="${A}${B.replace(/^M[^C]*/, "")}Z" class="lp"/>
+    <path d="${A}" class="lp fl"/>
+    <path d="${B}" class="lp" style="stroke:#fff;stroke-width:26;stroke-dasharray:0 110 90 999"/>
+    <path d="${B}" class="lp"/><path d="${B}" class="lp fl" style="--o:${len(A)}px"/>
+    <path d="${BR}" class="lp br"/><path d="${BR}" class="lp br fl"/>
+    <path d="${BD}" class="lp br" stroke-dasharray="14 9"/><path d="${BD}" class="lp br fl" style="--o:${len(BR) + 20}px"/>
+    ${arrow(240, 150, 180)}${arrow(240, 370, 0)}${arrow(414, 189, -46)}${arrow(475, 369, 188)}${arrow(420, 360, 250)}
+    <image href="${LOGO('sonarqube-ide')}" x="155" y="243" width="150" height="34"/>
+    <image href="${LOGO('sonarqube-server')}" x="400" y="218" width="135" height="31"/>
+    <image href="${LOGO('sonarqube-cloud')}" x="400" y="266" width="135" height="30"/>
+    <path d="M600 200L652 252L600 304L548 252Z" fill="#fff" stroke="var(--purple)" stroke-width="3" stroke-linejoin="round"/>
+    <text x="600" y="248" text-anchor="middle" font-size="15" font-weight="600" ${MONO} fill="var(--purple)">QUALITY<tspan x="600" dy="19">GATE</tspan></text>
+    <path d="M580 309L599 342H561Z" fill="#D3121D" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+    <text x="580" y="338" text-anchor="middle" font-size="19" font-weight="700" fill="#fff" font-family="Inter, sans-serif">!</text>
+    <circle cx="623" cy="344" r="17" fill="var(--blue)" stroke="#fff" stroke-width="3"/>
+    <path d="M615 344l6 6 10-11" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${pill('Code', 230, 92)}${pill('Build & Test', 490, 92)}${pill('Commit', 52, 260)}${pill('Push', 230, 320)}
+    ${pill('New business requests', 250, 440)}${pill('Production ready', 490, 476)}${pill('Merge / Promote', 680, 440)}
+  </svg>`;
+}
+
 function pipeline(P) {
   const X = [112, 355, 598], ah = (x, y) => `<path d="M${x - 9} ${y - 11}L${x} ${y}L${x + 9} ${y - 11}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
   const fan = out => `<svg viewBox="0 0 710 64">${X.map(x => `<path class="dash" d="${out ? `M355 0C355 34 ${x} 22 ${x} 60` : `M${x} 0C${x} 38 355 26 355 60`}" fill="none" stroke="currentColor" stroke-width="4"/>${out ? ah(x, 62) : ''}`).join('')}${out ? '' : ah(355, 62)}</svg>`;
@@ -718,7 +780,7 @@ LOOPS.forEach((L, i) => {
         <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deep ? `
           <button class="deeper act" data-act="deep:${i}:${j}" title="Deep dive">${p.deep.cta}</button>` : ''}${p.pipeline ? stats(p) : ''}</div>
         <div>
-          ${p.diagram ? `<img class="diagram" src="${p.diagram[0]}" alt="${p.diagram[1]}" draggable="false">` : p.pipeline ? pipeline(p.pipeline) : `
+          ${p.cycle ? cycle(p.cycle) : p.pipeline ? pipeline(p.pipeline) : `
           <h4>${p.key === 'gitar' ? 'Better together' : 'Where it runs'}</h4>
           ${p.flow ? `<div class="flow">${p.flow.map(([l, t, c]) => `<div class="node">${l ? `<img src="${LOGO(l)}" alt="" draggable="false">` : ''}${t}${c.map(x => `<span>${x}</span>`).join('')}</div>`)
             .join('<svg viewBox="0 0 52 24"><path d="M2 12H44M34 3l10 9-10 9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>')}</div>` : `
