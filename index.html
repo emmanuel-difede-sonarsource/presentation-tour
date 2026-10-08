@@ -277,7 +277,10 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    Security Detect / Fix / Governance slide (Oct 2026). The Hunter Agent
    requirements (`deep`) follow the Sonar docs, Oct 2026: Cloud and Server
    2026.5 Hunter Agent pages, AC/DC Hunter Agent FAQ, Server LLM providers
-   and AI agents "Before you start".
+   and AI agents "Before you start". The Remediation Agent requirements
+   (`deep`) follow the same Sonar docs, Oct 2026: AC/DC Remediation Agent
+   page and FAQ, Cloud "Administer the Remediation Agent", Server 2026.5
+   Remediation Agent instance administration page.
    ===================================================================== */
 // Official logos from the Sonar brand guide (zeroheight), light-background variants.
 // Products without an official logo use the SonarQube Server mark + `brand`/`sub` text.
@@ -399,15 +402,58 @@ const LOOPS = [
                '<b>Assign your backlog</b> to the agent to resolve technical debt',
                'Fixes consistent with your standards, <b>verified by Vortex</b> before the PR opens',
                'Shift effort from triage and fixing to <b>new feature work</b>'],
-        // animated diagram shown in the right column (`runs` move to the left one): issue sources ([logos, title]) flowing into the agent, then out as a fix PR
+        // animated diagram shown in the right column instead of `runs`: issue sources ([logos, title]) flowing into the agent, then out as a fix PR
         feed: {
           title: 'Fixes issues from any source',
           sources: [[['sonarqube-hunter-agent'], 'New agentic findings'], [['sonarqube-server', 'sonarqube-cloud'], 'Existing backlog']],
           agent: ['sonarqube-server-mark', 'SonarQube', 'Remediation Agent'],   // no official Remediation Agent logo yet: SonarQube mark + name
           out: ['Fix pull request', 'verified by', 'sonar-vortex'],
         },
-        runs: [['SonarQube Server', 'Bring any LLM provider & model · GitHub, GitLab, Azure DevOps'], ['SonarQube Cloud', 'OpenAI or Anthropic key · dependency-bump PRs for SCA risks']],
         stat: ['+41%', 'increase in code complexity persists after the 3–5× AI velocity spike fades (Carnegie Mellon, 2025).'],
+        // requirements level below the product panel (#3.1.1): Cloud vs Server comparison + shared notes
+        deep: {
+          name: 'Prerequisites & compatibility', cta: 'Prerequisites & compatibility →',
+          title: 'What it takes to run it, on Cloud and on Server',
+          compare: {
+            cols: [['sonarqube-cloud', 'SonarQube Cloud'], ['sonarqube-server', 'SonarQube Server']],
+            rows: [
+              ['Prerequisites', [
+                ['<b>Team (annual) or Enterprise plan</b> + Sonar Agent Essentials subscription',
+                 'Organization and project <b>bound</b> to the DevOps platform, with analysis enabled',
+                 'GitHub: install the <b>SonarQube Agent app</b> · Azure DevOps: reuses your existing token'],
+                ['<b>2026.5+</b> Enterprise or Data Center edition + Remediation Agent subscription',
+                 '<b>LicenseSpring</b> license, online or offline (not server ID)',
+                 'Projects <b>bound and already analyzed</b>, with <b>write access</b> to the repositories'],
+              ]],
+              ['Runs on', [
+                ['<b>Sonar’s infrastructure</b>: nothing to install'],
+                ['<b>Your infrastructure</b>: Docker Engine on Linux or Kubernetes with containerd, x86-64 or ARM64, with shared storage',
+                 'Outbound access to your LLM provider and DevOps platform'],
+              ]],
+              ['LLM models', [
+                { hl: ['Claude Opus 4.6', 'GPT-5.5'], note: 'On Cloud, SonarQube picks the model for your provider. On Server, the instance administrator selects it.' },
+              ]],
+              ['LLM providers', [
+                { chips: ['Anthropic', 'OpenAI'], note: 'Your own API key, added to the organization and billed to your provider account.' },
+                { chips: ['Anthropic', 'OpenAI', 'AWS Bedrock', 'Azure AI Foundry', 'OpenAI-compatible gateway'], note: 'Your own provider, configured once for the whole instance.' },
+              ]],
+              ['DevOps platforms', [
+                { hl: ['GitHub', 'Azure DevOps'], note: 'Backlog fixes on both. Pull request fixes on GitHub only.' },
+                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog and pull request fixes on all three. Pull request fixes are triggered from SonarQube.' },
+              ]],
+              ['Languages', [
+                { hl: ['Java', 'JavaScript / TypeScript', 'Python', 'C#'], note: 'Reliability, maintainability and selected security issues, plus secrets. Same on Cloud and Server.' },
+              ]],
+            ],
+          },
+          notes: { title: 'Good to know', items: [
+            'Every fix is <b>re-analyzed by Sonar</b> before the pull request opens; fixes that fail are never shown',
+            'The agent <b>never merges</b>: your reviewers and branch protection rules still apply',
+            'Affected code goes to <b>your own LLM provider</b>, under your account, on Server too',
+            '<em class="only">Cloud</em>Also fixes <b>dependency risks</b> by bumping versions: npm & yarn, pip, Maven & Gradle',
+            '<em class="only">Server</em>Agents can’t run on <b>OpenShift, Docker Desktop or ZIP</b> installs',
+          ] },
+        },
       },
       {
         key: 'hunter', logo: 'sonarqube-hunter-agent', name: 'SonarQube Hunter Agent', pos: [3.9, -0.5],
@@ -899,8 +945,7 @@ LOOPS.forEach((L, i) => {
       <h2>${p.tag}</h2>
       <div class="cols">
         <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deep ? `
-          <button class="deeper act" data-act="deep:${i}:${j}" title="Deep dive">${p.deep.cta}</button>` : ''}${p.pipeline || p.feed ? stats(p) : ''}${p.feed ? `
-          <h4>Where it runs</h4><div class="runs">${p.runs.map(([h, t]) => `<div class="run"><b>${h}</b>${t}</div>`).join('')}</div>` : ''}</div>
+          <button class="deeper act" data-act="deep:${i}:${j}" title="Deep dive">${p.deep.cta}</button>` : ''}${p.pipeline || p.feed ? stats(p) : ''}</div>
         <div>
           ${p.feed ? feed(p) : p.cycle ? cycle(p.cycle) : p.pipeline ? pipeline(p.pipeline) : `
           <h4>${p.key === 'gitar' ? 'Better together' : 'Where it runs'}</h4>
