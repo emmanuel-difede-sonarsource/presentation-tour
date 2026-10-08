@@ -172,8 +172,25 @@
   .eco { display: flex; align-items: center; gap: 32px; background: var(--bg); border-radius: 24px; padding: 24px 32px; }
   .panel .eco h4 { margin: 0; white-space: nowrap; }
   .eco div { display: flex; flex-wrap: wrap; gap: 12px; }
-  .eco span { font: 500 24px 'IBM Plex Mono', monospace; color: var(--purple); background: #fff; border: 2px solid #DFE6F0; border-radius: 999px; padding: 8px 20px; }
-  .eco span.hl { color: #fff; background: var(--blue); border-color: var(--blue); }
+  .cmp { display: grid; grid-template-columns: 230px repeat(var(--n), 1fr); column-gap: 40px; margin-bottom: 30px; }
+  .cmp > * { border-top: 2px solid #E3E9F2; padding: 18px 0; }
+  .cmp > i, .cmp > .ch { border-top: none; padding-top: 0; }
+  .cmp .ch img { display: block; height: 52px; }
+  .cmp .span { grid-column: span var(--n); }
+  .panel .cmp h4 { margin: 0; padding-top: 24px; font-size: 21px; letter-spacing: 3px; line-height: 1.4; }
+  .panel .cmp ul, .panel .notes ul { margin: 0; gap: 8px; }
+  .panel .cmp li, .panel .notes li { font-size: 24px; line-height: 1.38; padding-left: 38px; }
+  .panel .cmp li::before, .panel .notes li::before { width: 18px; height: 10px; border-width: 4px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 10px; }
+  .eco span, .chips span { font: 500 24px 'IBM Plex Mono', monospace; color: var(--purple); background: #fff; border: 2px solid #DFE6F0; border-radius: 999px; padding: 8px 20px; }
+  .chips span { font-size: 21px; padding: 5px 16px; }
+  .eco span.hl, .chips span.hl { color: #fff; background: var(--blue); border-color: var(--blue); }
+  .cmp p { margin: 10px 0 0; font: 400 23px/1.4 Inter, sans-serif; }
+  .notes { background: var(--bg); border-radius: 24px; padding: 24px 32px 26px; }
+  .panel .notes h4 { margin-bottom: 14px; }
+  .panel .notes ul { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 44px; }
+  .only { font: normal 500 17px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--blue);
+          border: 2px solid var(--blue); border-radius: 999px; padding: 1px 10px; margin-right: 10px; vertical-align: 3px; }
 
   /* ---------- HUD ---------- */
   #hud { position: fixed; inset: auto 0 0 0; padding: 0 28px 22px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; pointer-events: none; }
@@ -237,7 +254,10 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    Content — edit here. Wording follows the 2026 SonarQube deck and the
    Server-vs-Cloud comparison (SonarQube Server 2026.5 / Cloud, Oct 2026).
    The Advanced Security deep dive (`deep`) follows the SonarQube Advanced
-   Security Detect / Fix / Governance slide (Oct 2026).
+   Security Detect / Fix / Governance slide (Oct 2026). The Hunter Agent
+   requirements (`deep`) follow the Sonar docs, Oct 2026: Cloud and Server
+   2026.5 Hunter Agent pages, AC/DC Hunter Agent FAQ, Server LLM providers
+   and AI agents "Before you start".
    ===================================================================== */
 // Official logos from the Sonar brand guide (zeroheight), light-background variants.
 // Products without an official logo use the SonarQube Server mark + `brand`/`sub` text.
@@ -378,6 +398,48 @@ const LOOPS = [
         },
         stat: [['200+', 'confirmed, previously unknown vulnerabilities, found across 25+ open-source projects with 1k+ stars.'],
                ['80–90%', 'average precision, at ~30% lower cost than naive LLM workflows, whose results swing wildly.']],
+        // requirements level below the product panel (#3.2.1): Cloud vs Server comparison + shared notes
+        deep: {
+          name: 'Prerequisites & compatibility', cta: 'Prerequisites & compatibility →',
+          title: 'What it takes to run it, on Cloud and on Server',
+          compare: {
+            cols: [['sonarqube-cloud', 'SonarQube Cloud'], ['sonarqube-server', 'SonarQube Server']],
+            // one cell per column, or a single cell spanning all columns; a cell is a bullet list or { hl, chips, note }
+            rows: [
+              ['Prerequisites', [
+                ['<b>Enterprise plan</b> + Hunter Agent subscription',
+                 'Organization and project <b>bound</b> to the DevOps platform',
+                 'Organization admin enables it; project admins run and schedule scans'],
+                ['<b>2026.5+</b> Enterprise or Data Center edition + Hunter Agent subscription',
+                 '<b>LicenseSpring</b> license, online or offline (not server ID)',
+                 'Projects <b>bound and already analyzed</b>'],
+              ]],
+              ['Runs on', [
+                ['<b>Sonar’s infrastructure</b>: nothing to install'],
+                ['<b>Your infrastructure</b>: Docker Engine on Linux or Kubernetes with containerd, x86-64 or ARM64',
+                 'Outbound access to your LLM provider and DevOps platform'],
+              ]],
+              ['LLM models', [
+                { hl: ['Claude Opus', 'Claude Sonnet'], note: 'Run by the Sonar Foundation Agent.' },
+                { hl: ['Claude Opus 4.8', 'Claude Sonnet 4.6'], note: 'Both required: Opus as primary, Sonnet as secondary model.' },
+              ]],
+              ['LLM providers', [
+                { chips: ['Anthropic, via Sonar'], note: 'Hosted by Sonar: no LLM key or tokens to manage.' },
+                { chips: ['Anthropic', 'AWS Bedrock', 'Azure AI Foundry', 'OpenAI-compatible gateway'], note: 'Your own provider and key, serving both models.' },
+              ]],
+              ['DevOps platforms', [
+                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Same on Cloud and Server. Bitbucket-bound projects aren’t supported.' },
+              ]],
+            ],
+          },
+          notes: { title: 'Good to know', items: [
+            'Works with <b>any language</b> SonarQube supports',
+            '<b>Reads source code only</b>: it never runs or attacks your application',
+            'Findings are regular issues: run the <b>first scan on a dedicated branch</b> so a passing quality gate stays green',
+            '<em class="only">Server</em>Enabled <b>once for the whole instance</b>, with no per-project switch',
+            '<em class="only">Server</em>Agents can’t run on <b>OpenShift, Docker Desktop or ZIP</b> installs',
+          ] },
+        },
       },
     ],
   },
@@ -681,6 +743,14 @@ const panels = [], deeps = [];
 // work-in-progress marks: a slowly turning gear, and a dotted two-way arrow pulsing between the two `runs` boxes
 const GEAR = `<svg class="gear" viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="currentColor">
   <circle cx="20" cy="20" r="14" stroke-width="7" stroke-dasharray="5.5 5.5"/><circle cx="20" cy="20" r="10" stroke-width="4"/></g></svg>`;
+// deep-dive comparison table: logo header per column, then labelled rows (see `deep.compare` in LOOPS)
+const cmpCell = c => Array.isArray(c) ? `<ul>${c.map(t => `<li>${t}</li>`).join('')}</ul>`
+  : `<div class="chips">${(c.hl || []).map(x => `<span class="hl">${x}</span>`).join('')}${(c.chips || []).map(x => `<span>${x}</span>`).join('')}</div>${c.note ? `<p>${c.note}</p>` : ''}`;
+const compare = ({ compare: C, notes }) => `
+      <div class="cmp" style="--n:${C.cols.length}"><i></i>${C.cols.map(([l, n]) => `<div class="ch"><img src="${LOGO(l)}" alt="${n}" draggable="false"></div>`).join('')}
+        ${C.rows.map(([h, cells]) => `<h4>${h}</h4>${cells.map(c => `<div${cells.length < C.cols.length ? ' class="span"' : ''}>${cmpCell(c)}</div>`).join('')}`).join('')}
+      </div>${notes ? `
+      <div class="notes"><h4>${notes.title}</h4><ul>${notes.items.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}`;
 const WIP_LINK = `<div class="wip-link" title="Work in progress">${GEAR}<svg class="arr" viewBox="0 0 120 36" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
   <path class="dots" d="M22 18H98"/><path d="M16 5 3 18l13 13M104 5l13 13-13 13"/></svg></div>`;
 const stats = p => (Array.isArray(p.stat[0]) ? p.stat : [p.stat]).map(([b, t]) => `<div class="stat"><b>${b}</b><span>${t}</span></div>`).join('');
@@ -825,11 +895,11 @@ LOOPS.forEach((L, i) => {
     const deep = css3d(`
       <button class="x act" data-act="close" title="Back (Esc)">✕</button>
       <div class="ph">${wordmark(p)}<div class="lc">${p.name}<br>${D.name}</div></div>
-      <h2>${D.title}</h2>
+      <h2>${D.title}</h2>${D.compare ? compare(D) : `
       <div class="dcols">${D.cols.map(([h, items]) => `
         <div class="dcol"><h3>${h}</h3><ul>${items.map(t => `<li>${t}</li>`).join('')}</ul></div>`).join('')}
       </div>
-      <div class="eco"><h4>Supported ecosystems</h4><div>${D.ecosystems.map(e => `<span>${e}</span>`).join('')}${(D.ecosystemsHl || []).map(e => `<span class="hl">${e}</span>`).join('')}</div></div>`,
+      <div class="eco"><h4>Supported ecosystems</h4><div>${D.ecosystems.map(e => `<span>${e}</span>`).join('')}${(D.ecosystemsHl || []).map(e => `<span class="hl">${e}</span>`).join('')}</div></div>`}`,
       'panel deep', L.cx, PY, PZ + DZ, { kind: 'deep', loop: i });
     deep.k = 0; deep.target = 0; deep.loopIdx = i; deep.prodIdx = j;
     deeps.push(deep);
@@ -872,7 +942,10 @@ function go(st) {
   if (st.level === 'overview') flyTo({ x: 0, y: OY, z: Zo });
   else if (st.level === 'loop') flyTo({ x: LOOPS[st.loop].cx, y: FY, z: Zf });
   else if (st.level === 'product') flyTo({ x: LOOPS[st.loop].cx, y: PY, z: PZ + Zd }, 1.3);
-  else flyTo({ x: LOOPS[st.loop].cx, y: PY, z: PZ + DZ + Zd }, 1.1);
+  else {   // taller deep dives (e.g. the Hunter Agent requirements) back the camera off to fit
+    const h = LOOPS[st.loop].products[st.prod].panel.deep.el.offsetHeight * S;
+    flyTo({ x: LOOPS[st.loop].cx, y: PY, z: PZ + DZ + Math.max(Zd, fitZ(20, h + 1.6)) }, 1.1);
+  }
   updateHud();
 }
 function step(d) {
@@ -1012,6 +1085,7 @@ function stateFromHash() {
   return { level: m[3] && p.deep ? 'deep' : 'product', loop, prod };
 }
 cam.z = Zo * 2.3;
+cssRenderer.render(cssScene, camera);   // attach the CSS items so panel heights can be measured
 go(stateFromHash());
 flight.dur = 2.6;
 if (new URLSearchParams(location.search).has('instant')) {   // skip intro flight + panel animation (screenshots, slow machines)
