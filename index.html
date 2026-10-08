@@ -59,15 +59,12 @@
   .cap b { display: block; font: 600 28px 'IBM Plex Mono', monospace; letter-spacing: 4px; color: var(--blue); text-transform: uppercase; margin-bottom: 8px; }
   .cap.r { border-left: none; border-right: 7px solid var(--blue); text-align: right; }
   .cap.top { width: 1300px; text-align: center; border-left: none; border-top: 7px solid var(--blue); }
-  .card { box-sizing: border-box; height: 500px; background: #fff; border: 3px solid #DFE6F0; border-radius: 28px; padding: 32px 36px;
+  .card { box-sizing: border-box; height: 320px; background: #fff; border: 3px solid #DFE6F0; border-radius: 28px; padding: 32px 36px;
           box-shadow: 0 20px 50px rgba(41,0,66,.10); display: flex; flex-direction: column; gap: 18px; user-select: none;
           transition: border-color .25s, box-shadow .25s; }
   .card:hover { border-color: var(--blue); box-shadow: 0 26px 64px rgba(18,110,211,.24); }
   .card .wm { font-size: 46px; }
-  .card p { margin: 0; font: 600 28px/1.3 Inter, sans-serif; color: var(--purple); }
-  .card ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
-  .card li { font: 400 24px/1.36 Inter, sans-serif; padding-left: 30px; position: relative; }
-  .card li::before { content: ''; position: absolute; left: 4px; top: .5em; width: 11px; height: 11px; border-radius: 50%; background: var(--blue); }
+  .card p { margin: 0; font: 600 32px/1.3 Inter, sans-serif; color: var(--purple); }
   .card .more { margin-top: auto; font: 500 22px 'IBM Plex Mono', monospace; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; }
 
   /* ---------- 3D layer: product detail ---------- */
@@ -258,7 +255,6 @@ const LOOPS = [
     products: [{
       key: 'vortex', logo: 'sonar-vortex', name: 'Sonar Vortex', pos: [0, -0.5],
       tag: 'The verification layer for coding agents',
-      bullets: ['Coding guidelines & architecture context for agents', 'Agentic analysis on every change the agent makes', 'Third-party dependency health & safety checks'],
       what: ['<b>Coding guidelines</b> — your standards, delivered to the agent before it writes code',
              '<b>Architecture & semantic navigation</b> so agents respect the shape of your codebase',
              '<b>Dependency health & safety</b> before a third-party package gets pulled in',
@@ -283,7 +279,6 @@ const LOOPS = [
       {
         key: 'sq', logo: 'sonarqube-server', name: 'SonarQube', pos: [-4.3, -0.5],
         tag: 'Algorithmic verification on every pull request',
-        bullets: ['8,000+ rules: security, reliability, maintainability', 'SAST & cross-file taint analysis', 'Quality gate status on every PR / MR'],
         what: ['<b>8,000+ deterministic rules</b> for security, reliability and maintainability',
                '<b>SAST & taint analysis</b> across functions, files and frameworks: XSS, injections, SSRF, XXE…',
                '<b>Secrets detection</b>: 400+ patterns across all file types',
@@ -297,7 +292,6 @@ const LOOPS = [
       {
         key: 'advsec', mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'advanced security', name: 'SonarQube Advanced Security', pos: [4.6, -0.5],
         tag: 'Mitigate risks coming from open-source dependencies',
-        bullets: ['SCA: vulnerable, malicious & mis-licensed dependencies', 'Advanced SAST: taint analysis into open-source libraries', 'Configurable branch rescans'],
         what: ['<b>SCA</b>: vulnerabilities, license policy and malicious-package risks across your dependencies',
                'Real finding: <b>CVE-2024-23897</b> in Jenkins (CVSS 9.8)',
                '<b>Configurable branch rescans</b> surface newly disclosed risks on unchanged code'],
@@ -330,7 +324,6 @@ const LOOPS = [
       {
         key: 'gitar', logo: 'gitar', name: 'Gitar', pos: [0, -2.75],
         tag: 'Agentic code review and CI repair on every PR',
-        bullets: ['Reviews every PR: logic, edge cases, omissions, performance', 'Diagnoses & fixes CI failures and flaky tests', 'Review policies in plain language, no YAML'],
         what: ['<b>Reviews every PR</b>, answers questions in context and applies fixes, across time zones',
                'Catches <b>business-logic issues, edge cases, omissions</b>, performance issues and testing gaps',
                '<b>Diagnoses CI failures</b>, de-duplicates noise, catches flaky tests, fixes build, lint & test errors',
@@ -362,7 +355,6 @@ const LOOPS = [
       {
         key: 'remediation', mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'remediation agent', name: 'SonarQube Remediation Agent', pos: [-3.7, -0.5],
         tag: 'Autonomous repair of issues and technical debt',
-        bullets: ['Fixes issues inline with code review', 'Assign the backlog, and the agent pays down debt', 'Fixes follow your standards, verified before the PR'],
         what: ['<b>Automated resolution</b> of pre-merge findings, inline with code review',
                '<b>Assign your backlog</b> to the agent to resolve technical debt',
                'Fixes consistent with your standards, <b>verified by Vortex</b> before the PR opens',
@@ -373,7 +365,6 @@ const LOOPS = [
       {
         key: 'hunter', logo: 'sonarqube-hunter-agent', name: 'SonarQube Hunter Agent', pos: [3.9, -0.5],
         tag: 'Finds the vulnerabilities static analysis can’t see',
-        bullets: ['Broken access control & IDOR', 'Business-logic & authentication flaws', 'A structured multi-phase agent, not just a prompt'],
         what: ['Targets <b>broken access control, IDOR, business-logic and authentication flaws</b>',
                '<b>Not just a prompt</b>: a tailored agent with structured, multi-phase analysis',
                '<b>Higher precision</b> from custom tools and Sonar’s proprietary analysis'],
@@ -782,7 +773,7 @@ LOOPS.forEach((L, i) => {
   const lay = CARD_LAYOUT[L.products.length];
   L.products.forEach((p, j) => {
     const card = css3d(
-      `${wordmark(p)}<p>${p.tag}</p><ul>${p.bullets.map(b => `<li>${b}</li>`).join('')}</ul><div class="more">Explore →</div>`,
+      `${wordmark(p)}<p>${p.tag}</p><div class="more">Explore →</div>`,
       'card', L.cx + lay.xs[j], lay.y ?? -2.05, 0.2, { kind: 'focus', loop: i, act: `prod:${i}:${j}` });
     card.el.style.width = lay.w + 'px';
     card.o.scale.setScalar(S * (lay.zoom || 1));
