@@ -223,13 +223,17 @@
   .demo .pp svg + svg, .demo.paused .pp svg:first-child { display: none; }
   .demo.paused .pp svg + svg { display: block; }
   .feed { margin-bottom: 40px; font: 400 22px/1.3 Inter, sans-serif; }
-  .feed .srcs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .feed .srcs { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 20px; }
   .feed .src { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; background: #fff;
-               border: 3px solid #DFE6F0; border-top: 7px solid var(--blue); border-radius: 20px; padding: 20px 18px; }
-  .feed .src .lgs { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 88px; }
-  .feed .src img { display: block; height: 52px; }
-  .feed .src .lgs.two img { height: 40px; }
-  .feed .src b, .feed .ag b { font: 600 24px Inter, sans-serif; color: var(--purple); }
+               border: 3px solid #DFE6F0; border-top: 7px solid var(--accent, var(--blue)); border-radius: 20px; padding: 16px 10px; }
+  .feed .src .lgs { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-height: 76px; }
+  .feed .src img { display: block; height: 40px; }
+  .feed .src .lgs.two img { height: 32px; }
+  .feed .src .wm { font-size: 28px; }
+  .feed .src .wm img { height: 1.6em; }
+  .feed .src b { font: 600 21px Inter, sans-serif; color: var(--purple); }
+  .feed .src > small { margin-top: -4px; font: 500 16px Inter, sans-serif; color: var(--accent); }
+  .feed .ag b { font: 600 24px Inter, sans-serif; color: var(--purple); }
   .feed svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--blue); }
   .feed svg .dash { stroke-dasharray: 10 9; animation: hunt-flow 1.1s linear infinite; }
   .feed .ag, .feed .out { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0 auto; width: 72%; box-sizing: border-box;
@@ -239,8 +243,10 @@
   .feed .ag span { display: flex; flex-direction: column; align-items: flex-start; font: 500 22px/1.2 Inter, sans-serif; color: var(--blue); }
   .feed .ag span b { font-size: 28px; }
   @keyframes feed-pulse { 0% { box-shadow: 0 0 0 0 rgba(18,110,211,.35); } 100% { box-shadow: 0 0 0 22px rgba(18,110,211,0); } }
-  .feed .out { width: fit-content; padding: 18px 32px; background: var(--bg); color: var(--n8); white-space: nowrap; }
-  .feed .out b { font: 600 24px Inter, sans-serif; color: var(--purple); }
+  .feed .out { flex-direction: column; gap: 8px; width: fit-content; padding: 6px 0 0; color: var(--n8); white-space: nowrap; }
+  .feed .out > svg { width: 64px; height: 64px; color: var(--purple); }
+  .feed .out b { margin-top: -2px; font: 600 24px Inter, sans-serif; color: var(--purple); }
+  .feed .out span { display: flex; align-items: center; gap: 14px; }
   .feed .out img { height: 40px; }
   .diagram { display: block; width: 100%; height: auto; margin-bottom: 40px; }
   .cycle { overflow: visible; }
@@ -509,9 +515,11 @@ const LOOPS = [
         // animated diagram shown in the right column instead of `runs`: issue sources ([logos, title]) flowing into the agent, then out as a fix PR
         feed: {
           title: 'Fixes issues from any source',
-          sources: [[['sonarqube-hunter-agent'], 'New agentic findings'], [['sonarqube-server', 'sonarqube-cloud'], 'Existing backlog']],
+          // [logos, title, { accent, note }?]: a logo is a file in assets/logos/ or, when there is no official logo, a { mark, brand, sub } lockup
+          sources: [[['sonarqube-hunter-agent'], 'New agentic findings'], [['sonarqube-server', 'sonarqube-cloud'], 'Existing backlog'],
+                    [[{ mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'advanced security' }], 'Dependency risks', { accent: 'var(--purple)', note: 'Only on SonarQube Cloud' }]],
           agent: ['sonarqube-server-mark', 'SonarQube', 'Remediation Agent'],   // no official Remediation Agent logo yet: SonarQube mark + name
-          out: ['Fix pull request', 'verified by', 'sonar-vortex'],
+          out: ['Fix PRs', 'verified by', 'sonar-vortex'],   // shown under the PR icon
         },
         stat: ['+41%', 'increase in code complexity persists after the 3–5× AI velocity spike fades (Carnegie Mellon, 2025).'],
         // requirements level below the product panel (#3.1.1): Cloud vs Server comparison + shared notes
@@ -1051,19 +1059,20 @@ const stats = p => (Array.isArray(p.stat[0]) ? p.stat : [p.stat]).map(([b, t]) =
 
 // issue sources fan in to the Remediation Agent (purple issue tokens), which sends out a verified fix PR (blue token)
 function feed(p) {
-  const F = p.feed, X = [172, 538], D = 2.4;   // source centers in the 710-wide column; token travel time (s)
+  const F = p.feed, n = F.sources.length, D = 2.4;   // token travel time (s)
+  const X = F.sources.map((_, k) => (k + .5) * (710 - 20 * (n - 1)) / n + 20 * k);   // source centers in the 710-wide column (20px grid gap)
   const ah = (x, y) => `<path d="M${x - 9} ${y - 11}L${x} ${y}L${x + 9} ${y - 11}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
   const token = (id, fill, begin) => `<circle r="9" fill="${fill}" opacity="0"><animateMotion dur="${D}s" begin="${begin}s" repeatCount="indefinite"><mpath href="#${id}"/></animateMotion>
     <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.12;.85;1" dur="${D}s" begin="${begin}s" repeatCount="indefinite"/></circle>`;
   const uid = `feed-${p.key}`;
   return `<h4>${F.title}</h4><div class="feed">
-    <div class="srcs">${F.sources.map(([ls, t]) => `<div class="src"><div class="lgs${ls.length > 1 ? ' two' : ''}">${ls.map(l => `<img src="${LOGO(l)}" alt="" draggable="false">`).join('')}</div><b>${t}</b></div>`).join('')}</div>
+    <div class="srcs" style="--n:${n}">${F.sources.map(([ls, t, o = {}]) => `<div class="src"${o.accent ? ` style="--accent:${o.accent}"` : ''}><div class="lgs${ls.length > 1 ? ' two' : ''}">${ls.map(l => l.mark ? wordmark(l) : `<img src="${LOGO(l)}" alt="" draggable="false">`).join('')}</div><b>${t}</b>${o.note ? `<small>${o.note}</small>` : ''}</div>`).join('')}</div>
     <svg viewBox="0 0 710 80" aria-hidden="true">${X.map((x, k) => `<path id="${uid}-${k}" class="dash" d="M${x} 0C${x} 44 355 30 355 74" fill="none" stroke="currentColor" stroke-width="4"/>`).join('')}${ah(355, 76)}
-      ${X.map((_, k) => token(`${uid}-${k}`, 'var(--purple)', k * D / 2)).join('')}</svg>
+      ${X.map((_, k) => token(`${uid}-${k}`, 'var(--purple)', k * D / n)).join('')}</svg>
     <div class="ag"><img src="${LOGO(F.agent[0])}" alt="" draggable="false"><span>${F.agent[1]}<b>${F.agent[2]}</b></span></div>
     <svg viewBox="0 0 710 60" aria-hidden="true"><path id="${uid}-out" class="dash" d="M355 0V54" fill="none" stroke="currentColor" stroke-width="4"/>${ah(355, 56)}
       ${token(`${uid}-out`, 'var(--blue)', D / 4)}${token(`${uid}-out`, 'var(--blue)', D * 3 / 4)}</svg>
-    <div class="out"><b>${F.out[0]}</b>${F.out[1]}<img src="${LOGO(F.out[2])}" alt="Sonar Vortex" draggable="false"></div>
+    <div class="out">${PR_ICON}<b>${F.out[0]}</b><span>${F.out[1]}<img src="${LOGO(F.out[2])}" alt="Sonar Vortex" draggable="false"></span></div>
   </div>`;
 }
 
