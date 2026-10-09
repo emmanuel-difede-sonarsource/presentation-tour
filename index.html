@@ -188,6 +188,8 @@
   .deeper { display: inline-flex; margin: -12px 0 40px; padding: 18px 34px; border: 3px solid var(--blue); border-radius: 999px; background: #fff;
             font: 500 24px 'IBM Plex Mono', monospace; letter-spacing: 3px; text-transform: uppercase; color: var(--blue); transition: background .25s, color .25s; }
   .deeper:hover { background: var(--blue); color: #fff; }
+  .deepers { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; margin: -12px 0 40px; }
+  .deepers .deeper { margin: 0; }
 
   /* ---------- 3D layer: deep dive (one level below a product panel) ---------- */
   .panel.deep h2 { margin-bottom: 36px; }
@@ -196,6 +198,13 @@
   .dcol h3 { margin: 0; padding: 22px 32px; background: var(--bg); border-bottom: 5px solid var(--blue); font: 500 44px Lora, serif; color: var(--purple); }
   .panel .dcol ul { margin: 0; padding: 28px 30px 32px; gap: 16px; }
   .panel .dcol li { font-size: 26px; padding-left: 42px; }
+  .dcols.sub { row-gap: 0; }   /* columns with a description: header, description and list rows line up across columns */
+  .dcols.sub .dcol { display: grid; grid-row: span 3; grid-template-rows: subgrid; }
+  .dcol h3 + p { margin: 0; padding: 24px 30px 0; font: 400 24px/1.4 Inter, sans-serif; color: var(--n8); }
+  .panel .dcol li.id { padding-left: 0; font-size: 24px; line-height: 1.35; }
+  .panel .dcol li.id::before { content: none; }
+  .dcol li.id b { display: block; font: 600 20px 'IBM Plex Mono', monospace; letter-spacing: 2px; color: var(--blue); }
+  .dcols + .notes { margin-top: -6px; }
   .eco { display: flex; align-items: center; gap: 32px; background: var(--bg); border-radius: 24px; padding: 24px 32px; }
   .panel .eco h4 { margin: 0; white-space: nowrap; }
   .eco div { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -287,7 +296,9 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    and AI agents "Before you start". The Remediation Agent requirements
    (`deep`) follow the same Sonar docs, Oct 2026: AC/DC Remediation Agent
    page and FAQ, Cloud "Administer the Remediation Agent", Server 2026.5
-   Remediation Agent instance administration page.
+   Remediation Agent instance administration page. The Hunter Agent
+   detected CWEs (second `deep`) follow the AC/DC Hunter Agent page
+   ("What it detects") and the Hunter Agent product page, Oct 2026.
    ===================================================================== */
 // Official logos from the Sonar brand guide (zeroheight), light-background variants.
 // Products without an official logo use the SonarQube Server mark + `brand`/`sub` text.
@@ -480,8 +491,8 @@ const LOOPS = [
         },
         stat: [['200+', 'confirmed, previously unknown vulnerabilities, found across 25+ open-source projects with 1k+ stars.'],
                ['80–90%', 'average precision, at ~30% lower cost than naive LLM workflows, whose results swing wildly.']],
-        // requirements level below the product panel (#3.2.1): Cloud vs Server comparison + shared notes
-        deep: {
+        // two levels below the product panel: requirements (#3.2.1), then detected CWEs (#3.2.2)
+        deep: [{
           name: 'Prerequisites & compatibility', cta: 'Prerequisites & compatibility →',
           title: 'What it takes to run it, on Cloud and on Server',
           compare: {
@@ -521,7 +532,44 @@ const LOOPS = [
             '<em class="only">Server</em>Enabled <b>once for the whole instance</b>, with no per-project switch',
             '<em class="only">Server</em>Agents can’t run on <b>OpenShift, Docker Desktop or ZIP</b> installs',
           ] },
-        },
+        }, {
+          name: 'What it detects', cta: 'CWEs it hunts →',
+          title: 'One playbook, three classes of flaw',
+          // a column item can be [id, label], shown as a monospace id above its label
+          cols: [
+            ['Broken access control', [
+              ['CWE-639', 'Authorization bypass through user-controlled key (IDOR)'],
+              ['CWE-285', 'Improper authorization'],
+              ['CWE-862', 'Missing authorization'],
+              ['CWE-863', 'Incorrect authorization'],
+              ['CWE-269', 'Improper privilege management'],
+              ['CWE-200', 'Exposure of sensitive information to an unauthorized actor'],
+              ['CWE-352', 'Cross-site request forgery (CSRF)'],
+            ], 'IDOR, missing or incorrect authorization checks, privilege escalation, sensitive data exposure and CSRF.'],
+            ['Business logic', [
+              ['CWE-840', 'Business logic errors (parent category)'],
+              ['CWE-841', 'Improper enforcement of behavioral workflow'],
+              ['CWE-799', 'Improper control of interaction frequency'],
+              ['CWE-837', 'Improper enforcement of a single, unique action'],
+              ['CWE-770', 'Allocation of resources without limits or throttling'],
+            ], 'Skipping required workflow steps, abusing repeatable actions and missing rate limits.'],
+            ['Authentication & session', [
+              ['CWE-287', 'Improper authentication'],
+              ['CWE-384', 'Session fixation'],
+              ['CWE-613', 'Insufficient session expiration'],
+              ['CWE-640', 'Weak password recovery mechanism for forgotten password'],
+              ['CWE-308', 'Use of single-factor authentication'],
+              ['CWE-294', 'Authentication bypass by capture-replay'],
+              ['CWE-307', 'Improper restriction of excessive authentication attempts'],
+            ], 'Broken authentication, session fixation, non-expiring sessions and weak password recovery.'],
+          ],
+          notes: { title: 'Good to know', items: [
+            'CWE lists are <b>representative, not exhaustive</b>',
+            'Works with <b>any language</b> SonarQube supports',
+            '<b>Complements static analysis</b>, which keeps covering pattern-based flaws such as SQL injection and XSS',
+            'Each confirmed finding is a <b>regular SonarQube issue</b>, pinned to an exact location in the code',
+          ] },
+        }],
       },
     ],
   },
@@ -828,11 +876,12 @@ const GEAR = `<svg class="gear" viewBox="0 0 40 40" aria-hidden="true"><g fill="
 // deep-dive comparison table: logo header per column, then labelled rows (see `deep.compare` in LOOPS)
 const cmpCell = c => Array.isArray(c) ? `<ul>${c.map(t => `<li>${t}</li>`).join('')}</ul>`
   : `<div class="chips">${(c.hl || []).map(x => `<span class="hl">${x}</span>`).join('')}${(c.chips || []).map(x => `<span>${x}</span>`).join('')}</div>${c.note ? `<p>${c.note}</p>` : ''}`;
-const compare = ({ compare: C, notes }) => `
+const compare = C => `
       <div class="cmp" style="--n:${C.cols.length}"><i></i>${C.cols.map(([l, n]) => `<div class="ch"><img src="${LOGO(l)}" alt="${n}" draggable="false"></div>`).join('')}
         ${C.rows.map(([h, cells]) => `<h4>${h}</h4>${cells.map(c => `<div${cells.length < C.cols.length ? ' class="span"' : ''}>${cmpCell(c)}</div>`).join('')}`).join('')}
-      </div>${notes ? `
-      <div class="notes"><h4>${notes.title}</h4><ul>${notes.items.map(t => `<li>${t}</li>`).join('')}</ul></div>` : ''}`;
+      </div>`;
+const notes = N => N ? `
+      <div class="notes"><h4>${N.title}</h4><ul>${N.items.map(t => `<li>${t}</li>`).join('')}</ul></div>` : '';
 const WIP_LINK = `<div class="wip-link" title="Work in progress">${GEAR}<svg class="arr" viewBox="0 0 120 36" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
   <path class="dots" d="M22 18H98"/><path d="M16 5 3 18l13 13M104 5l13 13-13 13"/></svg></div>`;
 const stats = p => (Array.isArray(p.stat[0]) ? p.stat : [p.stat]).map(([b, t]) => `<div class="stat${b === '“' ? ' quote' : ''}">${b ? `<b>${b}</b>` : ''}<span>${t}</span></div>`).join('');
@@ -922,6 +971,9 @@ function pipeline(P) {
   </div>`;
 }
 
+// a product's `deep` is one deep dive or a list of them
+LOOPS.forEach(L => L.products.forEach(p => { p.deeps = [].concat(p.deep || []); }));
+
 LOOPS.forEach((L, i) => {
   // overview-level, always present (dimmed when another loop is in focus)
   css3d(L.title, 'lbox', L.cx, 2.2, 0.08, { kind: 'loopStatic', loop: i, act: `loop:${i}` });
@@ -953,8 +1005,8 @@ LOOPS.forEach((L, i) => {
       <div class="ph">${wordmark(p)}<div class="lc">${L.title}<br>${L.stage}</div></div>
       <h2>${p.tag}</h2>
       <div class="cols">
-        <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deep ? `
-          <button class="deeper act" data-act="deep:${i}:${j}" title="Deep dive">${p.deep.cta}</button>` : ''}${p.pipeline || p.feed ? stats(p) : ''}</div>
+        <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deeps.length ? `
+          <div class="deepers">${p.deeps.map((D, d) => `<button class="deeper act" data-act="deep:${i}:${j}:${d}" title="Deep dive">${D.cta}</button>`).join('')}</div>` : ''}${p.pipeline || p.feed ? stats(p) : ''}</div>
         <div>
           ${p.feed ? feed(p) : p.cycle ? cycle(p.cycle) : p.pipeline ? pipeline(p.pipeline) : `
           <h4>${p.key === 'gitar' ? 'Better together' : 'Where it runs'}</h4>
@@ -991,20 +1043,21 @@ LOOPS.forEach((L, i) => {
       show();
     }
 
-    if (!p.deep) return;
-    const D = p.deep;
-    const deep = css3d(`
+    // each deep dive is its own level below the panel, opened only by its button (or ←/→)
+    panel.deeps = p.deeps.map((D, d) => {
+      const deep = css3d(`
       <button class="x act" data-act="close" title="Back (Esc)">✕</button>
       <div class="ph">${wordmark(p)}<div class="lc">${p.name}<br>${D.name}</div></div>
-      <h2>${D.title}</h2>${D.compare ? compare(D) : `
-      <div class="dcols">${D.cols.map(([h, items]) => `
-        <div class="dcol"><h3>${h}</h3><ul>${items.map(t => `<li>${t}</li>`).join('')}</ul></div>`).join('')}
-      </div>
-      <div class="eco"><h4>Supported ecosystems</h4><div>${D.ecosystems.map(e => `<span>${e}</span>`).join('')}${(D.ecosystemsHl || []).map(e => `<span class="hl">${e}</span>`).join('')}</div></div>`}`,
-      'panel deep', L.cx, PY, PZ + DZ, { kind: 'deep', loop: i });
-    deep.k = 0; deep.target = 0; deep.loopIdx = i; deep.prodIdx = j;
-    deeps.push(deep);
-    panel.deep = deep;
+      <h2>${D.title}</h2>${D.compare ? compare(D.compare) : `
+      <div class="dcols${D.cols.some(c => c[2]) ? ' sub' : ''}">${D.cols.map(([h, items, desc]) => `
+        <div class="dcol"><h3>${h}</h3>${desc ? `<p>${desc}</p>` : ''}<ul>${items.map(t => Array.isArray(t) ? `<li class="id"><b>${t[0]}</b>${t[1]}</li>` : `<li>${t}</li>`).join('')}</ul></div>`).join('')}
+      </div>${D.ecosystems ? `
+      <div class="eco"><h4>Supported ecosystems</h4><div>${D.ecosystems.map(e => `<span>${e}</span>`).join('')}${(D.ecosystemsHl || []).map(e => `<span class="hl">${e}</span>`).join('')}</div></div>` : ''}`}${notes(D.notes)}`,
+        'panel deep', L.cx, PY, PZ + DZ, { kind: 'deep', loop: i });
+      deep.k = 0; deep.target = 0; deep.loopIdx = i; deep.prodIdx = j; deep.subIdx = d;
+      deeps.push(deep);
+      return deep;
+    });
   });
 });
 
@@ -1030,16 +1083,16 @@ LOOPS.forEach((L, i) => {
   tour.push({ level: 'loop', loop: i });
   L.products.forEach((p, j) => {
     tour.push({ level: 'product', loop: i, prod: j });
-    if (p.deep) tour.push({ level: 'deep', loop: i, prod: j });
+    p.deeps.forEach((_, d) => tour.push({ level: 'deep', loop: i, prod: j, sub: d }));
   });
 });
-const sameState = (a, b) => a.level === b.level && a.loop === b.loop && a.prod === b.prod;
+const sameState = (a, b) => a.level === b.level && a.loop === b.loop && a.prod === b.prod && a.sub === b.sub;
 
 function go(st) {
   state = st;
   const mine = p => p.loopIdx === st.loop && p.prodIdx === st.prod;
   panels.forEach(p => { p.target = ((st.level === 'product' || st.level === 'deep') && mine(p)) ? 1 : 0; });
-  deeps.forEach(p => { p.target = (st.level === 'deep' && mine(p)) ? 1 : 0; });
+  deeps.forEach(p => { p.target = (st.level === 'deep' && mine(p) && p.subIdx === st.sub) ? 1 : 0; });
   if (st.level === 'overview') flyTo({ x: 0, y: OY, z: Zo });
   else if (st.level === 'loop') flyTo({ x: LOOPS[st.loop].cx, y: FY, z: Zf });
   else if (st.level === 'product') {   // taller panels (e.g. the Remediation Agent feed diagram) back the camera off to fit
@@ -1047,7 +1100,7 @@ function go(st) {
     flyTo({ x: LOOPS[st.loop].cx, y: PY, z: PZ + Math.max(Zd, fitZ(20, h + 1.6)) }, 1.3);
   }
   else {   // taller deep dives (e.g. the Hunter Agent requirements) back the camera off to fit
-    const h = LOOPS[st.loop].products[st.prod].panel.deep.el.offsetHeight * S;
+    const h = LOOPS[st.loop].products[st.prod].panel.deeps[st.sub].el.offsetHeight * S;
     flyTo({ x: LOOPS[st.loop].cx, y: PY, z: PZ + DZ + Math.max(Zd, fitZ(20, h + 1.6)) }, 1.1);
   }
   updateHud();
@@ -1066,17 +1119,18 @@ function back() {
 /* ---------- HUD ---------- */
 const crumbsEl = document.getElementById('crumbs'), dotsEl = document.getElementById('dots');
 const prodOf = st => LOOPS[st.loop].products[st.prod];
+const deepOf = st => prodOf(st).deeps[st.sub];
 dotsEl.innerHTML = tour.map((t, k) => `<i data-act="step:${k}" class="${{ product: '', deep: 'sub' }[t.level] ?? 'loop'}" title="${
   t.level === 'overview' ? 'Overview' : t.level === 'loop' ? LOOPS[t.loop].title
-  : t.level === 'product' ? prodOf(t).name : `${prodOf(t).name} · ${prodOf(t).deep.name}`}"></i>`).join('');
+  : t.level === 'product' ? prodOf(t).name : `${prodOf(t).name} · ${deepOf(t).name}`}"></i>`).join('');
 function updateHud() {
   const parts = [`<a data-act="overview" class="${state.level === 'overview' ? 'cur' : ''}">Overview</a>`];
   if (state.level !== 'overview') parts.push(`<a data-act="loop:${state.loop}" class="${state.level === 'loop' ? 'cur' : ''}">${LOOPS[state.loop].title}</a>`);
   if (state.level === 'product') parts.push(`<a class="cur">${prodOf(state).name}</a>`);
-  if (state.level === 'deep') parts.push(`<a data-act="prod:${state.loop}:${state.prod}">${prodOf(state).name}</a>`, `<a class="cur">${prodOf(state).deep.name}</a>`);
+  if (state.level === 'deep') parts.push(`<a data-act="prod:${state.loop}:${state.prod}">${prodOf(state).name}</a>`, `<a class="cur">${deepOf(state).name}</a>`);
   crumbsEl.innerHTML = parts.join('<span>›</span>');
   const k = tour.findIndex(t => sameState(t, state));
-  history.replaceState(null, '', location.pathname + location.search + (state.level === 'overview' ? '' : `#${state.loop + 1}${state.level === 'loop' ? '' : '.' + (state.prod + 1)}${state.level === 'deep' ? '.1' : ''}`));
+  history.replaceState(null, '', location.pathname + location.search + (state.level === 'overview' ? '' : `#${state.loop + 1}${state.level === 'loop' ? '' : '.' + (state.prod + 1)}${state.level === 'deep' ? '.' + (state.sub + 1) : ''}`));
   [...dotsEl.children].forEach((d, i) => d.classList.toggle('on', i === k));
 }
 
@@ -1087,10 +1141,10 @@ let hovered = -1;
 
 function act(a) {
   if (!a) return false;
-  const [k, x, y] = a.split(':');
+  const [k, x, y, z] = a.split(':');
   if (k === 'loop') go({ level: 'loop', loop: +x });
   else if (k === 'prod') go({ level: 'product', loop: +x, prod: +y });
-  else if (k === 'deep') go({ level: 'deep', loop: +x, prod: +y });
+  else if (k === 'deep') go({ level: 'deep', loop: +x, prod: +y, sub: +z });
   else if (k === 'step') go(tour[+x]);
   else if (k === 'overview') go({ level: 'overview' });
   else if (k === 'close') back();
@@ -1179,14 +1233,15 @@ onResize();
 const clock = new THREE.Clock();
 const _p = new THREE.Vector3(), _t = new THREE.Vector3();
 let spawnTimer = 0.4, elapsed = 0;
-// deep links: #2 → loop 2, #2.1 → loop 2, first product, #2.2.1 → that product's deep dive
+// deep links: #2 → loop 2, #2.1 → loop 2, first product, #2.2.1 → that product's first deep dive
 function stateFromHash() {
-  const m = location.hash.match(/^#([1-3])(?:\.([1-9])(\.1)?)?$/);
+  const m = location.hash.match(/^#([1-3])(?:\.([1-9])(?:\.([1-9]))?)?$/);
   if (!m) return { level: 'overview' };
   const loop = +m[1] - 1, prod = m[2] ? +m[2] - 1 : undefined;
   const p = prod !== undefined && LOOPS[loop].products[prod];
   if (!p) return { level: 'loop', loop };
-  return { level: m[3] && p.deep ? 'deep' : 'product', loop, prod };
+  const sub = m[3] ? +m[3] - 1 : -1;
+  return sub >= 0 && p.deeps[sub] ? { level: 'deep', loop, prod, sub } : { level: 'product', loop, prod };
 }
 cam.z = Zo * 2.3;
 cssRenderer.render(cssScene, camera);   // attach the CSS items so panel heights can be measured
@@ -1283,7 +1338,7 @@ function frame() {
         const k = ease(it.k);
         it.o.position.lerpVectors(it.from, _p.set(LOOPS[it.loopIdx].cx, PY, PZ), k);
         it.o.scale.setScalar(lerp(it.fromScale, S, k));
-        a = smooth(0, 0.6, it.k) * (1 - (it.deep ? ease(it.deep.k) : 0));   // gives way to its deep dive
+        a = smooth(0, 0.6, it.k) * (1 - Math.max(0, ...it.deeps.map(d => ease(d.k))));   // gives way to its deep dives
         break;
       }
       case 'deep': {
