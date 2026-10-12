@@ -342,6 +342,37 @@
   .notes { background: var(--bg); border-radius: 24px; padding: 24px 32px 26px; }
   .panel .notes h4 { margin-bottom: 14px; }
   .panel .notes ul { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 44px; }
+  .panel h2 em { font-style: normal; color: var(--blue); }
+  .panel.deep h2:has(+ .scale) { font-size: 54px; }
+  .scale { display: grid; grid-template-columns: 210px 76px 1fr; align-items: center; margin-bottom: 32px; font: 400 22px/1.4 Inter, sans-serif; }
+  .scale .team { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; background: var(--bg); border-radius: 24px; padding: 28px 18px; }
+  .scale .team svg { width: 76px; height: 76px; color: var(--purple); }
+  .scale .team b { font: 600 25px/1.25 Inter, sans-serif; color: var(--purple); }
+  .scale .team small { font: 400 21px/1.35 Inter, sans-serif; }
+  .scale > svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--blue); }
+  .scale .dash { stroke-dasharray: 10 9; animation: hunt-flow 1.1s linear infinite; }
+  .scale .org { position: relative; display: grid; grid-template-columns: 1fr 180px 1fr; gap: 28px; border: 3px solid var(--purple); border-radius: 32px; padding: 66px 22px 22px; }
+  .panel .scale .org > h4 { position: absolute; top: 20px; left: 26px; margin: 0; font-size: 21px; letter-spacing: 4px; color: var(--purple); }
+  .scale .wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; color: var(--blue); }
+  .scale .wires path { fill: none; stroke: currentColor; stroke-width: 4; vector-effect: non-scaling-stroke; stroke-dasharray: 10 9;
+                       animation: hunt-flow 1.1s linear infinite, scale-wire var(--T) ease-in-out var(--d) infinite backwards; }
+  .scale .hub { grid-area: 1 / 2 / 3; align-self: center; position: relative; z-index: 1; box-sizing: border-box; width: 180px; height: 180px; border-radius: 50%;
+                display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center;
+                border: 3px solid var(--purple); background: #fff; animation: feed-pulse calc(var(--T) / 4) ease-out infinite; }
+  .scale .hub img { display: block; height: 52px; }
+  .scale .hub b { font: 500 25px Poppins, Inter, sans-serif; color: var(--purple); }
+  .scale .hub small { font: 500 15px/1.3 Inter, sans-serif; color: var(--blue); }
+  .scale .pil { position: relative; z-index: 1; background: #fff; border: 3px solid #DFE6F0; border-top: 7px solid var(--blue); border-radius: 22px; padding: 18px 22px 20px;
+                animation: scale-lit var(--T) ease-in-out var(--d) infinite backwards; }
+  .scale .pil-h { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; font: 500 30px/1.2 Lora, serif; color: var(--purple); }
+  .scale .pil-h svg { flex: none; width: 46px; height: 46px; color: var(--blue); }
+  .scale .pil p { margin: 0 0 12px; }
+  .scale .pil .chips { gap: 8px; }
+  .scale .pil .chips span { font-size: 17px; padding: 3px 12px; white-space: nowrap; }
+  @keyframes scale-lit { 0%, 30%, 100% { box-shadow: 0 0 0 0 rgba(18,110,211,0); transform: none; }
+                         5%, 25% { box-shadow: 0 0 0 3px var(--blue), 0 18px 44px rgba(18,110,211,.22); transform: translateY(-6px); } }
+  @keyframes scale-wire { 0%, 30%, 100% { opacity: .25; } 5%, 25% { opacity: 1; } }
+  .scale-ban { border-radius: 999px; padding: 20px 40px; text-align: center; background: var(--blue); color: #fff; font: 500 26px/1.4 Inter, sans-serif; }
   .only { font: normal 500 17px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--blue);
           border: 2px solid var(--blue); border-radius: 999px; padding: 1px 10px; margin-right: 10px; vertical-align: 3px; }
 
@@ -413,7 +444,10 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    and AI agents "Before you start". The Remediation Agent requirements
    (`deep`) follow the same Sonar docs, Oct 2026: AC/DC Remediation Agent
    page and FAQ, Cloud "Administer the Remediation Agent", Server 2026.5
-   Remediation Agent instance administration page. The Hunter Agent
+   Remediation Agent instance administration page. The
+   SonarQube Enterprise deep dive (`deep.scale`) follows the "Scale quality
+   and security from the team to the enterprise" slide (SonarQube
+   Enterprise value, 2026). The Hunter Agent
    detected CWEs (second `deep`) follow the AC/DC Hunter Agent page
    ("What it detects") and the Hunter Agent product page, Oct 2026. The
    Hunter Agent example animations (pipeline `demos`) each illustrate one
@@ -476,6 +510,28 @@ const LOOPS = [
         cycle: { ide: [['VS Code', 'Visual Studio'], ['JetBrains', 'Eclipse']], ci: [['GitHub', 'GitLab', 'Azure DevOps'], ['Bitbucket', 'Jenkins']] },
         stat: [['44%', 'less likely to report outages due to AI coding.'],
                ['24%', 'more often, SonarQube users report lower vulnerability rates due to AI coding.']],
+        // Enterprise level below the product panel (#2.1.1): a team-level plan grows into one standard across the organization
+        deep: {
+          name: 'Enterprise', cta: 'Enterprise plan & edition →',
+          title: 'Scale quality and security from the team <em>to the enterprise</em>',
+          scale: {
+            team: ['Team-level plans', 'Productive developers'],
+            org: 'Across your organization',
+            hub: ['Enterprise', 'Cloud plan<br>Server edition'],
+            // [icon, title, description, chips], laid out two by two around the hub and lit in turn, clockwise
+            pillars: [
+              ['company', 'Govern at scale', 'One standard across every business unit, team and DevOps platform.',
+               ['Central governance']],
+              ['quality', 'Prove compliance', 'Access follows your identity provider, actions are traceable.',
+               ['User provisioning', 'Audit logs', 'OWASP · CWE · PCI DSS · STIG reports']],
+              ['search', 'Executive visibility', 'Release readiness and risk across the whole portfolio, in one view.',
+               ['Portfolios', 'Executive reports']],
+              ['architecture', 'Cover your entire estate', 'Business-critical and mainframe code under the same standard.',
+               ['COBOL', 'RPG', 'PL/I', 'JCL', 'Apex']],
+            ],
+            banner: 'Team plans help developers. Enterprise helps the organization <b>standardize, prove and scale</b>.',
+          },
+        },
       },
       {
         key: 'advsec', mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'advanced security', name: 'SonarQube Advanced Security', pos: [4.6, -0.5],
@@ -1123,8 +1179,32 @@ const ICONS = {
   architecture: '<path d="M12 3 2 8l10 5 10-5z"/><path d="M2 12.5l10 5 10-5M2 17l10 5 10-5"/>',
   package: '<path d="M21 7.5 12 3 3 7.5v9L12 21l9-4.5z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9M7.5 5.2l9 4.5"/>',
   agent: '<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V5M9 13v1.5M15 13v1.5M9.5 17.5h5M2 13v3M22 13v3"/><circle cx="12" cy="3.5" r="1.5"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/>',
+  team: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-3.8 3.1-6 6.5-6s6 2.2 6.5 6"/><circle cx="17" cy="9" r="2.8"/><path d="M16.5 14.2c2.9.2 4.6 2.2 5 5.3"/>',
 };
 const icon = k => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
+// Enterprise deep dive (see `deep.scale` in LOOPS): a team-level plan flows into one standard across the organization,
+// whose pillars sit two by two around the Enterprise hub and light up in turn, clockwise, as the hub pulses
+function scale(E) {
+  const T = 8, order = [0, 1, 3, 2];   // cycle (s); lighting order of the pillars (laid out row by row)
+  // wires from the hub center to the inner edge of each card, in % of the organization frame
+  const wires = [[40.7, 30], [59.3, 30], [40.7, 76], [59.3, 76]];
+  return `
+      <div class="scale" style="--T:${T}s">
+        <div class="team">${icon('team')}<b>${E.team[0]}</b><small>${E.team[1]}</small></div>
+        <svg viewBox="0 0 96 40" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+          <path class="dash" d="M8 20H78"/><path d="M72 9l12 11-12 11"/></svg>
+        <div class="org"><h4>${E.org}</h4>
+          <svg class="wires" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${wires.map(([x, y], k) =>
+            `<path d="M50 53L${x} ${y}" style="--d:${order[k] * T / 4}s"/>`).join('')}</svg>
+          <div class="hub"><img src="${LOGO('sonarqube-server-mark')}" alt="" draggable="false"><b>${E.hub[0]}</b><small>${E.hub[1]}</small></div>
+          ${E.pillars.map(([ic, h, t, chips], k) => `
+          <div class="pil" style="grid-area:${k < 2 ? 1 : 2} / ${k % 2 ? 3 : 1};--d:${order[k] * T / 4}s">
+            <div class="pil-h">${icon(ic)}${h}</div><p>${t}</p><div class="chips">${chips.map(c => `<span>${c}</span>`).join('')}</div></div>`).join('')}
+        </div>
+      </div>
+      <div class="scale-ban">${E.banner}</div>`;
+}
 function context(p) {
   const C = p.context, T = 6, step = .6, D = 1.2;   // cycle (s), delay between rules, token travel time
   const uid = `ctx-${p.key}`, X = [172.5, 537.5];   // agent card centers in the 710-wide column (20px grid gap)
@@ -1328,7 +1408,7 @@ LOOPS.forEach((L, i) => {
       const deep = css3d(`
       <button class="x act" data-act="close" title="Back (Esc)">✕</button>
       <div class="ph">${wordmark(p)}<div class="lc">${p.name}<br>${D.name}</div></div>
-      <h2>${D.title}</h2>${D.compare ? compare(D.compare) : `
+      <h2>${D.title}</h2>${D.compare ? compare(D.compare) : D.scale ? scale(D.scale) : `
       <div class="dcols${D.cols.some(c => c[2]) ? ' sub' : ''}">${D.cols.map(([h, items, desc]) => `
         <div class="dcol"><h3>${h}</h3>${desc ? `<p>${desc}</p>` : ''}<ul>${items.map(t => Array.isArray(t) ? `<li class="id"><b>${t[0]}</b>${t[1]}</li>` : `<li>${t}</li>`).join('')}</ul></div>`).join('')}
       </div>${D.ecosystems ? `
