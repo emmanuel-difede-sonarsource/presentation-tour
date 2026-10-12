@@ -44,6 +44,7 @@
   /* logo height 1.6em; the assembled lockup (mark + text) follows the official SonarQube logo proportions */
   .wm .lg { height: 1.6em; width: auto; flex: none; }
   .wm .lg.gitar { height: 1.41em; }
+  .wm .sep { width: 4px; height: 1.2em; margin: 0 .2em; flex: none; border-radius: 2px; background: rgba(18,110,211,.25); }
   .wm .mk { width: auto; height: 1.6em; flex: none; }
   .wm .wt { display: flex; flex-direction: column; line-height: 1; font-size: .77em; }
   .wm b { font-weight: 500; color: var(--purple); }
@@ -76,6 +77,7 @@
   .panel .x:hover { border-color: var(--blue); color: var(--blue); }
   .panel .ph { display: flex; align-items: center; justify-content: space-between; gap: 30px; margin-right: 110px; }
   .panel .wm { font-size: 84px; }
+  .panel .wm.duo { font-size: 60px; }
   .panel .lc { font: 500 28px/1.5 'IBM Plex Mono', monospace; letter-spacing: 4px; color: var(--blue); text-transform: uppercase; text-align: right; }
   .panel h2 { font: 500 60px/1.2 Lora, serif; color: var(--purple); margin: 30px 0 44px; }
   .panel .cols { display: grid; grid-template-columns: 1.1fr 1fr; gap: 64px; }
@@ -522,6 +524,7 @@ const LOOPS = [
     products: [
       {
         key: 'sq', logo: 'sonarqube-server', name: 'SonarQube', pos: [-4.3, -0.5],
+        panelLogos: ['sonarqube-server', 'sonarqube-cloud'],   // the panel and deep-dive headers show both deployments
         tag: 'Algorithmic verification on every pull request',
         what: ['<b>8,000+ deterministic rules</b> for security, reliability and maintainability',
                '<b>SAST & taint analysis</b> across functions, files and frameworks: XSS, injections, SSRF, XXE…',
@@ -1146,6 +1149,10 @@ function css3d(html, cls, x, y, z = 0.08, extra = {}) {
   cssItems.push(item);
   return item;
 }
+// panel and deep-dive headers: `panelLogos` (several official logos side by side) overrides the product's single wordmark
+const panelMark = p => p.panelLogos
+  ? `<span class="wm duo">${p.panelLogos.map(l => `<img class="lg ${l}" src="${LOGO(l)}" alt="" draggable="false">`).join('<span class="sep"></span>')}</span>`
+  : wordmark(p);
 const wordmark = p => p.logo
   ? `<span class="wm"><img class="lg ${p.logo}" src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"></span>`
   : `<span class="wm"><img class="mk" src="${LOGO(p.mark)}" alt="" draggable="false"><span class="wt"><span><b>Sonar</b><em>${p.brand}</em></span>${p.sub ? `<small>${p.sub}</small>` : ''}</span></span>`;
@@ -1420,7 +1427,7 @@ LOOPS.forEach((L, i) => {
 
     const panel = css3d(`
       <button class="x act" data-act="close" title="Back (Esc)">✕</button>
-      <div class="ph">${wordmark(p)}<div class="lc">${L.title}<br>${L.stage}</div></div>
+      <div class="ph">${panelMark(p)}<div class="lc">${L.title}<br>${L.stage}</div></div>
       <h2>${p.tag}</h2>
       <div class="cols">
         <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deeps.length ? `
@@ -1464,7 +1471,7 @@ LOOPS.forEach((L, i) => {
     panel.deeps = p.deeps.map((D, d) => {
       const deep = css3d(`
       <button class="x act" data-act="close" title="Back (Esc)">✕</button>
-      <div class="ph">${wordmark(p)}<div class="lc">${p.name}<br>${D.name}</div></div>
+      <div class="ph">${panelMark(p)}<div class="lc">${p.name}<br>${D.name}</div></div>
       <h2>${D.title}</h2>${D.compare ? compare(D.compare) : D.scale ? scale(D.scale) : `
       <div class="dcols${D.cols.some(c => c[2]) ? ' sub' : ''}">${D.cols.map(([h, items, desc]) => `
         <div class="dcol"><h3>${h}</h3>${desc ? `<p>${desc}</p>` : ''}<ul>${items.map(t => Array.isArray(t) ? `<li class="id"><b>${t[0]}</b>${t[1]}</li>` : `<li>${t}</li>`).join('')}</ul></div>`).join('')}
