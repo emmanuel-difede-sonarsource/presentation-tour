@@ -128,12 +128,33 @@
   .link-arrow svg { width: 110px; height: 24px; }
   .link-logos { display: flex; flex-direction: column; gap: 24px; }
   .link-logos img { display: block; height: 50px; }
-  .flow { display: flex; align-items: stretch; gap: 10px; margin-bottom: 40px; }
-  .flow .node { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center;
-                background: var(--bg); border-radius: 20px; padding: 24px 14px; font: 600 25px/1.25 Inter, sans-serif; color: var(--purple); }
-  .flow .node img { height: 64px; }
-  .flow .node span { font: 500 19px 'IBM Plex Mono', monospace; color: var(--blue); background: #fff; border-radius: 999px; padding: 4px 14px; }
-  .flow svg { flex: none; align-self: center; width: 52px; height: 24px; color: var(--blue); }
+  .sca { width: 710px; margin-bottom: 40px; font: 400 21px/1.3 Inter, sans-serif; }
+  .sca .nd { display: flex; align-items: center; gap: 18px; border-radius: 22px; padding: 18px 24px; background: var(--bg); }
+  .sca .nd > svg { flex: none; width: 52px; height: 52px; color: var(--purple); }
+  .sca .nd > img { display: block; height: 60px; }
+  .sca .nd > span { display: flex; flex-direction: column; gap: 4px; }
+  .sca .nd b { font: 600 26px Inter, sans-serif; color: var(--purple); }
+  .sca .nd small { font: 400 18px/1.3 Inter, sans-serif; color: var(--n8); }
+  .sca .chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-left: auto; }
+  .sca .chips span { font: 500 18px 'IBM Plex Mono', monospace; color: var(--blue); background: #fff; border-radius: 999px; padding: 4px 14px; white-space: nowrap; }
+  .sca .be { display: block; border: 3px solid var(--purple); background: #fff; padding: 20px 22px 22px; }
+  .sca .be-h { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .sca .be-h svg { flex: none; width: 52px; height: 52px; color: var(--purple); }
+  .sca .be-h b { font: 600 28px Poppins, Inter, sans-serif; }
+  .sca .be-h em { margin-left: auto; font: italic 500 17px Inter, sans-serif; color: var(--blue); text-align: right; }
+  .sca .steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .sca .st { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border: 3px solid transparent; border-radius: 18px; background: var(--bg);
+             animation: sca-step var(--T) ease-out var(--d) infinite; }
+  .sca .st svg { flex: none; width: 40px; height: 40px; color: var(--blue); }
+  .sca .st span { display: flex; flex-direction: column; gap: 2px; }
+  .sca .st b { font: 600 21px/1.2 Inter, sans-serif; }
+  .sca .st small { font-size: 16px; }
+  @keyframes sca-step { 0% { background: #fff; border-color: var(--blue); box-shadow: 0 0 0 0 rgba(18,110,211,.45); }
+                        14% { background: #fff; border-color: var(--blue); box-shadow: 0 0 0 16px rgba(18,110,211,0); }
+                        20%, 100% { background: var(--bg); border-color: transparent; box-shadow: none; } }
+  .sca > svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--blue); }
+  .sca > svg .dash { stroke-dasharray: 10 9; animation: hunt-flow 1.1s linear infinite; }
+  .sca > svg text { font: 500 19px Inter, sans-serif; fill: var(--label); }
   .hunt { margin-bottom: 40px; font-family: Inter, sans-serif; }
   .hunt .hn { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 0 auto; width: 64%; box-sizing: border-box;
               border-radius: 20px; padding: 18px 24px; text-align: center; background: var(--bg); color: var(--n8); font: 400 23px/1.3 Inter, sans-serif; }
@@ -438,7 +459,8 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    Content — edit here. Wording follows the 2026 SonarQube deck and the
    Server-vs-Cloud comparison (SonarQube Server 2026.5 / Cloud, Oct 2026).
    The Advanced Security deep dive (`deep`) follows the SonarQube Advanced
-   Security Detect / Fix / Governance slide (Oct 2026). The Hunter Agent
+   Security Detect / Fix / Governance slide (Oct 2026), whose Detect and Fix
+   wording also names the Sonar backend processing steps (`sca`). The Hunter Agent
    requirements (`deep`) follow the Sonar docs, Oct 2026: Cloud and Server
    2026.5 Hunter Agent pages, AC/DC Hunter Agent FAQ, Server LLM providers
    and AI agents "Before you start". The Remediation Agent requirements
@@ -539,9 +561,19 @@ const LOOPS = [
         what: ['<b>SCA</b>: vulnerabilities, license policy and malicious-package risks across your dependencies',
                'Real finding: <b>CVE-2024-23897</b> in Jenkins (CVSS 9.8)',
                '<b>Configurable branch rescans</b> surface newly disclosed risks on unchanged code'],
-        // simple diagram shown instead of `runs`: [logo, title, chips]
-        flow: [['sonarqube-server-mark', 'SonarQube', ['Advanced Security']], [null, 'Sonar backend', []], [null, 'Public databases', ['OSV', 'NVD', 'CISA KEV', '…']]],
-        runsNote: 'SonarQube Server needs internet access to reach the Sonar backend (no air-gapped installs).',
+        // animated diagram shown instead of `runs`: SonarQube sends the dependencies found during analysis to the Sonar backend,
+        // which matches them against public databases, enriches and processes them, then sends prioritized risks back
+        sca: {
+          sq: ['sonarqube-server-mark', 'SonarQube', 'Dependencies found during analysis', 'Advanced Security'],
+          lanes: ['Dependencies', 'Prioritized risks', 'Vulnerability & advisory data'],   // down to the backend, back up to SonarQube, up from the databases
+          backend: ['Sonar backend', 'Enriches and processes every dependency'],
+          // [icon, title, description], laid out two by two and lit in turn
+          steps: [['search', 'Match', 'Known vulnerabilities in direct and transitive dependencies'],
+                  ['tag', 'Enrich', 'CVE, KEV, CVSS and EPSS context'],
+                  ['route', 'Reachability', 'Flags reachable vulnerabilities to reduce false positives'],
+                  ['upgrade', 'Safe versions', 'Recommended upgrades and maintainer-backed workarounds']],
+          dbs: ['Public databases', ['OSV', 'NVD', 'CISA KEV', '…']],
+        },
         stat: ['92%', 'of applications contain open-source components, and 70–90% of an average application is open-source code.'],
         // optional level below the product panel (#2.2.1)
         deep: {
@@ -1180,6 +1212,11 @@ const ICONS = {
   package: '<path d="M21 7.5 12 3 3 7.5v9L12 21l9-4.5z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9M7.5 5.2l9 4.5"/>',
   agent: '<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V5M9 13v1.5M15 13v1.5M9.5 17.5h5M2 13v3M22 13v3"/><circle cx="12" cy="3.5" r="1.5"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/>',
+  cloud: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>',
+  database: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>',
+  tag: '<path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+  route: '<circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/>',
+  upgrade: '<circle cx="12" cy="12" r="10"/><path d="M16 12l-4-4-4 4M12 16V8"/>',
   team: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-3.8 3.1-6 6.5-6s6 2.2 6.5 6"/><circle cx="17" cy="9" r="2.8"/><path d="M16.5 14.2c2.9.2 4.6 2.2 5 5.3"/>',
 };
 const icon = k => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
@@ -1222,6 +1259,27 @@ function context(p) {
     <div class="ags">${C.agents.map(t => `<div class="ag"><div class="ag-h">${icon('agent')}Coding agent</div><div class="task">Task: ${t}</div>
       <div class="vx"><div class="vx-h"><img src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"><em>running inside</em></div><small>Aware of</small>
       ${C.aware.map((w, k) => `<div class="aw" style="--d:${k * step + D}s"><i></i>${w}</div>`).join('')}</div></div>`).join('')}</div>
+  </div>`;
+}
+
+// Advanced Security (see `sca` in LOOPS): SonarQube sends its dependencies (purple token) to the Sonar backend, which also
+// receives public advisory data, runs its processing steps one by one, then sends prioritized risks back (blue token)
+function sca(A, uid) {
+  const T = 8, D = 1, step = 1.2;   // cycle (s), token travel time, delay between processing steps
+  const token = (id, fill, begin) => `<circle r="9" fill="${fill}" opacity="0"><animateMotion dur="${T}s" begin="${begin}s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;${D / T};1" calcMode="linear"><mpath href="#${id}"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;${(D - .1) / T};${D / T};1" dur="${T}s" begin="${begin}s" repeatCount="indefinite"/></circle>`;
+  const ah = (x, y, d) => `<path d="M${x - 9} ${y - 11 * d}L${x} ${y}L${x + 9} ${y - 11 * d}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const lane = (id, x, y0, y1) => `<path id="${id}" class="dash" d="M${x} ${y0}V${y1}" fill="none" stroke="currentColor" stroke-width="4"/>${ah(x, y1 + (y1 > y0 ? 4 : -4), y1 > y0 ? 1 : -1)}`;
+  return `<div class="sca" style="--T:${T}s">
+    <div class="nd"><img src="${LOGO(A.sq[0])}" alt="" draggable="false"><span><b>${A.sq[1]}</b><small>${A.sq[2]}</small></span><div class="chips"><span>${A.sq[3]}</span></div></div>
+    <svg viewBox="0 0 710 100" aria-hidden="true">${lane(`${uid}-dn`, 300, 4, 88)}${lane(`${uid}-up`, 410, 96, 12)}
+      <text x="282" y="57" text-anchor="end">${A.lanes[0]}</text><text x="428" y="57">${A.lanes[1]}</text>
+      ${token(`${uid}-dn`, 'var(--purple)', 0)}${token(`${uid}-up`, 'var(--blue)', 1.2 + A.steps.length * step)}</svg>
+    <div class="nd be"><div class="be-h">${icon('cloud')}<b>${A.backend[0]}</b><em>${A.backend[1]}</em></div>
+      <div class="steps">${A.steps.map(([ic, t, d], k) => `<div class="st" style="--d:${1.2 + k * step}s">${icon(ic)}<span><b>${t}</b><small>${d}</small></span></div>`).join('')}</div></div>
+    <svg viewBox="0 0 710 90" aria-hidden="true">${lane(`${uid}-db`, 355, 86, 12)}<text x="373" y="54">${A.lanes[2]}</text>
+      ${token(`${uid}-db`, 'var(--purple)', .4)}</svg>
+    <div class="nd">${icon('database')}<span><b>${A.dbs[0]}</b></span><div class="chips">${A.dbs[1].map(c => `<span>${c}</span>`).join('')}</div></div>
   </div>`;
 }
 
@@ -1366,17 +1424,16 @@ LOOPS.forEach((L, i) => {
       <h2>${p.tag}</h2>
       <div class="cols">
         <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deeps.length ? `
-          <div class="deepers">${p.deeps.map((D, d) => `<button class="deeper act" data-act="deep:${i}:${j}:${d}" title="Deep dive">${D.cta}</button>`).join('')}</div>` : ''}${p.pipeline || p.feed || p.context ? stats(p) : ''}</div>
+          <div class="deepers">${p.deeps.map((D, d) => `<button class="deeper act" data-act="deep:${i}:${j}:${d}" title="Deep dive">${D.cta}</button>`).join('')}</div>` : ''}${p.pipeline || p.feed || p.context || p.sca ? stats(p) : ''}</div>
         <div>
           ${p.feed ? feed(p) : p.context ? context(p) : p.cycle ? cycle(p.cycle) : p.pipeline ? pipeline(p.pipeline, `${i}:${j}`) : `
           <h4>${p.pr ? 'Better together' : 'Where it runs'}</h4>
-          ${p.pr ? prStack(p.pr) : p.flow ? `<div class="flow">${p.flow.map(([l, t, c]) => `<div class="node">${l ? `<img src="${LOGO(l)}" alt="" draggable="false">` : ''}${t}${c.map(x => `<span>${x}</span>`).join('')}</div>`)
-            .join('<svg viewBox="0 0 52 24"><path d="M2 12H44M34 3l10 9-10 9" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>')}</div>` : `
+          ${p.pr ? prStack(p.pr) : p.sca ? sca(p.sca, `sca-${p.key}`) : `
           <div class="runs${p.connects ? ' link' : ''}">${p.runs.map(([h, t]) => `<div class="run"><b>${h}</b>${t}</div>`).join('')}${p.connects ? `
             <div class="link-arrow"><svg viewBox="0 0 110 24"><path d="M2 12H100M88 2l12 10-12 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>connected to</div>
             <div class="link-logos">${p.connects.map(([l, n]) => `<img src="${LOGO(l)}" alt="${n}" draggable="false">`).join('')}</div>` : ''}</div>`}`}
           ${p.runsNote ? `<p style="font:400 25px/1.4 Inter;margin:-20px 0 36px">${p.runsNote}</p>` : ''}
-          ${p.pipeline || p.feed || p.context || p.statsRow ? '' : stats(p)}
+          ${p.pipeline || p.feed || p.context || p.sca || p.statsRow ? '' : stats(p)}
         </div>
       </div>${p.statsRow ? `
       <div class="stats-row">${stats(p)}</div>` : ''}${p.slider ? `
