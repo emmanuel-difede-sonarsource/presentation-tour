@@ -30,6 +30,9 @@
   /* ---------- 3D layer: overview ---------- */
   .ttl { width: 6400px; color: #0B0B0F; user-select: none; }
   .ttl h1 { font: 500 300px/1 Lora, serif; margin: 0; letter-spacing: -3px; }
+  .ttl.act { pointer-events: none !important; }   /* only the headline text is clickable, not the block's empty width */
+  .ttl > * { width: fit-content; }
+  .ttl.live > * { pointer-events: auto; }
   .ttl h1 .ne { color: var(--blue); }
   .ttl p { max-width: 5600px; margin: 48px 0 0; font: 400 92px/1.35 Inter, sans-serif; color: var(--n8); }
   .ttl p b { font-weight: 600; color: var(--purple); }
@@ -418,6 +421,8 @@
   #dots i.on { background: var(--blue); transform: scale(1.25); }
   #legend { position: fixed; top: 22px; right: 28px; display: flex; gap: 18px; font: 500 12px 'IBM Plex Mono', monospace; letter-spacing: 1px;
             color: var(--n8); background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 9px 16px; }
+  #legend { transition: opacity .4s; }
+  body.solo #legend { opacity: 0; }
   #legend span { display: inline-flex; align-items: center; gap: 7px; }
   #legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   #help { font: 400 12px Inter, sans-serif; color: var(--label); text-align: right; line-height: 1.6; transition: opacity 1s; }
@@ -1159,9 +1164,9 @@ const wordmark = p => p.logo
   ? `<span class="wm"><img class="lg ${p.logo}" src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"></span>`
   : `<span class="wm"><img class="mk" src="${LOGO(p.mark)}" alt="" draggable="false"><span class="wt"><span><b>Sonar</b><em>${p.brand}</em></span>${p.sub ? `<small>${p.sub}</small>` : ''}</span></span>`;
 
-// overview headline: the observation behind the three loops
-css3d(`<h1>Writing code <span class="ne">≠</span> shipping code</h1>
-  <p>Sonar is the <b>independent</b> <b>AI code verification</b> and <b>governance</b> platform for agentic software development.</p>`, 'ttl', 0, 16.7, 0, { kind: 'title' });
+// overview headline: the observation behind the three loops. Clicking it isolates it (`headline` level), zooming out restores the overview
+const headline = css3d(`<h1>Writing code <span class="ne">≠</span> shipping code</h1>
+  <p>Sonar is the <b>independent</b> <b>AI code verification</b> and <b>governance</b> platform for agentic software development.</p>`, 'ttl', 0, 16.7, 0, { kind: 'title', act: 'headline' });
 
 connectors.forEach(c => {
   const it = css3d(`<span>${c.label}</span>`, 'gitl', c.labelPos[0], c.labelPos[1], 1.2, { kind: 'connector' });
@@ -1505,7 +1510,8 @@ function flyTo(to, dur = 1.5) {
   flight = { from, to, t: 0, dur, lift };
 }
 
-let state = { level: 'overview' };
+let state = { level: 'overview' };   // 'headline' = the overview title alone, everything else faded out
+let solo = 0;                        // 0 → 1 while the headline is isolated
 const tour = [{ level: 'overview' }];
 LOOPS.forEach((L, i) => {
   tour.push({ level: 'loop', loop: i });
@@ -1555,7 +1561,12 @@ function go(st) {
   const mine = p => p.loopIdx === st.loop && p.prodIdx === st.prod;
   panels.forEach(p => { p.target = ((st.level === 'product' || st.level === 'deep') && mine(p)) ? 1 : 0; });
   deeps.forEach(p => { p.target = (st.level === 'deep' && mine(p) && p.subIdx === st.sub) ? 1 : 0; });
+  document.body.classList.toggle('solo', st.level === 'headline');
   if (st.level === 'overview') flyTo({ x: 0, y: OY, z: Zo });
+  else if (st.level === 'headline') {   // frame the headline text, left-aligned in its block
+    const o = headline.o, w = Math.max(...[...headline.el.children].map(c => c.offsetWidth)) * S, h = headline.el.offsetHeight * S;
+    flyTo({ x: o.position.x - headline.el.offsetWidth * S / 2 + w / 2, y: o.position.y, z: fitZ(w * 1.2, h * 1.6) }, 1.2);
+  }
   else if (st.level === 'loop') flyTo({ x: LOOPS[st.loop].cx, y: FY, z: Zf });
   else if (st.level === 'product') {   // taller panels (e.g. the Remediation Agent feed diagram) back the camera off to fit
     const h = LOOPS[st.loop].products[st.prod].panel.el.offsetHeight * S;
@@ -1568,7 +1579,7 @@ function go(st) {
   updateHud();
 }
 function step(d) {
-  let k = tour.findIndex(t => sameState(t, state));
+  let k = tour.findIndex(t => sameState(t, state.level === 'headline' ? { level: 'overview' } : state));
   k = k < 0 ? 0 : (k + d + tour.length) % tour.length;
   go(tour[k]);
 }
@@ -1586,13 +1597,14 @@ dotsEl.innerHTML = tour.map((t, k) => `<i data-act="step:${k}" class="${{ produc
   t.level === 'overview' ? 'Overview' : t.level === 'loop' ? LOOPS[t.loop].title
   : t.level === 'product' ? prodOf(t).name : `${prodOf(t).name} · ${deepOf(t).name}`}"></i>`).join('');
 function updateHud() {
-  const parts = [`<a data-act="overview" class="${state.level === 'overview' ? 'cur' : ''}">Overview</a>`];
-  if (state.level !== 'overview') parts.push(`<a data-act="loop:${state.loop}" class="${state.level === 'loop' ? 'cur' : ''}">${LOOPS[state.loop].title}</a>`);
+  const top = state.level === 'overview' || state.level === 'headline';
+  const parts = [`<a data-act="overview" class="${top ? 'cur' : ''}">Overview</a>`];
+  if (!top) parts.push(`<a data-act="loop:${state.loop}" class="${state.level === 'loop' ? 'cur' : ''}">${LOOPS[state.loop].title}</a>`);
   if (state.level === 'product') parts.push(`<a class="cur">${prodOf(state).name}</a>`);
   if (state.level === 'deep') parts.push(`<a data-act="prod:${state.loop}:${state.prod}">${prodOf(state).name}</a>`, `<a class="cur">${deepOf(state).name}</a>`);
   crumbsEl.innerHTML = parts.join('<span>›</span>');
-  const k = tour.findIndex(t => sameState(t, state));
-  history.replaceState(null, '', location.pathname + location.search + (state.level === 'overview' ? '' : `#${state.loop + 1}${state.level === 'loop' ? '' : '.' + (state.prod + 1)}${state.level === 'deep' ? '.' + (state.sub + 1) : ''}`));
+  const k = top ? 0 : tour.findIndex(t => sameState(t, state));
+  history.replaceState(null, '', location.pathname + location.search + (top ? '' : `#${state.loop + 1}${state.level === 'loop' ? '' : '.' + (state.prod + 1)}${state.level === 'deep' ? '.' + (state.sub + 1) : ''}`));
   [...dotsEl.children].forEach((d, i) => d.classList.toggle('on', i === k));
 }
 
@@ -1609,6 +1621,7 @@ function act(a) {
   else if (k === 'deep') go({ level: 'deep', loop: +x, prod: +y, sub: +z });
   else if (k === 'step') go(tour[+x]);
   else if (k === 'overview') go({ level: 'overview' });
+  else if (k === 'headline') go({ level: state.level === 'headline' ? 'overview' : 'headline' });
   else if (k === 'close') back();
   else if (k === 'next') step(1);
   else if (k === 'prev') step(-1);
@@ -1625,6 +1638,7 @@ function pickLoop(cx, cy) {
   return hit ? hit.object.userData.loop : -1;
 }
 function syncStateFromCamera() {
+  if (state.level === 'headline') return;
   const t = (cam.z - Zf) / (Zo - Zf);
   if (t > 0.7) { if (state.level !== 'overview') { state = { level: 'overview' }; updateHud(); } return; }
   const near = LOOPS.reduce((b, L, i) => Math.abs(cam.x - L.cx) < Math.abs(cam.x - LOOPS[b].cx) ? i : b, 0);
@@ -1642,7 +1656,7 @@ addEventListener('pointermove', e => {
     }
     return;
   }
-  hovered = e.target.closest('#hud,#legend') ? -1 : pickLoop(e.clientX, e.clientY);
+  hovered = state.level === 'headline' || e.target.closest('#hud,#legend') ? -1 : pickLoop(e.clientX, e.clientY);
   document.body.style.cursor = hovered >= 0 && !(state.level === 'loop' && state.loop === hovered) ? 'pointer' : '';
 });
 addEventListener('pointerdown', e => {
@@ -1653,7 +1667,7 @@ addEventListener('pointerup', e => {
   const wasDown = pointer.down; pointer.down = null; document.body.classList.remove('dragging');
   if (pointer.moved) { pointer.moved = false; syncStateFromCamera(); return; }
   if (act(e.target.closest('[data-act]')?.dataset.act)) return;
-  if (!wasDown) return;
+  if (!wasDown || state.level === 'headline') return;
   const i = pickLoop(e.clientX, e.clientY);
   if (i >= 0 && !(state.level === 'loop' && state.loop === i)) go({ level: 'loop', loop: i });
 });
@@ -1662,6 +1676,7 @@ addEventListener('wheel', e => {
   e.preventDefault();
   flight = null;
   const factor = Math.exp(e.deltaY * (e.ctrlKey ? 0.01 : 0.0016));
+  if (factor > 1 && state.level === 'headline') { go({ level: 'overview' }); return; }   // zooming out brings the whole overview back
   if (factor > 1 && (state.level === 'product' || state.level === 'deep')) {
     demoClose();
     [...panels, ...deeps].forEach(p => { p.target = 0; }); state = { level: 'loop', loop: state.loop }; updateHud();
@@ -1760,30 +1775,32 @@ function frame() {
   [...panels, ...deeps].forEach(p => { p.k = clamp(p.k + (p.target ? dt : -dt) * 2.4, 0, 1); });
   const detail = LOOPS.map((_, i) => Math.max(0, ...panels.filter(p => p.loopIdx === i).map(p => ease(p.k))));
   const run = 1 - Math.max(...detail);   // 1 = free flow, 0 = a product panel is open
+  solo = clamp(solo + (state.level === 'headline' ? dt : -dt) * 2.4, 0, 1);
+  const rest = 1 - ease(solo);           // everything but the headline fades out while it is isolated
   const flowDt = dt * run;
 
   // WebGL dimming, hover & flow
   LOOPS.forEach((L, i) => {
-    const d = dims[i] * (1 - 0.55 * detail[i]);
+    const d = dims[i] * (1 - 0.55 * detail[i]) * rest;
     L.ring.material.opacity = d;
     L.halo.material.opacity = 0.05 * d + (hovered === i ? 0.08 : 0);
-    L.glow.material.opacity = 0.35 + 0.65 * d;
+    L.glow.material.opacity = (0.35 + 0.65 * d) * rest;
     L.hover.material.opacity = lerp(L.hover.material.opacity, hovered === i ? 1 : 0, Math.min(1, dt * 6));
     L.ring.material.dashOffset = (L.ring.material.dashOffset - FLOW_SPEED * flowDt) % 0.4189;
   });
   connectors.forEach(c => {
-    const d = Math.min(dims[c.between[0]], dims[c.between[1]]) * (1 - 0.6 * Math.max(detail[c.between[0]], detail[c.between[1]]));
+    const d = Math.min(dims[c.between[0]], dims[c.between[1]]) * (1 - 0.6 * Math.max(detail[c.between[0]], detail[c.between[1]])) * rest;
     c.line.material.opacity = d; c.arrow.material.opacity = d; c.head.material.opacity = d; c.node.mat.opacity = d;
     c.line.material.dashOffset = (c.line.material.dashOffset - FLOW_SPEED * flowDt) % 0.4189;
     c.dim = d;
   });
   for (const n of [...nodes, ...connectors.map(c => c.node)]) {
     n.pulse = Math.max(0, n.pulse - dt * 1.6);   // cooldown only: no visual burst
-    if (n.loop !== undefined) n.mat.opacity = dims[n.loop] * (1 - 0.55 * detail[n.loop]);
+    if (n.loop !== undefined) n.mat.opacity = dims[n.loop] * (1 - 0.55 * detail[n.loop]) * rest;
   }
   flows.forEach(f => {
     f.phase = (f.phase + FLOW_SPEED * flowDt / f.len) % 1;
-    const base = f.connector ? f.connector.dim : dims[f.loop] * (1 - 0.55 * detail[f.loop]);
+    const base = f.connector ? f.connector.dim : dims[f.loop] * (1 - 0.55 * detail[f.loop]) * rest;
     f.chev.forEach((m, k) => {
       const u = (f.phase + k / f.n) % 1;
       f.at(u, _p, _t);
@@ -1798,13 +1815,13 @@ function frame() {
   if (spawnTimer <= 0) { spawnJourney(); spawnTimer = 3.4; }
   tokens.forEach(tk => advanceToken(tk, flowDt));
   for (let k = tokens.length - 1; k >= 0; k--) if (tokens[k].fade <= 0) tokens.splice(k, 1);
-  writeTokens(dims, run);
+  writeTokens(dims, run * rest);
 
   // CSS3D opacity per semantic level
   for (const it of cssItems) {
     let a = 1;
     switch (it.kind) {
-      case 'title': a = smooth(0.35, 0.8, tz); break;
+      case 'title': a = Math.max(smooth(0.35, 0.8, tz), ease(solo)); it.el.classList.toggle('live', a > 0.5); break;
       case 'connector': a = Math.min(dims[it.between[0]], dims[it.between[1]]) * (1 - 0.7 * Math.max(...detail)); break;
       case 'loopStatic': a = dims[it.loop] * (1 - 0.7 * detail[it.loop]); break;
       case 'wordmark': a = (1 - smooth(0.15, 0.85, focusW[it.loop])) * dims[it.loop]; break;
@@ -1824,7 +1841,7 @@ function frame() {
         break;
       }
     }
-    setOpacity(it, a);
+    setOpacity(it, it.kind === 'title' ? a : a * rest);
   }
 
   renderer.render(scene, camera);
