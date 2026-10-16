@@ -29,8 +29,10 @@
 
   /* ---------- 3D layer: overview ---------- */
   .ttl { width: 6400px; color: #0B0B0F; user-select: none; }
-  .ttl .eb { font: 500 78px 'IBM Plex Mono', monospace; letter-spacing: 6px; margin-bottom: 46px; }
   .ttl h1 { font: 500 300px/1 Lora, serif; margin: 0; letter-spacing: -3px; }
+  .ttl h1 .ne { color: var(--blue); }
+  .ttl p { max-width: 5600px; margin: 48px 0 0; font: 400 92px/1.35 Inter, sans-serif; color: var(--n8); }
+  .ttl p b { font-weight: 600; color: var(--purple); }
   .lbox { font: 400 100px 'IBM Plex Mono', monospace; letter-spacing: 6px; text-transform: uppercase; color: #6C7889;
           border: 6px solid #A3ADBB; padding: 18px 64px; background: rgba(243,246,251,.9); white-space: nowrap;
           transition: border-color .25s, color .25s, background .25s; }
@@ -1157,7 +1159,9 @@ const wordmark = p => p.logo
   ? `<span class="wm"><img class="lg ${p.logo}" src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"></span>`
   : `<span class="wm"><img class="mk" src="${LOGO(p.mark)}" alt="" draggable="false"><span class="wt"><span><b>Sonar</b><em>${p.brand}</em></span>${p.sub ? `<small>${p.sub}</small>` : ''}</span></span>`;
 
-css3d(`<div class="eb">OUR SOLUTION</div><h1>Three verification-powered coding loops</h1>`, 'ttl', 0, 16.4, 0, { kind: 'title' });
+// overview headline: the observation behind the three loops
+css3d(`<h1>Writing code <span class="ne">≠</span> shipping code</h1>
+  <p>Sonar is the <b>independent</b> <b>AI code verification</b> and <b>governance</b> platform for agentic software development.</p>`, 'ttl', 0, 16.7, 0, { kind: 'title' });
 
 connectors.forEach(c => {
   const it = css3d(`<span>${c.label}</span>`, 'gitl', c.labelPos[0], c.labelPos[1], 1.2, { kind: 'connector' });
