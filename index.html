@@ -453,7 +453,7 @@
   <span><i style="background:var(--amber)"></i>AI-generated change</span>
   <span><i style="background:var(--blue)"></i>Verified change</span>
 </div>
-<button id="swayToggle" class="on" title="Toggle mouse-follow drift" aria-pressed="true">
+<button id="swayToggle" title="Toggle mouse-follow drift" aria-pressed="false">
   <span class="track"><span class="thumb"></span></span>Sway
 </button>
 <div id="hud">
@@ -1628,7 +1628,7 @@ let hovered = -1;
 
 /* ---------- sway toggle ---------- */
 const swayToggleEl = document.getElementById('swayToggle');
-let swayOn = true;
+let swayOn = false;
 swayToggleEl.addEventListener('click', () => {
   swayOn = !swayOn;
   swayToggleEl.classList.toggle('on', swayOn);
