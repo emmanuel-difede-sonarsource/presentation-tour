@@ -428,6 +428,16 @@
   #help { font: 400 12px Inter, sans-serif; color: var(--label); text-align: right; line-height: 1.6; transition: opacity 1s; }
   #help kbd { font: 500 11px 'IBM Plex Mono', monospace; background: #fff; border: 1px solid #DCE3EC; border-radius: 5px; padding: 1px 6px; color: var(--n8); }
   @media (max-width: 760px) { #help, #legend { display: none; } #hud { padding: 0 16px 16px; } }
+
+  /* ---------- sway toggle ---------- */
+  #swayToggle { position: fixed; top: 68px; right: 28px; z-index: 5; display: flex; align-items: center; gap: 9px;
+                font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: 1px; color: var(--label); cursor: pointer;
+                background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 8px 14px 8px 8px; }
+  #swayToggle .track { width: 30px; height: 17px; border-radius: 999px; background: #D3DAE5; position: relative; transition: background .2s; flex: none; }
+  #swayToggle .thumb { position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: left .2s; }
+  #swayToggle.on .track { background: var(--blue); }
+  #swayToggle.on .thumb { left: 15px; }
+  @media (max-width: 760px) { #swayToggle { display: none; } }
 </style>
 <script type="importmap">
 { "imports": {
@@ -443,6 +453,9 @@
   <span><i style="background:var(--amber)"></i>AI-generated change</span>
   <span><i style="background:var(--blue)"></i>Verified change</span>
 </div>
+<button id="swayToggle" class="on" title="Toggle mouse-follow drift" aria-pressed="true">
+  <span class="track"><span class="thumb"></span></span>Sway
+</button>
 <div id="hud">
   <div id="crumbs"></div>
   <div id="help">
@@ -1613,6 +1626,15 @@ const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
 const pointer = { x: 0, y: 0, down: null, moved: false };
 let hovered = -1;
 
+/* ---------- sway toggle ---------- */
+const swayToggleEl = document.getElementById('swayToggle');
+let swayOn = true;
+swayToggleEl.addEventListener('click', () => {
+  swayOn = !swayOn;
+  swayToggleEl.classList.toggle('on', swayOn);
+  swayToggleEl.setAttribute('aria-pressed', String(swayOn));
+});
+
 function act(a) {
   if (!a) return false;
   const [k, x, y, z] = a.split(':');
@@ -1656,11 +1678,11 @@ addEventListener('pointermove', e => {
     }
     return;
   }
-  hovered = state.level === 'headline' || e.target.closest('#hud,#legend') ? -1 : pickLoop(e.clientX, e.clientY);
+  hovered = state.level === 'headline' || e.target.closest('#hud,#legend,#swayToggle') ? -1 : pickLoop(e.clientX, e.clientY);
   document.body.style.cursor = hovered >= 0 && !(state.level === 'loop' && state.loop === hovered) ? 'pointer' : '';
 });
 addEventListener('pointerdown', e => {
-  if (e.button !== 0 || e.target.closest('#hud,#legend,.slider,.demo')) return;
+  if (e.button !== 0 || e.target.closest('#hud,#legend,.slider,.demo,#swayToggle')) return;
   pointer.down = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; pointer.moved = false;
 });
 addEventListener('pointerup', e => {
@@ -1671,7 +1693,7 @@ addEventListener('pointerup', e => {
   const i = pickLoop(e.clientX, e.clientY);
   if (i >= 0 && !(state.level === 'loop' && state.loop === i)) go({ level: 'loop', loop: i });
 });
-addEventListener('dblclick', e => { if (!e.target.closest('[data-act],#hud,.slider,.demo')) back(); });
+addEventListener('dblclick', e => { if (!e.target.closest('[data-act],#hud,.slider,.demo,#swayToggle')) back(); });
 addEventListener('wheel', e => {
   e.preventDefault();
   flight = null;
@@ -1761,11 +1783,15 @@ function frame() {
     cam.z = lerp(flight.from.z, flight.to.z, k) + flight.lift * Math.sin(Math.PI * k);
     if (flight.t >= 1) flight = null;
   }
-  const sway = 0.012 * cam.z;
-  camera.position.set(
-    cam.x + pointer.x * cam.z * 0.035 + Math.sin(elapsed * 0.23) * sway,
-    cam.y - pointer.y * cam.z * 0.035 + Math.cos(elapsed * 0.19) * sway * 0.6,
-    cam.z);
+  if (swayOn) {
+    const sway = 0.012 * cam.z;
+    camera.position.set(
+      cam.x + pointer.x * cam.z * 0.035 + Math.sin(elapsed * 0.23) * sway,
+      cam.y - pointer.y * cam.z * 0.035 + Math.cos(elapsed * 0.19) * sway * 0.6,
+      cam.z);
+  } else {
+    camera.position.set(cam.x, cam.y, cam.z);
+  }
   camera.lookAt(cam.x, cam.y, 0);
 
   // semantic zoom weights
