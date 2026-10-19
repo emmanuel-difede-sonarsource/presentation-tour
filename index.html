@@ -330,6 +330,18 @@
              animation: ctx-aware var(--T) ease-out var(--d) infinite backwards; }
   .ctx .aw i { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--blue); position: relative; }
   .ctx .aw i::after { content: ''; position: absolute; left: 7px; top: 6px; width: 10px; height: 6px; border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(-45deg); }
+  .ctx .ag small b { margin-right: 10px; padding: 2px 10px; border-radius: 8px; background: var(--blue); color: #fff; letter-spacing: 1px; }
+  .ctx .ag small.vf-h { margin-top: 14px; padding-top: 12px; border-top: 2px dashed #C9D6E8; }
+  /* Verify steps light up in turn after Guide, then dim before the next cycle */
+  .ctx .vf { display: flex; align-items: center; gap: 10px; padding: 4px 0; font: 500 18px/1.25 Inter, sans-serif; color: var(--purple);
+             animation: ctx-verify var(--T) ease-out var(--d) infinite backwards; }
+  .ctx .vf i { flex: none; width: 26px; height: 26px; border-radius: 50%; position: relative; }
+  .ctx .vf.chg i { background: var(--amber); }
+  .ctx .vf.res i { background: var(--blue); }
+  .ctx .vf.res i::after { content: ''; position: absolute; left: 7px; top: 6px; width: 10px; height: 6px; border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(-45deg); }
+  .ctx .vf.run svg { flex: none; width: 26px; height: 26px; color: var(--blue); }
+  .ctx .vf.run code { font: 500 16px 'IBM Plex Mono', monospace; color: var(--blue); background: #fff; border-radius: 8px; padding: 3px 10px; }
+  @keyframes ctx-verify { 0% { opacity: .22; transform: translateX(-6px); } 4%, 52% { opacity: 1; transform: none; } 60%, 100% { opacity: .22; transform: translateX(-6px); } }
   @keyframes ctx-aware { 0% { opacity: .22; transform: translateX(-6px); } 4%, 88% { opacity: 1; transform: none; } 96%, 100% { opacity: .22; transform: translateX(-6px); } }
   .diagram { display: block; width: 100%; height: auto; margin-bottom: 40px; }
   .cycle { overflow: visible; }
@@ -544,9 +556,10 @@ const LOOPS = [
              '<b>Dependency health & safety</b> before a third-party package gets pulled in',
              '<b>On-the-fly Sonar analysis</b> of every change the agent makes, as it writes it',
              'Delivered through the SonarQube <b>CLI & MCP Server</b>, with agents such as Claude Code'],
-      // animated diagram shown instead of `runs`: the company's standards, defined once in SonarQube, flow into every coding agent's task
+      // animated diagram shown instead of `runs`: the company's standards, defined once in SonarQube, flow into every coding agent's task (Guide),
+      // then each change the agent writes is analyzed on the spot (Verify)
       context: {
-        title: 'Your standards, in every agent',
+        title: 'Guide every agent, verify every change',
         org: 'Your company', sq: ['sonarqube-server', 'sonarqube-cloud'],
         // [icon, title, description], icon one of quality / architecture / package
         rules: [['quality', 'Quality profile', 'Your definition of code quality'],
@@ -554,6 +567,9 @@ const LOOPS = [
                 ['package', 'Authorized OSS packages', 'The open source your company approves']],
         agents: ['Add a payment endpoint', 'Refactor the order service'],   // one task per coding agent
         aware: ['Quality profile', 'Architecture rules', 'Authorized packages'],   // what each agent is aware of, same order as `rules`
+        // Verify: the agent's change (amber) is analyzed by `cmd`, then comes out verified (blue); one illustrative result per agent
+        verify: { change: 'Change written by the agent', cmd: 'sonar analyze agentic',
+                  results: ['No new issues: ready to push', '1 issue found, fixed by the agent and re-verified'] },
       },
       stat: [['<small>up to</small>36%', 'fewer tokens and lower cost on navigation-heavy tasks.'],
              ['<small>up to</small>92%', 'fewer issues produced by a coding agent.']],
@@ -1307,7 +1323,8 @@ function scale(E) {
       <div class="scale-ban">${E.banner}</div>`;
 }
 function context(p) {
-  const C = p.context, T = 6, step = .6, D = 1.2;   // cycle (s), delay between rules, token travel time
+  const C = p.context, V = C.verify, T = 9, step = .6, D = 1.2;   // cycle (s), delay between rules, token travel time
+  const tv = [3.6, 4.4, 5.2];   // Verify: change written, analysis running, result (s into the cycle, after Guide)
   const uid = `ctx-${p.key}`, X = [172.5, 537.5];   // agent card centers in the 710-wide column (20px grid gap)
   const ah = x => `<path d="M${x - 9} 75L${x} 86L${x + 9} 75" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
   // each rule sends one token per agent, then waits for the rest of the cycle
@@ -1320,9 +1337,14 @@ function context(p) {
     </div>
     <svg viewBox="0 0 710 90" aria-hidden="true">${X.map((x, a) => `<path id="${uid}-${a}" class="dash" d="M355 0C355 48 ${x} 34 ${x} 84" fill="none" stroke="currentColor" stroke-width="4"/>${ah(x)}`).join('')}
       ${X.map((_, a) => C.rules.map((_, k) => token(`${uid}-${a}`, k * step)).join('')).join('')}</svg>
-    <div class="ags">${C.agents.map(t => `<div class="ag"><div class="ag-h">${icon('agent')}Coding agent</div><div class="task">Task: ${t}</div>
-      <div class="vx"><div class="vx-h"><img src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"><em>running inside</em></div><small>Aware of</small>
-      ${C.aware.map((w, k) => `<div class="aw" style="--d:${k * step + D}s"><i></i>${w}</div>`).join('')}</div></div>`).join('')}</div>
+    <div class="ags">${C.agents.map((t, a) => `<div class="ag"><div class="ag-h">${icon('agent')}Coding agent</div><div class="task">Task: ${t}</div>
+      <div class="vx"><div class="vx-h"><img src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"><em>running inside</em></div>
+      <small><b>Guide</b>Aware of</small>
+      ${C.aware.map((w, k) => `<div class="aw" style="--d:${k * step + D}s"><i></i>${w}</div>`).join('')}
+      <small class="vf-h"><b>Verify</b>Every change, on the spot</small>
+      <div class="vf chg" style="--d:${tv[0]}s"><i></i>${V.change}</div>
+      <div class="vf run" style="--d:${tv[1]}s">${icon('search')}<code>${V.cmd}</code></div>
+      <div class="vf res" style="--d:${tv[2]}s"><i></i>${V.results[a]}</div></div></div>`).join('')}</div>
   </div>`;
 }
 
