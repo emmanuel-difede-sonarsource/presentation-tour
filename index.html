@@ -128,7 +128,30 @@
   .slider .stops span:nth-child(2) { text-align: center; }
   .slider .stops span:nth-child(3) { text-align: right; }
   .slider .stops span.on { color: var(--purple); }
-  .slider p { font: 400 30px/1.42 Inter, sans-serif; margin: 20px 0 0; text-align: center; min-height: 1.42em; }
+  .slider p { font: italic 500 40px/1.3 Lora, serif; color: var(--purple); margin: 28px 0 0; text-align: center; min-height: 1.3em; }
+  /* autonomy schema under the slider: who acts at each PR step (data-who), steps lit in turn left to right */
+  .auto { display: flex; align-items: center; gap: 10px; margin-top: 36px; --T: 4s; }
+  .auto > svg { flex: none; width: 64px; height: 28px; color: var(--blue); overflow: visible; }
+  .auto > svg .dash { stroke-dasharray: 10 9; animation: hunt-flow 1.1s linear infinite; }
+  .auto .as { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 22px 16px 26px;
+              border: 3px solid #DFE6F0; border-top: 8px solid var(--c, var(--blue)); border-radius: 22px; background: var(--bg);
+              transition: border-top-color .4s; animation: auto-step var(--T) ease-out calc(var(--d) * var(--T) / 4) infinite; }
+  .auto .as[data-who="team"] { --c: var(--purple); }
+  .auto .as[data-who="agent"] { --c: var(--amber); }
+  .auto .as > b { font: 600 25px 'IBM Plex Mono', monospace; letter-spacing: 3px; text-transform: uppercase; color: var(--label); }
+  .auto .who { display: grid; height: 96px; }
+  .auto .who > span { grid-area: 1 / 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+                      opacity: 0; transform: scale(.85); transition: opacity .35s, transform .35s; color: var(--c); }
+  .auto .who svg { width: 60px; height: 60px; }
+  .auto .who img { display: block; height: 52px; }
+  .auto .who small { font: 600 21px Inter, sans-serif; color: var(--purple); white-space: nowrap; }
+  .auto .as[data-who="team"] .team, .auto .as[data-who="gitar"] .gitar, .auto .as[data-who="agent"] .agent { opacity: 1; transform: none; }
+  .auto .as em { position: absolute; bottom: -20px; font: normal 600 17px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase;
+                 color: #fff; background: var(--purple); border-radius: 999px; padding: 6px 14px; white-space: nowrap; opacity: 0; transition: opacity .35s; }
+  .auto .as.req em { opacity: 1; }
+  @keyframes auto-step { 0% { background: #fff; box-shadow: 0 0 0 0 rgba(18,110,211,.4); }
+                         16% { background: #fff; box-shadow: 0 0 0 18px rgba(18,110,211,0); }
+                         24%, 100% { background: var(--bg); box-shadow: none; } }
   .runs.link { display: flex; align-items: center; }
   .runs.link .run { flex: 1; }
   .link-arrow { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--blue); font: 500 21px Inter, sans-serif; white-space: nowrap; }
@@ -633,12 +656,14 @@ const LOOPS = [
         pr: { layers: [['gitar', 'Gitar', 'Agentic review of intent, logic and CI health on the same PR'],
                        ['sonarqube-server-mark', '<b>SonarQube</b> quality gate', '8K+ deterministic rules for security, reliability & maintainability']],
               wip: 'Gitar automatically fixing the quality gate' },
-        // mouse-driven slider at the bottom of the panel: [label, caption] per stop, left to right
+        // mouse-driven slider at the bottom of the panel, driving an animated schema of who acts at each PR step:
+        // [label, a few words, actor per step ('team' | 'gitar' | 'agent', a trailing '?' = on request)] per stop, left to right
         slider: {
           title: 'From human-led review to a fully autonomous software factory',
-          stops: [['Human in control', 'Better reviews on every PR, while your team keeps <b>full manual control</b> of what merges.'],
-                  ['Assisted', '“Gitar, please fix”: fixes and CI repairs <b>applied on request</b>.'],
-                  ['Fully autonomous', 'Software factory: autonomous agents’ PRs <b>remediate and build themselves</b>.']],
+          steps: ['PR', 'Review', 'Fix', 'Merge'],
+          stops: [['Human in control', 'Full manual control', ['team', 'gitar', 'team', 'team']],
+                  ['Assisted', '“Gitar, please fix”', ['team', 'gitar', 'gitar?', 'team']],
+                  ['Fully autonomous', 'PRs that build themselves', ['agent', 'gitar', 'gitar', 'gitar']]],
         },
         // a stat without a figure ('') renders as a highlighted claim; '“' renders a customer quote (attribution in <small>)
         statsRow: true,   // stats side by side in a full-width row below the columns
@@ -1212,6 +1237,12 @@ const prStack = P => `
             ${P.layers.map(([l, n, t]) => `<div class="pr-l"><div class="pr-n"><img src="${LOGO(l)}" alt="" draggable="false">${l === 'gitar' ? '' : `<span>${n}</span>`}</div>${t}</div>`)
               .join(`<div class="pr-wip" title="Work in progress">${WIP_ARROW}${GEAR}<span><b>Work in progress</b>${P.wip}</span></div>`)}
           </div>`;
+// Gitar autonomy schema (see `slider` in LOOPS): one card per PR step showing who acts on it, set by the slider position
+const autonomy = A => `
+        <div class="auto">${A.steps.map((t, k) => `<div class="as" style="--d:${k}"><b>${t}</b><div class="who">
+          <span class="team">${icon('team')}<small>Your team</small></span><span class="gitar"><img src="${LOGO('gitar')}" alt="Gitar" draggable="false"></span>
+          <span class="agent">${icon('agent')}<small>Coding agent</small></span></div><em>On request</em></div>`)
+          .join(`<svg viewBox="0 0 64 28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path class="dash" d="M4 14H52"/><path d="M46 5l10 9-10 9"/></svg>`)}</div>`;
 const stats = p => (Array.isArray(p.stat[0]) ? p.stat : [p.stat]).map(([b, t]) => `<div class="stat${b === '“' ? ' quote' : ''}">${b ? `<b>${b}</b>` : ''}<span>${t}</span></div>`).join('');
 
 // issue sources fan in to the Remediation Agent (purple issue tokens), which sends out a verified fix PR (blue token)
@@ -1469,7 +1500,7 @@ LOOPS.forEach((L, i) => {
       <div class="slider">
         <h4>${p.slider.title}</h4>
         <input type="range" min="0" max="100" value="0" aria-label="${p.slider.title}">
-        <div class="stops">${p.slider.stops.map(([t]) => `<span>${t}</span>`).join('')}</div>
+        <div class="stops">${p.slider.stops.map(([t]) => `<span>${t}</span>`).join('')}</div>${autonomy(p.slider)}
         <p></p>
       </div>` : ''}${(p.pipeline?.demos || []).map(D => demo(D, p.logo)).join('')}`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
     panel.k = 0; panel.target = 0; panel.from = card.o.position.clone(); panel.fromScale = S * lay.w * (lay.zoom || 1) / 1700;
@@ -1482,6 +1513,11 @@ LOOPS.forEach((L, i) => {
         const v = +input.value, k = Math.round(v / 100 * (stops.length - 1));
         input.style.setProperty('--v', v + '%');
         stops.forEach((s, n) => s.classList.toggle('on', n === k));
+        panel.el.querySelectorAll('.auto .as').forEach((a, n) => {
+          const who = p.slider.stops[k][2][n];
+          a.dataset.who = who.replace('?', '');
+          a.classList.toggle('req', who.endsWith('?'));
+        });
         panel.el.querySelector('.slider p').innerHTML = p.slider.stops[k][1];
       };
       input.addEventListener('input', show);
