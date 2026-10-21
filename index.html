@@ -508,10 +508,13 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    wording also names the Sonar backend processing steps (`sca`). The Hunter Agent
    requirements (`deep`) follow the Sonar docs, Oct 2026: Cloud and Server
    2026.5 Hunter Agent pages, AC/DC Hunter Agent FAQ, Server LLM providers
-   and AI agents "Before you start". The Remediation Agent requirements
+   and AI agents "Before you start" (refreshed Oct 21, 2026: Server
+   OpenShift). The Remediation Agent requirements
    (`deep`) follow the same Sonar docs, Oct 2026: AC/DC Remediation Agent
    page and FAQ, Cloud "Administer the Remediation Agent", Server 2026.5
-   Remediation Agent instance administration page. The
+   Remediation Agent instance administration page and AI agents "Before you
+   start" (refreshed Oct 21, 2026: Cloud GitLab support, Cloud CI/CD failure
+   recovery, Server OpenShift). The
    SonarQube Enterprise deep dive (`deep.scale`) follows the "Scale quality
    and security from the team to the enterprise" slide (SonarQube
    Enterprise value, 2026). The Hunter Agent
@@ -708,14 +711,14 @@ const LOOPS = [
               ['Prerequisites', [
                 ['<b>Team (annual) or Enterprise plan</b> + Sonar Agent Essentials subscription',
                  'Organization and project <b>bound</b> to the DevOps platform, with analysis enabled',
-                 'GitHub: install the <b>SonarQube Agent app</b> · Azure DevOps: reuses your existing token'],
+                 'GitHub: install the <b>SonarQube Agent app</b> · GitLab and Azure DevOps: reuse your existing token'],
                 ['<b>2026.5+</b> Enterprise or Data Center edition + Remediation Agent subscription',
                  '<b>LicenseSpring</b> license, online or offline (not server ID)',
                  'Projects <b>bound and already analyzed</b>, with <b>write access</b> to the repositories'],
               ]],
               ['Runs on', [
                 ['<b>Sonar’s infrastructure</b>: nothing to install'],
-                ['<b>Your infrastructure</b>: Docker Engine on Linux or Kubernetes with containerd, x86-64 or ARM64, with shared storage',
+                ['<b>Your infrastructure</b>: Docker Engine on Linux, Kubernetes with containerd or OpenShift 4.19+, x86-64 or ARM64, with shared storage',
                  'Outbound access to your LLM provider and DevOps platform'],
               ]],
               ['LLM models', [
@@ -726,7 +729,7 @@ const LOOPS = [
                 { chips: ['Anthropic', 'OpenAI', 'AWS Bedrock', 'Azure AI Foundry', 'OpenAI-compatible gateway'], note: 'Your own provider, configured once for the whole instance.' },
               ]],
               ['DevOps platforms', [
-                { hl: ['GitHub', 'Azure DevOps'], note: 'Backlog fixes on both. Pull request fixes on GitHub only.' },
+                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog fixes on all three. Pull request fixes on GitHub and GitLab. GitLab.com only.' },
                 { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog and pull request fixes on all three. Pull request fixes are triggered from SonarQube.' },
               ]],
               ['Languages', [
@@ -739,7 +742,8 @@ const LOOPS = [
             'The agent <b>never merges</b>: your reviewers and branch protection rules still apply',
             'Affected code goes to <b>your own LLM provider</b>, under your account, on Server too',
             '<em class="only">Cloud</em>Also fixes <b>dependency risks</b> by bumping versions: npm & yarn, pip, Maven & Gradle',
-            '<em class="only">Server</em>Agents can’t run on <b>OpenShift, Docker Desktop or ZIP</b> installs',
+            '<em class="only">Cloud</em>If CI fails on its pull request, the agent reads the <b>GitHub Actions</b> logs and pushes a fix, up to 3 times',
+            '<em class="only">Server</em>Agents can’t run on <b>Docker Desktop or ZIP</b> installs',
           ] },
         },
       },
@@ -848,7 +852,7 @@ const LOOPS = [
               ]],
               ['Runs on', [
                 ['<b>Sonar’s infrastructure</b>: nothing to install'],
-                ['<b>Your infrastructure</b>: Docker Engine on Linux or Kubernetes with containerd, x86-64 or ARM64',
+                ['<b>Your infrastructure</b>: Docker Engine on Linux, Kubernetes with containerd or OpenShift 4.19+, x86-64 or ARM64',
                  'Outbound access to your LLM provider and DevOps platform'],
               ]],
               ['LLM models', [
@@ -869,7 +873,7 @@ const LOOPS = [
             '<b>Reads source code only</b>: it never runs or attacks your application',
             'Findings are regular issues: run the <b>first scan on a dedicated branch</b> so a passing quality gate stays green',
             '<em class="only">Server</em>Enabled <b>once for the whole instance</b>, with no per-project switch',
-            '<em class="only">Server</em>Agents can’t run on <b>OpenShift, Docker Desktop or ZIP</b> installs',
+            '<em class="only">Server</em>Agents can’t run on <b>Docker Desktop or ZIP</b> installs',
           ] },
         }, {
           name: 'What it detects', cta: 'CWEs it hunts →',
