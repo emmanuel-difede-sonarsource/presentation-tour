@@ -566,7 +566,7 @@ const LOOPS = [
                 ['architecture', 'Architecture constraints', 'The layers and dependencies your codebase allows'],
                 ['package', 'Authorized OSS packages', 'The open source your company approves']],
         agents: ['Add a payment endpoint', 'Refactor the order service'],   // one task per coding agent
-        aware: ['Quality profile', 'Architecture rules', 'Authorized packages'],   // what each agent is aware of, same order as `rules`
+        aware: ['Quality profile', 'Architecture rules & semantic navigation', 'Authorized packages'],   // what each agent is aware of, same order as `rules`
         // Verify: the agent's change (amber) is analyzed by `cmd`, then comes out verified (blue); one illustrative result per agent
         verify: { change: 'Change written by the agent', cmd: 'sonar analyze agentic',
                   results: ['No new issues: ready to push', '1 issue found, fixed by the agent and re-verified'] },
