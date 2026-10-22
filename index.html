@@ -1848,15 +1848,22 @@ addEventListener('pointerdown', e => {
   if (e.button !== 0 || e.target.closest('#hud,#legend,.slider,.demo,#swayToggle')) return;
   pointer.down = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; pointer.moved = false;
 });
+let clickTimer = null;
 addEventListener('pointerup', e => {
   const wasDown = pointer.down; pointer.down = null; document.body.classList.remove('dragging');
   if (pointer.moved) { pointer.moved = false; syncStateFromCamera(); return; }
   if (act(e.target.closest('[data-act]')?.dataset.act)) return;
   if (!wasDown || state.level === 'headline') return;
   const i = pickLoop(e.clientX, e.clientY);
-  if (i >= 0 && !(state.level === 'loop' && state.loop === i)) go({ level: 'loop', loop: i });
+  if (i >= 0) { if (!(state.level === 'loop' && state.loop === i)) go({ level: 'loop', loop: i }); return; }
+  // plain left-click on empty space advances the tour, like → / Space; delayed so a double-click (zoom out) isn't read as two steps forward
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(() => step(1), 280);
 });
-addEventListener('dblclick', e => { if (!e.target.closest('[data-act],#hud,.slider,.demo,#swayToggle')) back(); });
+addEventListener('dblclick', e => {
+  clearTimeout(clickTimer);
+  if (!e.target.closest('[data-act],#hud,.slider,.demo,#swayToggle')) back();
+});
 addEventListener('wheel', e => {
   e.preventDefault();
   flight = null;
