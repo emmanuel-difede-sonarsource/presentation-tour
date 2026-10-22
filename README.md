@@ -8,7 +8,7 @@ An alternative to slide decks for Sonar Solutions Engineers: a single HTML page 
 
 ## Presenting
 
-Open the `Sonar-Coding-Loops.html` file. That's it.
+Open the `index.html` file, or the published page at https://emmanuel-difede-sonarsource.github.io/presentation-tour/ (GitHub Pages serves `index.html` at the root, so keep that file name). That's it.
 
 An internet connection is required (Three.js and fonts are loaded from CDNs). Logos are embedded in the page.
 
@@ -24,4 +24,4 @@ Deep links open a specific view directly: `#2` (loop 2), `#2.1` (loop 2, first p
 
 ## Editing the content
 
-All text lives in the `LOOPS` array at the top of the script in `Sonar-Coding-Loops.html` (the "Content — edit here" block). All of it is shown to customers, and every product claim must come from an official Sonar source.
+All text lives in the `LOOPS` array at the top of the script in `index.html` (the "Content — edit here" block). All of it is shown to customers, and every product claim must come from an official Sonar source.
