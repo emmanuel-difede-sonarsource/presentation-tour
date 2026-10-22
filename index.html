@@ -552,6 +552,19 @@
   #swayToggle.on .track { background: var(--blue); }
   #swayToggle.on .thumb { left: 15px; }
   @media (max-width: 760px) { #swayToggle { display: none; } }
+
+  /* ---------- autoplay toggle ---------- */
+  #autoplay { position: fixed; right: 28px; bottom: 78px; z-index: 5; display: flex; align-items: center; gap: 10px;
+              font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: 1px; color: var(--label);
+              background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 8px 14px 8px 8px; }
+  #autoplay .toggle { display: flex; align-items: center; gap: 9px; background: none; border: none; padding: 0; margin: 0; font: inherit; letter-spacing: inherit; color: inherit; cursor: pointer; }
+  #autoplay .track { width: 30px; height: 17px; border-radius: 999px; background: #D3DAE5; position: relative; transition: background .2s; flex: none; }
+  #autoplay .thumb { position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: left .2s; }
+  #autoplay .toggle.on .track { background: var(--blue); }
+  #autoplay .toggle.on .thumb { left: 15px; }
+  #autoplay .secs { display: flex; align-items: center; gap: 5px; color: var(--label); }
+  #autoplay .secs input { width: 34px; font: 500 13px 'IBM Plex Mono', monospace; color: var(--purple); background: #fff; border: 1px solid #E1E7F0; border-radius: 6px; padding: 2px 4px; text-align: center; }
+  @media (max-width: 760px) { #autoplay { display: none; } }
 </style>
 <script type="importmap">
 { "imports": {
@@ -570,6 +583,12 @@
 <button id="swayToggle" title="Toggle mouse-follow drift" aria-pressed="false">
   <span class="track"><span class="thumb"></span></span>Sway
 </button>
+<div id="autoplay">
+  <button class="toggle" title="Toggle auto-advance" aria-pressed="false">
+    <span class="track"><span class="thumb"></span></span>Auto
+  </button>
+  <label class="secs">every <input type="number" id="autoplaySecs" min="2" max="120" step="1" value="6" title="Seconds between steps">s</label>
+</div>
 <div id="hud">
   <div id="crumbs"></div>
   <div id="help">
@@ -1824,6 +1843,7 @@ function go(st) {
     flyTo({ x: LOOPS[st.loop].cx, y: PY, z: PZ + DZ + Math.max(Zd, fitZ(20, h + 1.6)) }, 1.1);
   }
   updateHud();
+  scheduleAutoplay();   // any navigation (manual or automatic) restarts the auto-advance countdown
 }
 function step(d) {
   let k = tour.findIndex(t => sameState(t, state.level === 'headline' ? { level: 'overview' } : state));
@@ -1867,6 +1887,25 @@ swayToggleEl.addEventListener('click', () => {
   swayOn = !swayOn;
   swayToggleEl.classList.toggle('on', swayOn);
   swayToggleEl.setAttribute('aria-pressed', String(swayOn));
+});
+
+/* ---------- autoplay ---------- */
+const autoplayToggleEl = document.querySelector('#autoplay .toggle'), autoplaySecsEl = document.getElementById('autoplaySecs');
+let autoplayOn = false, autoplaySecs = +autoplaySecsEl.value, autoplayTimer = null;
+function scheduleAutoplay() {
+  clearTimeout(autoplayTimer);
+  if (autoplayOn) autoplayTimer = setTimeout(() => step(1), autoplaySecs * 1000);
+}
+autoplayToggleEl.addEventListener('click', () => {
+  autoplayOn = !autoplayOn;
+  autoplayToggleEl.classList.toggle('on', autoplayOn);
+  autoplayToggleEl.setAttribute('aria-pressed', String(autoplayOn));
+  scheduleAutoplay();
+});
+autoplaySecsEl.addEventListener('input', () => {
+  const v = clamp(Math.round(+autoplaySecsEl.value || 1), +autoplaySecsEl.min, +autoplaySecsEl.max);
+  autoplaySecs = v;
+  if (autoplayOn) scheduleAutoplay();   // restart the countdown with the new delay
 });
 
 function act(a) {
@@ -1913,11 +1952,11 @@ addEventListener('pointermove', e => {
     }
     return;
   }
-  hovered = state.level === 'headline' || e.target.closest('#hud,#legend,#swayToggle') ? -1 : pickLoop(e.clientX, e.clientY);
+  hovered = state.level === 'headline' || e.target.closest('#hud,#legend,#swayToggle,#autoplay') ? -1 : pickLoop(e.clientX, e.clientY);
   document.body.style.cursor = hovered >= 0 && !(state.level === 'loop' && state.loop === hovered) ? 'pointer' : '';
 });
 addEventListener('pointerdown', e => {
-  if (e.button !== 0 || e.target.closest('#hud,#legend,.slider,.demo,#swayToggle')) return;
+  if (e.button !== 0 || e.target.closest('#hud,#legend,.slider,.demo,#swayToggle,#autoplay')) return;
   pointer.down = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; pointer.moved = false;
 });
 let clickTimer = null;
@@ -1934,7 +1973,7 @@ addEventListener('pointerup', e => {
 });
 addEventListener('dblclick', e => {
   clearTimeout(clickTimer);
-  if (!e.target.closest('[data-act],#hud,.slider,.demo,#swayToggle')) back();
+  if (!e.target.closest('[data-act],#hud,.slider,.demo,#swayToggle,#autoplay')) back();
 });
 addEventListener('wheel', e => {
   e.preventDefault();
@@ -1953,6 +1992,7 @@ addEventListener('wheel', e => {
   syncStateFromCamera();
 }, { passive: false });
 addEventListener('keydown', e => {
+  if (e.target.matches('input,textarea') || e.target.isContentEditable) return;   // let the seconds field (and any other input) be typed in normally
   if (demoOn) {   // an open example takes ←/→ (pause autoplay and step through it, → on the last step closes it) and Esc
     const d = ['ArrowRight', 'PageDown', ' '].includes(e.key) ? 1 : ['ArrowLeft', 'PageUp'].includes(e.key) ? -1 : 0;
     if (d || e.key === 'Escape' || e.key === 'Backspace') {
