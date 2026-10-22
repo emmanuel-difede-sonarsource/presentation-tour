@@ -856,6 +856,7 @@ const LOOPS = [
             actors: [['attacker', 'Mallory', 'Signed-in customer'], ['api', 'Billing API', 'Checks login only'], ['db', 'Database', 'All invoices']],
             steps: [
               [0, 1, 'GET /invoices/<b>1042</b>', '', 'Mallory signs in and opens her own invoice.'],
+              [1, 2, 'find invoice 1042', ''],
               [1, 0, '200 · Mallory’s invoice', 'res'],
               [0, 1, 'GET /invoices/<b>1043</b>', 'bad', 'She changes one digit in the URL.'],
               [1, 2, 'find invoice 1043', '', 'The API looks the invoice up by its ID alone…'],
