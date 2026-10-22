@@ -273,6 +273,51 @@
   .demo .pp svg { width: 24px; height: 24px; }
   .demo .pp svg + svg, .demo.paused .pp svg:first-child { display: none; }
   .demo.paused .pp svg + svg { display: block; }
+  /* side-by-side variant (Sonar Vortex semantic navigation): one task, each side's agent actions revealed step by step (.on) */
+  .demo .tagp { font: 600 23px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: #fff; background: var(--blue); border-radius: 999px; padding: 6px 20px; }
+  .demo.nav h3 { margin-bottom: 24px; }
+  .demo .task { display: flex; align-items: center; gap: 22px; margin-bottom: 30px; padding: 18px 28px; border-radius: 18px; background: var(--bg); font: 500 34px/1.35 Inter, sans-serif; color: var(--purple); }
+  .demo .task b { font: 600 20px 'IBM Plex Mono', monospace; letter-spacing: 3px; text-transform: uppercase; color: var(--label); }
+    .demo .vs { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+  .demo .side { display: flex; flex-direction: column; gap: 16px; border: 3px solid #E3E9F2; border-top: 8px solid var(--n6); border-radius: 24px; padding: 18px 22px 22px; }
+  .demo .side.sem { border-top-color: var(--blue); }
+  .demo .sh { display: flex; align-items: center; gap: 14px; white-space: nowrap; min-height: 60px; margin-bottom: 4px; font: 600 32px Inter, sans-serif; color: var(--purple); }
+  .demo .sh > span { font-weight: 400; color: var(--label); }
+  .demo .sh svg { flex: none; width: 46px; height: 46px; color: var(--purple); }
+  .demo .sh img { display: block; height: 42px; }
+  .demo .sh small { margin-left: auto; font: italic 500 24px Inter, sans-serif; color: var(--label); white-space: nowrap; }
+  .demo .ac { display: flex; align-items: center; gap: 20px; padding: 20px 24px; border-radius: 16px; background: var(--bg); border-left: 7px solid var(--n6);
+              font: 400 29px/1.3 Inter, sans-serif; color: var(--n8); opacity: 0; transform: translateY(12px); transition: opacity .4s, transform .4s, box-shadow .3s; }
+  .demo .ac b { font-weight: 600; color: var(--purple); }
+  .demo .ac small { display: block; margin-top: 8px; font: 400 23px/1.35 Inter, sans-serif; color: #5F6873; }
+  .demo .ac small b { font-weight: 600; color: var(--purple); }
+  .demo .ac.on { opacity: 1; transform: none; }
+  .demo .ac.cur { box-shadow: 0 0 0 3px var(--uranium); }
+  .demo .ac.hit { border-left-color: var(--blue); }
+  .demo .ac.waste { border-left-color: var(--amber); }
+  .demo .ac.miss { border-left-color: var(--red); }
+  .demo .ac > i { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--n6); color: #fff; display: grid; place-items: center; font: normal 700 20px Inter, sans-serif; }
+  .demo .ac.hit > i { background: var(--blue); }
+  .demo .ac.waste > i { background: var(--amber); }
+  .demo .ac.miss > i { background: var(--red); }
+  .demo .meter { margin-top: auto; padding-top: 10px; font: 600 20px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--label); }
+  .demo .bar { display: flex; height: 22px; margin-top: 8px; border-radius: 999px; background: #E3E9F2; overflow: hidden; }
+  .demo .bar i { width: 0; background: var(--n6); transition: width .7s ease; }
+  .demo .bar i + i { box-shadow: inset 2px 0 #fff; }
+  .demo .sem .bar i { background: var(--blue); }
+  .demo .bar i.on { width: var(--w); }
+  .demo .res { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border-radius: 16px; font: 500 30px/1.35 Inter, sans-serif; color: var(--purple);
+               opacity: 0; transform: translateY(12px); transition: opacity .5s .2s, transform .5s .2s; }
+  .demo .res.on { opacity: 1; transform: none; }
+  .demo .res i { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: #fff; font: normal 700 19px Inter, sans-serif; }
+  .demo .res.miss { background: rgba(211,18,29,.07); box-shadow: inset 0 0 0 3px var(--red); }
+  .demo .res.miss i { background: var(--red); }
+  .demo .res.hit { background: rgba(18,110,211,.07); box-shadow: inset 0 0 0 3px var(--blue); }
+  .demo .res.hit i { background: var(--blue); }
+  .demo.nav .dcap { font-size: 34px; }
+  .demo.nav .dsteps i:last-child.on { background: var(--blue); }
+  .deeper.try { gap: 14px; align-items: center; }
+  .deeper.try svg { width: 20px; height: 20px; }
   .feed { margin-bottom: 40px; font: 400 22px/1.3 Inter, sans-serif; }
   .feed .srcs { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 20px; }
   .feed .src { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; background: #fff;
@@ -533,7 +578,10 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    detected CWEs (second `deep`) follow the AC/DC Hunter Agent page
    ("What it detects") and the Hunter Agent product page, Oct 2026. The
    Hunter Agent example animations (pipeline `demos`) each illustrate one
-   CWE of that list, per its MITRE definition, on fictional code.
+   CWE of that list, per its MITRE definition, on fictional code. The
+   Sonar Vortex semantic navigation example (`demos`) follows the AC/DC
+   "Sonar Vortex context" page (semantic navigation), Oct 2026, on a
+   fictional task.
    ===================================================================== */
 // Official logos from the Sonar brand guide (zeroheight), light-background variants.
 // Products without an official logo use the SonarQube Server mark + `brand`/`sub` text.
@@ -571,6 +619,28 @@ const LOOPS = [
         verify: { change: 'Change written by the agent', cmd: 'sonar analyze agentic',
                   results: ['No new issues: ready to push', '1 issue found, fixed by the agent and re-verified'] },
       },
+      // semantic navigation example (button under "What it does"): the same task played side by side, text search vs Vortex semantic navigation.
+      // step: [left, right, caption], an action being [text, kind, code read into context, why] (kind = hit | waste | miss); bar sizes are illustrative
+      demos: [{
+        cta: 'See semantic navigation', tag: 'Semantic navigation', note: 'Illustrative example',
+        title: 'Find the code by its text, or by its meaning',
+        task: 'Add a currency to the discount calculation',
+        sides: ['Text search'],   // subtitle per side; the right side's header already names Sonar Vortex
+        steps: [
+          [['<b>Searches for the name</b> as text: 41 matches, most of them irrelevant', 'waste', 41, 'a name is just a word: it also shows up in tests, comments and unrelated code'],
+           ['<b>Asks the code map</b>: who calls this, and who overrides it?', 'hit', 32, 'the map knows how the code is connected, so it only returns real links'],
+           'Text search finds words. Semantic navigation knows how the code connects.'],
+          [['<b>Opens whole files</b>, one after another', 'waste', 1950, 'text alone can’t tell which part of a file matters, so it reads it all'],
+           ['<b>Reads only</b> the 4 pieces of code involved', 'hit', 96, 'the map points to their exact location, so nothing else is read'],
+           'Without a map, the agent reads whole files. With Vortex, it reads only what matters.'],
+          [['<b>Misses one place</b>, in a file it never opened', 'miss', 0, 'the override sits in a file that didn’t look relevant, among 41 matches'],
+           ['<b>Updates all 4 places</b>', 'hit', 0, 'the map lists every caller and override, so none is forgotten'],
+           'Text search misses what it never opened. Vortex finds every place the change touches.'],
+        ],
+        result: [['miss', 'Tests pass, but loyalty discounts are now wrong.'],
+                 ['hit', 'Every place updated, with less code read.']],
+        done: 'Less code read, nothing missed: faster, cheaper and safer changes.',
+      }],
       stat: [['<small>up to</small>36%', 'fewer tokens and lower cost on navigation-heavy tasks.'],
              ['<small>up to</small>92%', 'fewer issues produced by a coding agent.']],
     }],
@@ -1461,6 +1531,30 @@ function demo(D, logo) {
   </div>`;
 }
 
+// side-by-side example shown over the product panel: the same task, each side's agent actions revealed step by step,
+// with the code it read into its context growing below, then each side's result
+function navDemo(D, p) {
+  const F = D.steps.length, total = s => D.steps.reduce((t, st) => t + st[s][2], 0), max = Math.max(total(0), total(1));
+  const mark = { hit: '✓', waste: '!', miss: '✕' };
+  const head = [`${icon('agent')}Coding agent`, `${icon('agent')}Coding agent<span>+</span><img src="${LOGO(p.logo)}" alt="${p.name}" draggable="false">`];
+  const side = s => `<div class="side${s ? ' sem' : ''}"><div class="sh">${head[s]}${D.sides[s] ? `<small>${D.sides[s]}</small>` : ''}</div>
+      ${D.steps.map((st, k) => `<div class="ac ${st[s][1]}" data-s="${k}"><i>${mark[st[s][1]]}</i><span>${st[s][0]}<small><b>Why:</b> ${st[s][3]}</small></span></div>`).join('')}
+      <div class="meter">Code read<div class="bar">${D.steps.map((st, k) => st[s][2] ? `<i data-s="${k}" style="--w:${st[s][2] / max * 100}%"></i>` : '').join('')}</div></div>
+      <div class="res ${D.result[s][0]}" data-s="${F}"><i>${mark[D.result[s][0]]}</i>${D.result[s][1]}</div></div>`;
+  return `<div class="demo nav">
+    <button class="x act" data-act="demo-close" title="Close (Esc)">✕</button>
+    <div class="dh"><span class="tagp">${D.tag}</span>${D.note}</div>
+    <h3>${D.title}</h3>
+    <div class="task"><b>Task</b><span>${D.task}</span></div>
+    <div class="vs">${side(0)}${side(1)}</div>
+    <p class="dcap"></p>
+    <div class="dctl"><div class="dsteps">${D.steps.map((_, s) => `<i data-s="${s}"></i>`).join('')}<i data-s="${F}"></i></div>
+      <span><kbd>←</kbd> <kbd>→</kbd> step · <kbd>Esc</kbd> close</span>
+      <div class="dbtns"><button class="pp act" data-act="demo-toggle" title="Pause / resume autoplay" aria-label="Pause / resume autoplay">${PAUSE}${PLAY}</button>
+        <button class="act" data-act="demo-replay">↻ Replay</button></div></div>
+  </div>`;
+}
+
 function pipeline(P, id) {
   const X = [112, 355, 598], ah = (x, y) => `<path d="M${x - 9} ${y - 11}L${x} ${y}L${x + 9} ${y - 11}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
   const fan = out => `<svg viewBox="0 0 710 64">${X.map(x => `<path class="dash" d="${out ? `M355 0C355 34 ${x} 22 ${x} 60` : `M${x} 0C${x} 38 355 26 355 60`}" fill="none" stroke="currentColor" stroke-width="4"/>${out ? ah(x, 62) : ''}`).join('')}${out ? '' : ah(355, 62)}</svg>`;
@@ -1475,8 +1569,13 @@ function pipeline(P, id) {
   </div>`;
 }
 
-// a product's `deep` is one deep dive or a list of them
-LOOPS.forEach(L => L.products.forEach(p => { p.deeps = [].concat(p.deep || []); }));
+// a product's `deep` is one deep dive or a list of them; its example animations are `demos` (side by side) or its pipeline's `demos`
+LOOPS.forEach(L => L.products.forEach(p => {
+  p.deeps = [].concat(p.deep || []);
+  p.demos = p.demos || p.pipeline?.demos || [];
+  // caption shown at each step, the last step explaining the outcome
+  p.demos.forEach(D => { D.caps = D.sides ? [...D.steps.map(s => s[2]), D.done] : [...D.steps.map(s => s[4]), D.finding[2]]; });
+}));
 
 LOOPS.forEach((L, i) => {
   // overview-level, always present (dimmed when another loop is in focus)
@@ -1509,8 +1608,9 @@ LOOPS.forEach((L, i) => {
       <div class="ph">${panelMark(p)}<div class="lc">${L.title}<br>${L.stage}</div></div>
       <h2>${p.tag}</h2>
       <div class="cols">
-        <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deeps.length ? `
-          <div class="deepers">${p.deeps.map((D, d) => `<button class="deeper act" data-act="deep:${i}:${j}:${d}" title="Deep dive">${D.cta}</button>`).join('')}</div>` : ''}${p.pipeline || p.feed || p.context || p.sca ? stats(p) : ''}</div>
+        <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deeps.length || p.demos.some(D => D.sides) ? `
+          <div class="deepers">${p.deeps.map((D, d) => `<button class="deeper act" data-act="deep:${i}:${j}:${d}" title="Deep dive">${D.cta}</button>`).join('')}${p.demos.map((D, k) => D.sides ? `
+            <button class="deeper try act" data-act="demo:${i}:${j}:${k}" title="Watch an example">${PLAY}${D.cta}</button>` : '').join('')}</div>` : ''}${p.pipeline || p.feed || p.context || p.sca ? stats(p) : ''}</div>
         <div>
           ${p.feed ? feed(p) : p.context ? context(p) : p.cycle ? cycle(p.cycle) : p.pipeline ? pipeline(p.pipeline, `${i}:${j}`) : `
           <h4>${p.pr ? 'Better together' : 'Where it runs'}</h4>
@@ -1528,7 +1628,7 @@ LOOPS.forEach((L, i) => {
         <input type="range" min="0" max="100" value="0" aria-label="${p.slider.title}">
         <div class="stops">${p.slider.stops.map(([t]) => `<span>${t}</span>`).join('')}</div>${autonomy(p.slider)}
         <p></p>
-      </div>` : ''}${(p.pipeline?.demos || []).map(D => demo(D, p.logo)).join('')}`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
+      </div>` : ''}${p.demos.map(D => D.sides ? navDemo(D, p) : demo(D, p.logo)).join('')}`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
     panel.k = 0; panel.target = 0; panel.from = card.o.position.clone(); panel.fromScale = S * lay.w * (lay.zoom || 1) / 1700;
     panel.loopIdx = i; panel.prodIdx = j;
     panels.push(panel);
@@ -1597,17 +1697,17 @@ LOOPS.forEach((L, i) => {
 });
 const sameState = (a, b) => a.level === b.level && a.loop === b.loop && a.prod === b.prod && a.sub === b.sub;
 
-/* ---------- example animations (Hunter Agent lanes) ---------- */
+/* ---------- example animations (Hunter Agent lanes, Sonar Vortex semantic navigation) ---------- */
 let demoOn = null;   // { el, D, k, auto, timer } of the open example
 function demoShow(k) {
   const { el, D } = demoOn, last = D.steps.length;
   clearTimeout(demoOn.timer);
   demoOn.k = k = clamp(k, 0, last);
   el.querySelectorAll('[data-s]').forEach(e => { e.classList.toggle('on', +e.dataset.s <= k); e.classList.toggle('cur', +e.dataset.s === k); });
-  // caption: the latest one at or before this step (the last step explains the finding)
-  el.querySelector('.dcap').innerHTML = k === last ? D.finding[2] : D.steps.slice(0, k + 1).reverse().find(s => s[4])[4];
+  // caption: the latest one at or before this step (the last step explains the outcome)
+  el.querySelector('.dcap').innerHTML = D.caps.slice(0, k + 1).reverse().find(Boolean);
   if (k === last) demoAuto(false);   // played to the end: the button offers to play it again
-  else if (demoOn.auto) demoOn.timer = setTimeout(() => demoShow(k + 1), D.steps[k][4] ? 2800 : 1700);   // longer pause on steps with a caption to read
+  else if (demoOn.auto) demoOn.timer = setTimeout(() => demoShow(k + 1), D.sides ? 3400 : D.caps[k] ? 2800 : 1700);   // longer pause on steps with a caption to read, longest with two sides
 }
 // autoplay on by default, paused by ←/→, toggled by the play/pause button
 function demoAuto(on) {
@@ -1709,7 +1809,7 @@ function act(a) {
   else if (k === 'close') back();
   else if (k === 'next') step(1);
   else if (k === 'prev') step(-1);
-  else if (k === 'demo') { const p = LOOPS[+x].products[+y]; demoPlay(p.panel.el.querySelectorAll('.demo')[+z], p.pipeline.demos[+z]); }
+  else if (k === 'demo') { const p = LOOPS[+x].products[+y]; demoPlay(p.panel.el.querySelectorAll('.demo')[+z], p.demos[+z]); }
   else if (k === 'demo-replay') demoPlay(demoOn.el, demoOn.D);
   else if (k === 'demo-toggle') demoOn.auto ? demoAuto(false) : demoOn.k === demoOn.D.steps.length ? demoPlay(demoOn.el, demoOn.D) : demoAuto(true);
   else if (k === 'demo-close') demoClose();
