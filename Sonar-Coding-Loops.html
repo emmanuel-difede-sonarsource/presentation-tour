@@ -326,6 +326,23 @@
   .demo .res.hit { background: rgba(18,110,211,.07); box-shadow: inset 0 0 0 3px var(--blue); }
   .demo .res.hit i { background: var(--blue); }
   .demo.nav .dcap { font-size: 34px; }
+  /* Example / Toolkit tabs: the toolkit view replaces the side-by-side example */
+  .demo .tabs { display: flex; padding: 4px; border-radius: 999px; background: var(--bg); }
+  .demo .tabs button { padding: 8px 26px; border: 0; border-radius: 999px; background: none; font: 600 22px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--label); cursor: pointer; }
+  .demo:not(.tools) .tabs button:first-child, .demo.tools .tabs button:last-child { background: #fff; color: var(--blue); box-shadow: 0 2px 8px rgba(18,40,80,.12); }
+  .demo .tk { display: none; }
+  .demo.tools .tk { display: flex; flex-direction: column; height: calc(100% - 70px); }
+  .demo .tk-f { order: 9; margin: 14px 0 0; font: 400 24px/1.4 Inter, sans-serif; color: var(--label); text-align: center; }
+  .demo .tk-f code { font: 500 22px 'IBM Plex Mono', monospace; color: var(--purple); background: var(--bg); padding: 2px 10px; border-radius: 8px; }
+  .demo.tools > h3, .demo.tools .task, .demo.tools .vs, .demo.tools .dcap, .demo.tools .dctl, .demo.tools .nt { display: none; }
+  .demo .tk h3 { margin-bottom: 26px; }
+  .demo .tk-h, .demo .tk-r { display: grid; grid-template-columns: 1.05fr 1.2fr 1.5fr .95fr; gap: 24px; align-items: center; padding: 0 24px; }
+  .demo .tk-h { padding-bottom: 12px; font: 600 20px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--label); }
+  .demo .tk-r { flex: 1; min-height: 112px; margin-bottom: 12px; border-radius: 16px; background: var(--bg); border-left: 7px solid var(--blue); font: 400 29px/1.3 Inter, sans-serif; color: var(--n8); }
+  .demo .tk-r code { font: 600 27px 'IBM Plex Mono', monospace; color: var(--blue); }
+  .demo .tk-r b { font-weight: 600; color: var(--purple); }
+  .demo .tk-r i { font: normal 400 23px/1.35 'IBM Plex Mono', monospace; color: var(--n8); }
+  .demo .tk-r i::before { content: '✕ '; color: var(--amber); font-weight: 700; }
   .demo.nav .side { gap: 8px; }
   .demo.nav .ac { padding: 12px 22px; }
   .demo.nav .ac small { margin-top: 4px; }
@@ -676,6 +693,18 @@ const LOOPS = [
         result: [['miss', 'Tests pass, but loyalty discounts are now wrong.'],
                  ['hit', 'Every caller updated, with far fewer tokens read.']],
         done: 'Less code read, every caller found: faster, cheaper and safer changes.',
+        // second view, switched from the tabs at the top: the `sonar context navigation` commands (SonarQube CLI 1.10.0 help)
+        // [command, what it answers, benefit, instead of]
+        toolkit: {
+          tab: 'Toolkit', title: 'Seven questions an agent can ask the code map',
+          items: [['search-signatures', 'Which method is this name?', 'One exact FQN, no hits in comments or tests', 'grep -rn'],
+                  ['search-bodies', 'Where is this used inside code?', 'Each hit comes with its method’s FQN', 'grep + reading around'],
+                  ['get-source', 'Show me this method', 'Reads only what matters, not whole files', 'cat whole files'],
+                  ['trace-callers', 'Who calls this?', 'Every caller with file:line, none forgotten', 'grep + guessing'],
+                  ['trace-callees', 'What does this call?', 'Understands a method without opening every file', 'opening each file'],
+                  ['get-type-hierarchy', 'What extends or implements this?', 'Overrides and implementations covered', 'grep extends / implements'],
+                  ['get-references', 'Where is this class or package used?', 'Module boundaries before a refactor', 'grep imports']],
+        },
       }],
       stat: [['<small>up to</small>36%', 'fewer tokens and lower cost on navigation-heavy tasks.'],
              ['<small>up to</small>92%', 'fewer issues produced by a coding agent.']],
@@ -1581,10 +1610,14 @@ function navDemo(D, p) {
       <div class="res ${D.result[s][0]}" data-s="${F}"><i>${mark[D.result[s][0]]}</i>${D.result[s][1]}</div></div>`;
   return `<div class="demo nav">
     <button class="x act" data-act="demo-close" title="Close (Esc)">✕</button>
-    <div class="dh"><span class="tagp">${D.tag}</span>${D.note}</div>
+    <div class="dh"><span class="tagp">${D.tag}</span>${D.toolkit ? `<span class="tabs"><button class="act" data-act="demo-view:0">Example</button><button class="act" data-act="demo-view:1">${D.toolkit.tab}</button></span>` : ''}<span class="nt">${D.note}</span></div>
     <h3>${D.title}</h3>
     <div class="task"><b>Task</b><span>${D.task}</span></div>
-    <div class="vs">${side(0)}${side(1)}</div>
+    <div class="vs">${side(0)}${side(1)}</div>${D.toolkit ? `
+    <div class="tk"><h3>${D.toolkit.title}</h3>
+      <div class="tk-h"><span>Command</span><span>Answers</span><span>Benefit</span><span>Instead of</span></div>
+      <p class="tk-f">All commands run as <code>sonar context navigation &lt;command&gt;</code> in the SonarQube CLI.</p>
+      ${D.toolkit.items.map(([c, q, b, i]) => `<div class="tk-r"><code>${c}</code><span>${q}</span><b>${b}</b><i>${i}</i></div>`).join('')}</div>` : ''}
     <p class="dcap"></p>
     <div class="dctl"><div class="dsteps">${D.steps.map((_, s) => `<i data-s="${s}"></i>`).join('')}<i data-s="${F}"></i></div>
       <span><kbd>←</kbd> <kbd>→</kbd> step · <kbd>Esc</kbd> close</span>
@@ -1757,6 +1790,7 @@ function demoPlay(el, D) {
   demoClose();
   demoOn = { el, D, k: -1, auto: true };
   el.classList.remove('paused');
+  el.classList.remove('tools');
   el.classList.add('open', 'rs');   // reset the reveal transitions, then play from the first step
   el.querySelectorAll('[data-s]').forEach(e => e.classList.remove('on', 'cur'));
   el.querySelector('.dcap').innerHTML = '';
@@ -1851,6 +1885,7 @@ function act(a) {
   else if (k === 'demo-replay') demoPlay(demoOn.el, demoOn.D);
   else if (k === 'demo-toggle') demoOn.auto ? demoAuto(false) : demoOn.k === demoOn.D.steps.length ? demoPlay(demoOn.el, demoOn.D) : demoAuto(true);
   else if (k === 'demo-close') demoClose();
+  else if (k === 'demo-view') { demoOn.el.classList.toggle('tools', x === '1'); if (x === '1') demoAuto(false); }
   return true;
 }
 function pickLoop(cx, cy) {
@@ -1915,7 +1950,8 @@ addEventListener('keydown', e => {
     const d = ['ArrowRight', 'PageDown', ' '].includes(e.key) ? 1 : ['ArrowLeft', 'PageUp'].includes(e.key) ? -1 : 0;
     if (d || e.key === 'Escape' || e.key === 'Backspace') {
       e.preventDefault();
-      if (!d || (d > 0 && demoOn.k === demoOn.D.steps.length)) demoClose(); else { demoAuto(false); demoShow(demoOn.k + d); }
+      if (d && demoOn.el.classList.contains('tools')) demoOn.el.classList.remove('tools');   // the toolkit view: ←/→ go back to the example
+      else if (!d || (d > 0 && demoOn.k === demoOn.D.steps.length)) demoClose(); else { demoAuto(false); demoShow(demoOn.k + d); }
       return;
     }
   }
