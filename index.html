@@ -543,16 +543,6 @@
   #help kbd { font: 500 11px 'IBM Plex Mono', monospace; background: #fff; border: 1px solid #DCE3EC; border-radius: 5px; padding: 1px 6px; color: var(--n8); }
   @media (max-width: 760px) { #help, #legend { display: none; } #hud { padding: 0 16px 16px; } }
 
-  /* ---------- sway toggle ---------- */
-  #swayToggle { position: fixed; top: 68px; right: 28px; z-index: 5; display: flex; align-items: center; gap: 9px;
-                font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: 1px; color: var(--label); cursor: pointer;
-                background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 8px 14px 8px 8px; }
-  #swayToggle .track { width: 30px; height: 17px; border-radius: 999px; background: #D3DAE5; position: relative; transition: background .2s; flex: none; }
-  #swayToggle .thumb { position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: left .2s; }
-  #swayToggle.on .track { background: var(--blue); }
-  #swayToggle.on .thumb { left: 15px; }
-  @media (max-width: 760px) { #swayToggle { display: none; } }
-
   /* ---------- autoplay toggle ---------- */
   #autoplay { position: fixed; right: 28px; bottom: 78px; z-index: 5; display: flex; align-items: center; gap: 10px;
               font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: 1px; color: var(--label);
@@ -580,9 +570,6 @@
   <span><i style="background:var(--amber)"></i>AI-generated change</span>
   <span><i style="background:var(--blue)"></i>Verified change</span>
 </div>
-<button id="swayToggle" title="Toggle mouse-follow drift" aria-pressed="false">
-  <span class="track"><span class="thumb"></span></span>Sway
-</button>
 <div id="autoplay">
   <button class="toggle" title="Toggle auto-advance" aria-pressed="false">
     <span class="track"><span class="thumb"></span></span>Auto
@@ -1877,17 +1864,8 @@ function updateHud() {
 
 /* ---------- input ---------- */
 const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
-const pointer = { x: 0, y: 0, down: null, moved: false };
+const pointer = { down: null, moved: false };
 let hovered = -1;
-
-/* ---------- sway toggle ---------- */
-const swayToggleEl = document.getElementById('swayToggle');
-let swayOn = false;
-swayToggleEl.addEventListener('click', () => {
-  swayOn = !swayOn;
-  swayToggleEl.classList.toggle('on', swayOn);
-  swayToggleEl.setAttribute('aria-pressed', String(swayOn));
-});
 
 /* ---------- autoplay ---------- */
 const autoplayToggleEl = document.querySelector('#autoplay .toggle'), autoplaySecsEl = document.getElementById('autoplaySecs');
@@ -1942,7 +1920,6 @@ function syncStateFromCamera() {
 }
 
 addEventListener('pointermove', e => {
-  pointer.x = e.clientX / innerWidth * 2 - 1; pointer.y = e.clientY / innerHeight * 2 - 1;
   if (pointer.down) {
     const dx = e.clientX - pointer.down.x, dy = e.clientY - pointer.down.y;
     if (Math.hypot(dx, dy) > 5) { pointer.moved = true; document.body.classList.add('dragging'); }
@@ -1952,11 +1929,11 @@ addEventListener('pointermove', e => {
     }
     return;
   }
-  hovered = state.level === 'headline' || e.target.closest('#hud,#legend,#swayToggle,#autoplay') ? -1 : pickLoop(e.clientX, e.clientY);
+  hovered = state.level === 'headline' || e.target.closest('#hud,#legend,#autoplay') ? -1 : pickLoop(e.clientX, e.clientY);
   document.body.style.cursor = hovered >= 0 && !(state.level === 'loop' && state.loop === hovered) ? 'pointer' : '';
 });
 addEventListener('pointerdown', e => {
-  if (e.button !== 0 || e.target.closest('#hud,#legend,.slider,.demo,#swayToggle,#autoplay')) return;
+  if (e.button !== 0 || e.target.closest('#hud,#legend,.slider,.demo,#autoplay')) return;
   pointer.down = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; pointer.moved = false;
 });
 let clickTimer = null;
@@ -1973,7 +1950,7 @@ addEventListener('pointerup', e => {
 });
 addEventListener('dblclick', e => {
   clearTimeout(clickTimer);
-  if (!e.target.closest('[data-act],#hud,.slider,.demo,#swayToggle,#autoplay')) back();
+  if (!e.target.closest('[data-act],#hud,.slider,.demo,#autoplay')) back();
 });
 addEventListener('wheel', e => {
   e.preventDefault();
@@ -2027,7 +2004,7 @@ onResize();
    ===================================================================== */
 const clock = new THREE.Clock();
 const _p = new THREE.Vector3(), _t = new THREE.Vector3();
-let spawnTimer = 0.4, elapsed = 0;
+let spawnTimer = 0.4;
 // deep links: #2 → loop 2, #2.1 → loop 2, first product, #2.2.1 → that product's first deep dive
 function stateFromHash() {
   const m = location.hash.match(/^#([1-3])(?:\.([1-9])(?:\.([1-9]))?)?$/);
@@ -2055,7 +2032,6 @@ function setOpacity(item, a) {
 
 function frame() {
   const dt = Math.min(clock.getDelta(), 0.05);
-  elapsed += dt;
 
   // camera flight
   if (flight) {
@@ -2066,15 +2042,7 @@ function frame() {
     cam.z = lerp(flight.from.z, flight.to.z, k) + flight.lift * Math.sin(Math.PI * k);
     if (flight.t >= 1) flight = null;
   }
-  if (swayOn) {
-    const sway = 0.012 * cam.z;
-    camera.position.set(
-      cam.x + pointer.x * cam.z * 0.035 + Math.sin(elapsed * 0.23) * sway,
-      cam.y - pointer.y * cam.z * 0.035 + Math.cos(elapsed * 0.19) * sway * 0.6,
-      cam.z);
-  } else {
-    camera.position.set(cam.x, cam.y, cam.z);
-  }
+  camera.position.set(cam.x, cam.y, cam.z);
   camera.lookAt(cam.x, cam.y, 0);
 
   // semantic zoom weights
