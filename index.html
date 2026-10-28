@@ -854,70 +854,7 @@ const LOOPS = [
     },
     products: [
       {
-        key: 'remediation', mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'remediation agent', name: 'SonarQube Remediation Agent', pos: [-3.7, -0.5],
-        tag: 'Autonomous repair of issues and technical debt',
-        what: ['<b>Automated resolution</b> of pre-merge findings, inline with code review',
-               '<b>Assign your backlog</b> to the agent to resolve technical debt',
-               'Fixes consistent with your standards, <b>verified by Vortex</b> before the PR opens',
-               'Shift effort from triage and fixing to <b>new feature work</b>'],
-        // animated diagram shown in the right column instead of `runs`: issue sources ([logos, title]) flowing into the agent, then out as a fix PR
-        feed: {
-          title: 'Fixes issues from any source',
-          // [logos, title, { accent, note }?]: a logo is a key of LOGOS or, when there is no official logo, a { mark, brand, sub } lockup
-          sources: [[['sonarqube-hunter-agent'], 'New agentic findings'], [['sonarqube-server', 'sonarqube-cloud'], 'Existing backlog'],
-                    [[{ mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'advanced security' }], 'Dependency risks', { accent: 'var(--purple)', note: 'Only on SonarQube Cloud' }]],
-          agent: ['sonarqube-server-mark', 'SonarQube', 'Remediation Agent'],   // no official Remediation Agent logo yet: SonarQube mark + name
-          out: ['Fix PRs', 'verified by', 'sonar-vortex'],   // shown under the PR icon
-        },
-        stat: ['+41%', 'increase in code complexity persists after the 3–5× AI velocity spike fades (Carnegie Mellon, 2025).'],
-        // requirements level below the product panel (#3.1.1): Cloud vs Server comparison + shared notes
-        deep: {
-          name: 'Prerequisites & compatibility', cta: 'Prerequisites & compatibility →',
-          title: 'What it takes to run it, on Cloud and on Server',
-          compare: {
-            cols: [['sonarqube-cloud', 'SonarQube Cloud'], ['sonarqube-server', 'SonarQube Server']],
-            rows: [
-              ['Prerequisites', [
-                ['<b>Team (annual) or Enterprise plan</b> + Sonar Agent Essentials subscription',
-                 'Organization and project <b>bound</b> to the DevOps platform, with analysis enabled',
-                 'GitHub: install the <b>SonarQube Agent app</b> · GitLab and Azure DevOps: reuse your existing token'],
-                ['<b>2026.5+</b> Enterprise or Data Center edition + Remediation Agent subscription',
-                 '<b>LicenseSpring</b> license, online or offline (not server ID)',
-                 'Projects <b>bound and already analyzed</b>, with <b>write access</b> to the repositories'],
-              ]],
-              ['Runs on', [
-                ['<b>Sonar’s infrastructure</b>: nothing to install'],
-                ['<b>Your infrastructure</b>: Docker Engine on Linux, Kubernetes with containerd or OpenShift 4.19+, x86-64 or ARM64, with shared storage',
-                 'Outbound access to your LLM provider and DevOps platform'],
-              ]],
-              ['LLM models', [
-                { hl: ['Claude Opus 4.6', 'GPT-5.5'], note: 'On Cloud, SonarQube picks the model for your provider. On Server, the instance administrator selects it.' },
-              ]],
-              ['LLM providers', [
-                { chips: ['Anthropic', 'OpenAI'], note: 'Your own API key, added to the organization and billed to your provider account.' },
-                { chips: ['Anthropic', 'OpenAI', 'AWS Bedrock', 'Azure AI Foundry', 'OpenAI-compatible gateway'], note: 'Your own provider, configured once for the whole instance.' },
-              ]],
-              ['DevOps platforms', [
-                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog fixes on all three. Pull request fixes on GitHub and GitLab. GitLab.com only.' },
-                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog and pull request fixes on all three. Pull request fixes are triggered from SonarQube.' },
-              ]],
-              ['Languages', [
-                { hl: ['Java', 'JavaScript / TypeScript', 'Python', 'C#'], note: 'Reliability, maintainability and selected security issues, plus secrets. Same on Cloud and Server.' },
-              ]],
-            ],
-          },
-          notes: { title: 'Good to know', items: [
-            'Every fix is <b>re-analyzed by Sonar</b> before the pull request opens; fixes that fail are never shown',
-            'The agent <b>never merges</b>: your reviewers and branch protection rules still apply',
-            'Affected code goes to <b>your own LLM provider</b>, under your account, on Server too',
-            '<em class="only">Cloud</em>Also fixes <b>dependency risks</b> by bumping versions: npm & yarn, pip, Maven & Gradle',
-            '<em class="only">Cloud</em>If CI fails on its pull request, the agent reads the <b>GitHub Actions</b> logs and pushes a fix, up to 3 times',
-            '<em class="only">Server</em>Agents can’t run on <b>Docker Desktop or ZIP</b> installs',
-          ] },
-        },
-      },
-      {
-        key: 'hunter', logo: 'sonarqube-hunter-agent', name: 'SonarQube Hunter Agent', pos: [3.9, -0.5],
+        key: 'hunter', logo: 'sonarqube-hunter-agent', name: 'SonarQube Hunter Agent', pos: [-3.9, -0.5],
         tag: 'Finds the vulnerabilities static analysis can’t see',
         what: ['Targets <b>broken access control, IDOR, business-logic and authentication flaws</b>',
                '<b>Not just a prompt</b>: a tailored agent with structured, multi-phase analysis',
@@ -1004,7 +941,7 @@ const LOOPS = [
         },
         stat: [['200+', 'confirmed, previously unknown vulnerabilities, found across 25+ open-source projects with 1k+ stars.'],
                ['80–90%', 'average precision, at ~30% lower cost than naive LLM workflows, whose results swing wildly.']],
-        // two levels below the product panel: requirements (#3.2.1), then detected CWEs (#3.2.2)
+        // two levels below the product panel: requirements (#3.1.1), then detected CWEs (#3.1.2)
         deep: [{
           name: 'Prerequisites & compatibility', cta: 'Prerequisites & compatibility →',
           title: 'What it takes to run it, on Cloud and on Server',
@@ -1083,6 +1020,69 @@ const LOOPS = [
             'Each confirmed finding is a <b>regular SonarQube issue</b>, pinned to an exact location in the code',
           ] },
         }],
+      },
+      {
+        key: 'remediation', mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'remediation agent', name: 'SonarQube Remediation Agent', pos: [3.7, -0.5],
+        tag: 'Autonomous repair of issues and technical debt',
+        what: ['<b>Automated resolution</b> of pre-merge findings, inline with code review',
+               '<b>Assign your backlog</b> to the agent to resolve technical debt',
+               'Fixes consistent with your standards, <b>verified by Vortex</b> before the PR opens',
+               'Shift effort from triage and fixing to <b>new feature work</b>'],
+        // animated diagram shown in the right column instead of `runs`: issue sources ([logos, title]) flowing into the agent, then out as a fix PR
+        feed: {
+          title: 'Fixes issues from any source',
+          // [logos, title, { accent, note }?]: a logo is a key of LOGOS or, when there is no official logo, a { mark, brand, sub } lockup
+          sources: [[['sonarqube-hunter-agent'], 'New agentic findings'], [['sonarqube-server', 'sonarqube-cloud'], 'Existing backlog'],
+                    [[{ mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'advanced security' }], 'Dependency risks', { accent: 'var(--purple)', note: 'Only on SonarQube Cloud' }]],
+          agent: ['sonarqube-server-mark', 'SonarQube', 'Remediation Agent'],   // no official Remediation Agent logo yet: SonarQube mark + name
+          out: ['Fix PRs', 'verified by', 'sonar-vortex'],   // shown under the PR icon
+        },
+        stat: ['+41%', 'increase in code complexity persists after the 3–5× AI velocity spike fades (Carnegie Mellon, 2025).'],
+        // requirements level below the product panel (#3.2.1): Cloud vs Server comparison + shared notes
+        deep: {
+          name: 'Prerequisites & compatibility', cta: 'Prerequisites & compatibility →',
+          title: 'What it takes to run it, on Cloud and on Server',
+          compare: {
+            cols: [['sonarqube-cloud', 'SonarQube Cloud'], ['sonarqube-server', 'SonarQube Server']],
+            rows: [
+              ['Prerequisites', [
+                ['<b>Team (annual) or Enterprise plan</b> + Sonar Agent Essentials subscription',
+                 'Organization and project <b>bound</b> to the DevOps platform, with analysis enabled',
+                 'GitHub: install the <b>SonarQube Agent app</b> · GitLab and Azure DevOps: reuse your existing token'],
+                ['<b>2026.5+</b> Enterprise or Data Center edition + Remediation Agent subscription',
+                 '<b>LicenseSpring</b> license, online or offline (not server ID)',
+                 'Projects <b>bound and already analyzed</b>, with <b>write access</b> to the repositories'],
+              ]],
+              ['Runs on', [
+                ['<b>Sonar’s infrastructure</b>: nothing to install'],
+                ['<b>Your infrastructure</b>: Docker Engine on Linux, Kubernetes with containerd or OpenShift 4.19+, x86-64 or ARM64, with shared storage',
+                 'Outbound access to your LLM provider and DevOps platform'],
+              ]],
+              ['LLM models', [
+                { hl: ['Claude Opus 4.6', 'GPT-5.5'], note: 'On Cloud, SonarQube picks the model for your provider. On Server, the instance administrator selects it.' },
+              ]],
+              ['LLM providers', [
+                { chips: ['Anthropic', 'OpenAI'], note: 'Your own API key, added to the organization and billed to your provider account.' },
+                { chips: ['Anthropic', 'OpenAI', 'AWS Bedrock', 'Azure AI Foundry', 'OpenAI-compatible gateway'], note: 'Your own provider, configured once for the whole instance.' },
+              ]],
+              ['DevOps platforms', [
+                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog fixes on all three. Pull request fixes on GitHub and GitLab. GitLab.com only.' },
+                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog and pull request fixes on all three. Pull request fixes are triggered from SonarQube.' },
+              ]],
+              ['Languages', [
+                { hl: ['Java', 'JavaScript / TypeScript', 'Python', 'C#'], note: 'Reliability, maintainability and selected security issues, plus secrets. Same on Cloud and Server.' },
+              ]],
+            ],
+          },
+          notes: { title: 'Good to know', items: [
+            'Every fix is <b>re-analyzed by Sonar</b> before the pull request opens; fixes that fail are never shown',
+            'The agent <b>never merges</b>: your reviewers and branch protection rules still apply',
+            'Affected code goes to <b>your own LLM provider</b>, under your account, on Server too',
+            '<em class="only">Cloud</em>Also fixes <b>dependency risks</b> by bumping versions: npm & yarn, pip, Maven & Gradle',
+            '<em class="only">Cloud</em>If CI fails on its pull request, the agent reads the <b>GitHub Actions</b> logs and pushes a fix, up to 3 times',
+            '<em class="only">Server</em>Agents can’t run on <b>Docker Desktop or ZIP</b> installs',
+          ] },
+        },
       },
     ],
   },

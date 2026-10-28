@@ -45,7 +45,7 @@ python3 -m http.server   # then open http://localhost:8000/
 
 - The page is published with GitHub Pages, which serves `index.html` at the root (and falls back to `README.md` without it): keep the file name `index.html`.
 - `?instant` skips the intro flight and panel animation (screenshots, slow machines).
-- Deep links: `#2` → loop 2, `#2.1` → loop 2, first product, `#2.2.1` → that product's first deep dive (`#3.2.2` → its second one). Useful to send a customer straight to a product after a meeting. The hash is kept in sync with navigation via `history.replaceState`.
+- Deep links: `#2` → loop 2, `#2.1` → loop 2, first product, `#2.2.1` → that product's first deep dive (`#3.1.2` → its second one). Useful to send a customer straight to a product after a meeting. The hash is kept in sync with navigation via `history.replaceState`.
 - Three.js 0.170.0 comes from jsDelivr (see the `<script type="importmap">`) and fonts from Google Fonts, so presenting needs network access. Logos are embedded (`LOGOS`).
 
 ## Architecture (all inside the `<script type="module">` in `index.html`)
