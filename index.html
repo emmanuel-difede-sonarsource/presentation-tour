@@ -36,6 +36,18 @@
   .ttl h1 .ne { color: var(--blue); }
   .ttl p { max-width: 5600px; margin: 48px 0 0; font: 400 92px/1.35 Inter, sans-serif; color: var(--n8); }
   .ttl p b { font-weight: 600; color: var(--purple); }
+  .ttl p b.act { text-decoration: underline dotted rgba(18,110,211,.55); text-decoration-thickness: 6px; text-underline-offset: 18px; transition: color .25s; }
+  .ttl p b.act:hover, .ttl.formula p b.act { color: var(--blue); }
+  /* Code Confidence formula, revealed under the subtitle by clicking "code confidence" (absolute, so the headline block keeps its size) */
+  .ttl { position: relative; }
+  .ttl .fx { position: absolute; left: 0; top: 100%; margin-top: 110px; display: flex; align-items: center; gap: 40px; white-space: nowrap;
+             font: 600 96px/1 Inter, sans-serif; color: var(--purple); pointer-events: none !important; }
+  .ttl.formula .fx { pointer-events: auto !important; }
+  .ttl .fx > * { opacity: 0; transform: translateY(60px); transition: opacity .45s ease, transform .45s ease; }
+  .ttl.formula .fx > * { opacity: 1; transform: none; }
+  .ttl .fx .lhs { font: 500 120px/1 Lora, serif; color: #0B0B0F; }
+  .ttl .fx .op { font-weight: 400; color: var(--blue); }
+  .ttl .fx .t { padding: 34px 56px; border: 6px solid #DFE6F0; border-radius: 36px; background: #fff; box-shadow: 0 20px 50px rgba(41,0,66,.10); }
   .lbox { font: 400 100px 'IBM Plex Mono', monospace; letter-spacing: 6px; text-transform: uppercase; color: #6C7889;
           border: 6px solid #A3ADBB; padding: 18px 64px; background: rgba(243,246,251,.9); white-space: nowrap;
           transition: border-color .25s, color .25s, background .25s; }
@@ -1365,8 +1377,13 @@ const wordmark = p => p.logo
   : `<span class="wm"><img class="mk" src="${LOGO(p.mark)}" alt="" draggable="false"><span class="wt"><span><b>Sonar</b><em>${p.brand}</em></span>${p.sub ? `<small>${p.sub}</small>` : ''}</span></span>`;
 
 // overview headline: the observation behind the three loops. Clicking it isolates it (`headline` level), zooming out restores the overview
+const FORMULA = ['Intent', 'Guiderails', 'Verification', 'Evidence'];   // Code Confidence = the product of these terms
 const headline = css3d(`<h1>Writing code <span class="ne">≠</span> shipping code</h1>
-  <p>Sonar builds <b>code confidence</b> in the <b>agentic software factory</b>.</p>`, 'ttl', 0, 16.7, 0, { kind: 'title', act: 'headline' });
+  <p>Sonar builds <b class="act" data-act="formula">code confidence</b> in the <b>agentic software factory</b>.</p>
+  <div class="fx" data-act="formula"><span class="lhs">Code Confidence</span><span class="op">=</span>${
+    FORMULA.map(t => `<span class="t">${t}</span>`).join('<span class="op">×</span>')}</div>`, 'ttl', 0, 16.7, 0, { kind: 'title', act: 'headline' });
+// stagger the formula terms so they appear left to right
+[...headline.el.querySelector('.fx').children].forEach((e, i) => { e.style.transitionDelay = `${i * 0.12}s`; });
 
 connectors.forEach(c => {
   const it = css3d(`<span>${c.label}</span>`, 'gitl', c.labelPos[0], c.labelPos[1], 1.2, { kind: 'connector' });
@@ -1815,10 +1832,13 @@ function go(st) {
   panels.forEach(p => { p.target = ((st.level === 'product' || st.level === 'deep') && mine(p)) ? 1 : 0; });
   deeps.forEach(p => { p.target = (st.level === 'deep' && mine(p) && p.subIdx === st.sub) ? 1 : 0; });
   document.body.classList.toggle('solo', st.level === 'headline');
+  headline.el.classList.toggle('formula', !!st.formula);
   if (st.level === 'overview') flyTo({ x: 0, y: OY, z: Zo });
-  else if (st.level === 'headline') {   // frame the headline text, left-aligned in its block
-    const o = headline.o, w = Math.max(...[...headline.el.children].map(c => c.offsetWidth)) * S, h = headline.el.offsetHeight * S;
-    flyTo({ x: o.position.x - headline.el.offsetWidth * S / 2 + w / 2, y: o.position.y, z: fitZ(w * 1.2, h * 1.6) }, 1.2);
+  else if (st.level === 'headline') {   // frame the headline text (plus the formula when shown), left-aligned in its block
+    const o = headline.o, fx = headline.el.querySelector('.fx');
+    const w = Math.max(...[...headline.el.children].filter(c => st.formula || c !== fx).map(c => c.offsetWidth)) * S;
+    const H = headline.el.offsetHeight, h = (st.formula ? fx.offsetTop + fx.offsetHeight : H) * S;
+    flyTo({ x: o.position.x - headline.el.offsetWidth * S / 2 + w / 2, y: o.position.y + (H * S - h) / 2, z: fitZ(w * 1.2, h * 1.6) }, 1.2);
   }
   else if (st.level === 'loop') flyTo({ x: LOOPS[st.loop].cx, y: FY, z: Zf });
   else if (st.level === 'product') {   // taller panels (e.g. the Remediation Agent feed diagram) back the camera off to fit
@@ -1895,6 +1915,7 @@ function act(a) {
   else if (k === 'step') go(tour[+x]);
   else if (k === 'overview') go({ level: 'overview' });
   else if (k === 'headline') go({ level: state.level === 'headline' ? 'overview' : 'headline' });
+  else if (k === 'formula') go({ level: 'headline', formula: !state.formula });   // "code confidence" shows / hides its formula
   else if (k === 'close') back();
   else if (k === 'next') step(1);
   else if (k === 'prev') step(-1);
