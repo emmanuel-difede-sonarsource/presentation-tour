@@ -730,6 +730,7 @@ const LOOPS = [
   },
   {
     title: 'CI verification loop', dir: 1, stage: 'During the pull request',
+    ang: { guide: 215, verify: -35, solve: 90 },   // counter-clockwise flow: Guide → Verify → Solve
     tagline: 'Every pull request is verified, algorithmically and agentically, before it can merge.',
     caps: {
       guide: 'Quality profiles and quality gates define what “mergeable” means for every repository.',
@@ -1092,7 +1093,7 @@ const LOOPS = [
    Geometry constants & helpers
    ===================================================================== */
 const R = 10, GAP = 21.5, S = 0.01;              // loop radius, loop spacing, CSS px → world units
-const ANG = { verify: 90, solve: -35, guide: 215 }; // stage node angles (deg)
+const ANG = { verify: 90, solve: -35, guide: 215 }; // stage node angles (deg), overridable per loop with `ang`
 const BLUE = new THREE.Color('#126ED3'), AMBER = new THREE.Color('#F5A524');
 const BG = 0xF3F6FB, FLOW_SPEED = 1.3;
 
@@ -1195,8 +1196,9 @@ LOOPS.forEach((L, i) => {
     },
   });
 
+  L.ang = L.ang || ANG;
   L.nodes = {};
-  for (const [type, a] of Object.entries(ANG)) {
+  for (const [type, a] of Object.entries(L.ang)) {
     const n = makeNode(nodePos(L, a)); n.type = type; n.loop = i;
     nodes.push(n); L.nodes[type] = n;
   }
@@ -1674,10 +1676,16 @@ LOOPS.forEach(L => L.products.forEach(p => {
 LOOPS.forEach((L, i) => {
   // overview-level, always present (dimmed when another loop is in focus)
   css3d(L.title, 'lbox', L.cx, 2.2, 0.08, { kind: 'loopStatic', loop: i, act: `loop:${i}` });
-  const vp = nodePos(L, ANG.verify), gp = nodePos(L, ANG.guide), sp = nodePos(L, ANG.solve);
-  css3d('Verify', 'stl', vp.x, vp.y - 1.35, 0.08, { kind: 'loopStatic', loop: i });
-  css3d('Guide', 'stl', gp.x + 2.15, gp.y + 0.35, 0.08, { kind: 'loopStatic', loop: i });
-  css3d('Solve', 'stl', sp.x - 2.05, sp.y + 0.35, 0.08, { kind: 'loopStatic', loop: i });
+  // stage labels, placed by node slot: top (90°), lower left (215°) or lower right (-35°)
+  const stages = Object.entries(L.ang).map(([type, a]) => ({
+    type, name: type[0].toUpperCase() + type.slice(1), p: nodePos(L, a),
+    slot: a === 90 ? 'top' : Math.cos(deg(a)) < 0 ? 'left' : 'right',
+  }));
+  stages.forEach(({ name, p, slot }) => {
+    if (slot === 'top') css3d(name, 'stl', p.x, p.y - 1.35, 0.08, { kind: 'loopStatic', loop: i });
+    else if (slot === 'left') css3d(name, 'stl', p.x + 2.15, p.y + 0.35, 0.08, { kind: 'loopStatic', loop: i });
+    else css3d(name, 'stl', p.x - 2.05, p.y + 0.35, 0.08, { kind: 'loopStatic', loop: i });
+  });
 
   // overview wordmarks (fade out as the loop's cards fade in)
   L.products.forEach((p, j) => css3d(wordmark(p), 'wmhit', L.cx + p.pos[0], p.pos[1], 0.08, { kind: 'wordmark', loop: i, act: `prod:${i}:${j}` }));
@@ -1685,9 +1693,12 @@ LOOPS.forEach((L, i) => {
   // loop-focus level
   css3d(L.stage, 'chip', L.cx, 7.05, 0.08, { kind: 'focus', loop: i });
   css3d(L.tagline, 'tagline', L.cx, 5.15, 0.08, { kind: 'focus', loop: i });
-  css3d(`<b>Verify</b>${L.caps.verify}`, 'cap top', L.cx, 12.05, 0.1, { kind: 'focus', loop: i });
-  css3d(`<b>Guide</b>${L.caps.guide}`, 'cap r', gp.x - 0.6 - 3.7, gp.y - 2.0, 0.1, { kind: 'focus', loop: i });
-  css3d(`<b>Solve</b>${L.caps.solve}`, 'cap', sp.x + 0.6 + 3.7, sp.y - 2.0, 0.1, { kind: 'focus', loop: i });
+  stages.forEach(({ type, name, p, slot }) => {
+    const html = `<b>${name}</b>${L.caps[type]}`;
+    if (slot === 'top') css3d(html, 'cap top', L.cx, 12.05, 0.1, { kind: 'focus', loop: i });
+    else if (slot === 'left') css3d(html, 'cap r', p.x - 0.6 - 3.7, p.y - 2.0, 0.1, { kind: 'focus', loop: i });
+    else css3d(html, 'cap', p.x + 0.6 + 3.7, p.y - 2.0, 0.1, { kind: 'focus', loop: i });
+  });
 
   const lay = CARD_LAYOUT[L.products.length];
   L.products.forEach((p, j) => {
