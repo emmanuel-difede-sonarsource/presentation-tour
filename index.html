@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sonar Coding Loops</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="apple-touch-icon" href="data:image/png;base64,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">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Lora:ital,wght@0,500;1,500&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
@@ -36,6 +38,18 @@
   .ttl h1 .ne { color: var(--blue); }
   .ttl p { max-width: 5600px; margin: 48px 0 0; font: 400 92px/1.35 Inter, sans-serif; color: var(--n8); }
   .ttl p b { font-weight: 600; color: var(--purple); }
+  .ttl p b.act { text-decoration: underline dotted rgba(18,110,211,.55); text-decoration-thickness: 6px; text-underline-offset: 18px; transition: color .25s; }
+  .ttl p b.act:hover, .ttl.formula p b.act { color: var(--blue); }
+  /* Code Confidence formula, revealed under the subtitle by clicking "code confidence" (absolute, so the headline block keeps its size) */
+  .ttl { position: relative; }
+  .ttl .fx { position: absolute; left: 0; top: 100%; margin-top: 110px; display: flex; align-items: center; gap: 40px; white-space: nowrap;
+             font: 600 96px/1 Inter, sans-serif; color: var(--purple); pointer-events: none !important; }
+  .ttl.formula .fx { pointer-events: auto !important; }
+  .ttl .fx > * { opacity: 0; transform: translateY(60px); transition: opacity .45s ease, transform .45s ease; }
+  .ttl.formula .fx > * { opacity: 1; transform: none; }
+  .ttl .fx .lhs { font: 500 120px/1 Lora, serif; color: #0B0B0F; }
+  .ttl .fx .op { font-weight: 400; color: var(--blue); }
+  .ttl .fx .t { padding: 34px 56px; border: 6px solid #DFE6F0; border-radius: 36px; background: #fff; box-shadow: 0 20px 50px rgba(41,0,66,.10); }
   .lbox { font: 400 100px 'IBM Plex Mono', monospace; letter-spacing: 6px; text-transform: uppercase; color: #6C7889;
           border: 6px solid #A3ADBB; padding: 18px 64px; background: rgba(243,246,251,.9); white-space: nowrap;
           transition: border-color .25s, color .25s, background .25s; }
@@ -73,10 +87,12 @@
   .card .wm { font-size: 46px; }
   .card p { margin: 0; font: 600 32px/1.3 Inter, sans-serif; color: var(--purple); }
   .card .more { margin-top: auto; font: 500 22px 'IBM Plex Mono', monospace; color: var(--blue); letter-spacing: 2px; text-transform: uppercase; }
-
   /* ---------- 3D layer: product detail ---------- */
+  /* `will-change: transform` keeps the panel text sharp: without it the compositor rasterizes this layer coarsely 
+    and scales the texture up, which softens the body text (the panel is the densest text on screen) */
   .panel { box-sizing: border-box; width: 1700px; background: #fff; border-radius: 40px; padding: 60px 72px 64px; position: relative;
-           border: 3px solid #E3E9F2; box-shadow: 0 60px 140px rgba(41,0,66,.22); font-family: Inter, sans-serif; color: var(--n8); }
+           border: 3px solid #E3E9F2; box-shadow: 0 60px 140px rgba(41,0,66,.22); font-family: Inter, sans-serif; color: var(--n8);
+           will-change: transform; }
   .panel .x { position: absolute; top: 40px; right: 44px; width: 76px; height: 76px; border-radius: 50%; border: 3px solid #DFE6F0;
               background: #fff; font: 400 36px Inter, sans-serif; color: var(--n8); display: grid; place-items: center; }
   .panel .x:hover { border-color: var(--blue); color: var(--blue); }
@@ -535,23 +551,25 @@
   #dots i.on { background: var(--blue); transform: scale(1.25); }
   #legend { position: fixed; top: 22px; right: 28px; display: flex; gap: 18px; font: 500 12px 'IBM Plex Mono', monospace; letter-spacing: 1px;
             color: var(--n8); background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 9px 16px; }
-  #legend { transition: opacity .4s; }
-  body.solo #legend { opacity: 0; }
+  #legend { pointer-events: none; }   /* opacity follows the tokens' overview weight, set in frame() */
   #legend span { display: inline-flex; align-items: center; gap: 7px; }
   #legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   #help { font: 400 12px Inter, sans-serif; color: var(--label); text-align: right; line-height: 1.6; transition: opacity 1s; }
   #help kbd { font: 500 11px 'IBM Plex Mono', monospace; background: #fff; border: 1px solid #DCE3EC; border-radius: 5px; padding: 1px 6px; color: var(--n8); }
   @media (max-width: 760px) { #help, #legend { display: none; } #hud { padding: 0 16px 16px; } }
 
-  /* ---------- sway toggle ---------- */
-  #swayToggle { position: fixed; top: 68px; right: 28px; z-index: 5; display: flex; align-items: center; gap: 9px;
-                font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: 1px; color: var(--label); cursor: pointer;
-                background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 8px 14px 8px 8px; }
-  #swayToggle .track { width: 30px; height: 17px; border-radius: 999px; background: #D3DAE5; position: relative; transition: background .2s; flex: none; }
-  #swayToggle .thumb { position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: left .2s; }
-  #swayToggle.on .track { background: var(--blue); }
-  #swayToggle.on .thumb { left: 15px; }
-  @media (max-width: 760px) { #swayToggle { display: none; } }
+  /* ---------- autoplay toggle ---------- */
+  #autoplay { position: fixed; right: 28px; bottom: 78px; z-index: 5; display: flex; align-items: center; gap: 10px;
+              font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: 1px; color: var(--label);
+              background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 8px 14px 8px 8px; }
+  #autoplay .toggle { display: flex; align-items: center; gap: 9px; background: none; border: none; padding: 0; margin: 0; font: inherit; letter-spacing: inherit; color: inherit; cursor: pointer; }
+  #autoplay .track { width: 30px; height: 17px; border-radius: 999px; background: #D3DAE5; position: relative; transition: background .2s; flex: none; }
+  #autoplay .thumb { position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: left .2s; }
+  #autoplay .toggle.on .track { background: var(--blue); }
+  #autoplay .toggle.on .thumb { left: 15px; }
+  #autoplay .secs { display: flex; align-items: center; gap: 5px; color: var(--label); }
+  #autoplay .secs input { width: 34px; font: 500 13px 'IBM Plex Mono', monospace; color: var(--purple); background: #fff; border: 1px solid #E1E7F0; border-radius: 6px; padding: 2px 4px; text-align: center; }
+  @media (max-width: 760px) { #autoplay { display: none; } }
 </style>
 <script type="importmap">
 { "imports": {
@@ -567,9 +585,12 @@
   <span><i style="background:var(--amber)"></i>AI-generated change</span>
   <span><i style="background:var(--blue)"></i>Verified change</span>
 </div>
-<button id="swayToggle" title="Toggle mouse-follow drift" aria-pressed="false">
-  <span class="track"><span class="thumb"></span></span>Sway
-</button>
+<div id="autoplay">
+  <button class="toggle" title="Toggle auto-advance" aria-pressed="false">
+    <span class="track"><span class="thumb"></span></span>Auto
+  </button>
+  <label class="secs">every <input type="number" id="autoplaySecs" min="2" max="120" step="1" value="6" title="Seconds between steps">s</label>
+</div>
 <div id="hud">
   <div id="crumbs"></div>
   <div id="help">
@@ -635,12 +656,12 @@ const LOGO = name => LOGOS[name];
 
 const LOOPS = [
   {
-    title: 'Agentic loop', dir: -1, stage: 'Stage 1 · Before the commit',
+    title: 'Agentic loop', dir: -1, stage: 'Before the commit',
     tagline: 'Verification inside the coding agent’s own loop — before a single line is pushed.',
     caps: {
-      guide: 'Agents receive your coding guidelines, architecture rules and dependency health context before they write a line.',
-      verify: 'Every change the agent makes is analyzed on the spot — <code>sonar analyze agentic</code>, wired into the agent through CLI hooks or a local MCP server.',
-      solve: 'The agent fixes confirmed issues itself and re-verifies, so what reaches git push is already clean.',
+      guide: 'Agents get your standards before they write a line.',
+      verify: 'Every change the agent makes is analyzed on the spot.',
+      solve: 'The agent fixes issues itself before the push.',
     },
     products: [{
       key: 'vortex', logo: 'sonar-vortex', name: 'Sonar Vortex', pos: [0, -0.5],
@@ -711,12 +732,13 @@ const LOOPS = [
     }],
   },
   {
-    title: 'CI verification loop', dir: 1, stage: 'Stage 2 · During the pull request',
+    title: 'CI verification loop', dir: 1, stage: 'During the pull request',
+    ang: { guide: 215, verify: -35, solve: 90 },   // counter-clockwise flow: Guide → Verify → Solve
     tagline: 'Every pull request is verified, algorithmically and agentically, before it can merge.',
     caps: {
-      guide: 'Quality profiles and quality gates define what “mergeable” means for every repository.',
-      verify: 'Each PR is analyzed against 8,000+ rules, taint analysis and the quality gate. Algorithmic and agentic verification work together.',
-      solve: 'Findings land on the PR with automatic fixes, so issues are resolved before the merge.',
+      guide: 'Quality gates define what “mergeable” means.',
+      verify: 'Every pull request is analyzed against the quality gate.',
+      solve: 'Issues are fixed on the PR before the merge.',
     },
     products: [
       {
@@ -827,79 +849,16 @@ const LOOPS = [
     ],
   },
   {
-    title: 'Code maintenance loop', dir: -1, stage: 'Stage 3 · Once code is merged',
+    title: 'Code maintenance loop', dir: -1, stage: 'Once code is merged',
     tagline: 'Continuously pay down debt and hunt the flaws static analysis can’t see.',
     caps: {
-      guide: 'Your standards and backlog priorities decide which issues and debt the agents take on.',
-      verify: 'Merged code is re-verified, and agentic discovery looks for flaws beyond pattern-based rules.',
-      solve: 'Agents open fix PRs that follow your standards and are verified before they reach review.',
+      guide: 'Your priorities decide which debt the agents take on.',
+      verify: 'Agents hunt the flaws rules can’t see.',
+      solve: 'Agents open verified fix PRs.',
     },
     products: [
       {
-        key: 'remediation', mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'remediation agent', name: 'SonarQube Remediation Agent', pos: [-3.7, -0.5],
-        tag: 'Autonomous repair of issues and technical debt',
-        what: ['<b>Automated resolution</b> of pre-merge findings, inline with code review',
-               '<b>Assign your backlog</b> to the agent to resolve technical debt',
-               'Fixes consistent with your standards, <b>verified by Vortex</b> before the PR opens',
-               'Shift effort from triage and fixing to <b>new feature work</b>'],
-        // animated diagram shown in the right column instead of `runs`: issue sources ([logos, title]) flowing into the agent, then out as a fix PR
-        feed: {
-          title: 'Fixes issues from any source',
-          // [logos, title, { accent, note }?]: a logo is a key of LOGOS or, when there is no official logo, a { mark, brand, sub } lockup
-          sources: [[['sonarqube-hunter-agent'], 'New agentic findings'], [['sonarqube-server', 'sonarqube-cloud'], 'Existing backlog'],
-                    [[{ mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'advanced security' }], 'Dependency risks', { accent: 'var(--purple)', note: 'Only on SonarQube Cloud' }]],
-          agent: ['sonarqube-server-mark', 'SonarQube', 'Remediation Agent'],   // no official Remediation Agent logo yet: SonarQube mark + name
-          out: ['Fix PRs', 'verified by', 'sonar-vortex'],   // shown under the PR icon
-        },
-        stat: ['+41%', 'increase in code complexity persists after the 3–5× AI velocity spike fades (Carnegie Mellon, 2025).'],
-        // requirements level below the product panel (#3.1.1): Cloud vs Server comparison + shared notes
-        deep: {
-          name: 'Prerequisites & compatibility', cta: 'Prerequisites & compatibility →',
-          title: 'What it takes to run it, on Cloud and on Server',
-          compare: {
-            cols: [['sonarqube-cloud', 'SonarQube Cloud'], ['sonarqube-server', 'SonarQube Server']],
-            rows: [
-              ['Prerequisites', [
-                ['<b>Team (annual) or Enterprise plan</b> + Sonar Agent Essentials subscription',
-                 'Organization and project <b>bound</b> to the DevOps platform, with analysis enabled',
-                 'GitHub: install the <b>SonarQube Agent app</b> · GitLab and Azure DevOps: reuse your existing token'],
-                ['<b>2026.5+</b> Enterprise or Data Center edition + Remediation Agent subscription',
-                 '<b>LicenseSpring</b> license, online or offline (not server ID)',
-                 'Projects <b>bound and already analyzed</b>, with <b>write access</b> to the repositories'],
-              ]],
-              ['Runs on', [
-                ['<b>Sonar’s infrastructure</b>: nothing to install'],
-                ['<b>Your infrastructure</b>: Docker Engine on Linux, Kubernetes with containerd or OpenShift 4.19+, x86-64 or ARM64, with shared storage',
-                 'Outbound access to your LLM provider and DevOps platform'],
-              ]],
-              ['LLM models', [
-                { hl: ['Claude Opus 4.6', 'GPT-5.5'], note: 'On Cloud, SonarQube picks the model for your provider. On Server, the instance administrator selects it.' },
-              ]],
-              ['LLM providers', [
-                { chips: ['Anthropic', 'OpenAI'], note: 'Your own API key, added to the organization and billed to your provider account.' },
-                { chips: ['Anthropic', 'OpenAI', 'AWS Bedrock', 'Azure AI Foundry', 'OpenAI-compatible gateway'], note: 'Your own provider, configured once for the whole instance.' },
-              ]],
-              ['DevOps platforms', [
-                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog fixes on all three. Pull request fixes on GitHub and GitLab. GitLab.com only.' },
-                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog and pull request fixes on all three. Pull request fixes are triggered from SonarQube.' },
-              ]],
-              ['Languages', [
-                { hl: ['Java', 'JavaScript / TypeScript', 'Python', 'C#'], note: 'Reliability, maintainability and selected security issues, plus secrets. Same on Cloud and Server.' },
-              ]],
-            ],
-          },
-          notes: { title: 'Good to know', items: [
-            'Every fix is <b>re-analyzed by Sonar</b> before the pull request opens; fixes that fail are never shown',
-            'The agent <b>never merges</b>: your reviewers and branch protection rules still apply',
-            'Affected code goes to <b>your own LLM provider</b>, under your account, on Server too',
-            '<em class="only">Cloud</em>Also fixes <b>dependency risks</b> by bumping versions: npm & yarn, pip, Maven & Gradle',
-            '<em class="only">Cloud</em>If CI fails on its pull request, the agent reads the <b>GitHub Actions</b> logs and pushes a fix, up to 3 times',
-            '<em class="only">Server</em>Agents can’t run on <b>Docker Desktop or ZIP</b> installs',
-          ] },
-        },
-      },
-      {
-        key: 'hunter', logo: 'sonarqube-hunter-agent', name: 'SonarQube Hunter Agent', pos: [3.9, -0.5],
+        key: 'hunter', logo: 'sonarqube-hunter-agent', name: 'SonarQube Hunter Agent', pos: [-3.9, -0.5],
         tag: 'Finds the vulnerabilities static analysis can’t see',
         what: ['Targets <b>broken access control, IDOR, business-logic and authentication flaws</b>',
                '<b>Not just a prompt</b>: a tailored agent with structured, multi-phase analysis',
@@ -986,7 +945,7 @@ const LOOPS = [
         },
         stat: [['200+', 'confirmed, previously unknown vulnerabilities, found across 25+ open-source projects with 1k+ stars.'],
                ['80–90%', 'average precision, at ~30% lower cost than naive LLM workflows, whose results swing wildly.']],
-        // two levels below the product panel: requirements (#3.2.1), then detected CWEs (#3.2.2)
+        // two levels below the product panel: requirements (#3.1.1), then detected CWEs (#3.1.2)
         deep: [{
           name: 'Prerequisites & compatibility', cta: 'Prerequisites & compatibility →',
           title: 'What it takes to run it, on Cloud and on Server',
@@ -1066,6 +1025,69 @@ const LOOPS = [
           ] },
         }],
       },
+      {
+        key: 'remediation', mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'remediation agent', name: 'SonarQube Remediation Agent', pos: [3.7, -0.5],
+        tag: 'Autonomous repair of issues and technical debt',
+        what: ['<b>Automated resolution</b> of pre-merge findings, inline with code review',
+               '<b>Assign your backlog</b> to the agent to resolve technical debt',
+               'Fixes consistent with your standards, <b>verified by Vortex</b> before the PR opens',
+               'Shift effort from triage and fixing to <b>new feature work</b>'],
+        // animated diagram shown in the right column instead of `runs`: issue sources ([logos, title]) flowing into the agent, then out as a fix PR
+        feed: {
+          title: 'Fixes issues from any source',
+          // [logos, title, { accent, note }?]: a logo is a key of LOGOS or, when there is no official logo, a { mark, brand, sub } lockup
+          sources: [[['sonarqube-hunter-agent'], 'New agentic findings'], [['sonarqube-server', 'sonarqube-cloud'], 'Existing backlog'],
+                    [[{ mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'advanced security' }], 'Dependency risks', { accent: 'var(--purple)', note: 'Only on SonarQube Cloud' }]],
+          agent: ['sonarqube-server-mark', 'SonarQube', 'Remediation Agent'],   // no official Remediation Agent logo yet: SonarQube mark + name
+          out: ['Fix PRs', 'verified by', 'sonar-vortex'],   // shown under the PR icon
+        },
+        stat: ['+41%', 'increase in code complexity persists after the 3–5× AI velocity spike fades (Carnegie Mellon, 2025).'],
+        // requirements level below the product panel (#3.2.1): Cloud vs Server comparison + shared notes
+        deep: {
+          name: 'Prerequisites & compatibility', cta: 'Prerequisites & compatibility →',
+          title: 'What it takes to run it, on Cloud and on Server',
+          compare: {
+            cols: [['sonarqube-cloud', 'SonarQube Cloud'], ['sonarqube-server', 'SonarQube Server']],
+            rows: [
+              ['Prerequisites', [
+                ['<b>Team (annual) or Enterprise plan</b> + Sonar Agent Essentials subscription',
+                 'Organization and project <b>bound</b> to the DevOps platform, with analysis enabled',
+                 'GitHub: install the <b>SonarQube Agent app</b> · GitLab and Azure DevOps: reuse your existing token'],
+                ['<b>2026.5+</b> Enterprise or Data Center edition + Remediation Agent subscription',
+                 '<b>LicenseSpring</b> license, online or offline (not server ID)',
+                 'Projects <b>bound and already analyzed</b>, with <b>write access</b> to the repositories'],
+              ]],
+              ['Runs on', [
+                ['<b>Sonar’s infrastructure</b>: nothing to install'],
+                ['<b>Your infrastructure</b>: Docker Engine on Linux, Kubernetes with containerd or OpenShift 4.19+, x86-64 or ARM64, with shared storage',
+                 'Outbound access to your LLM provider and DevOps platform'],
+              ]],
+              ['LLM models', [
+                { hl: ['Claude Opus 4.6', 'GPT-5.5'], note: 'On Cloud, SonarQube picks the model for your provider. On Server, the instance administrator selects it.' },
+              ]],
+              ['LLM providers', [
+                { chips: ['Anthropic', 'OpenAI'], note: 'Your own API key, added to the organization and billed to your provider account.' },
+                { chips: ['Anthropic', 'OpenAI', 'AWS Bedrock', 'Azure AI Foundry', 'OpenAI-compatible gateway'], note: 'Your own provider, configured once for the whole instance.' },
+              ]],
+              ['DevOps platforms', [
+                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog fixes on all three. Pull request fixes on GitHub and GitLab. GitLab.com only.' },
+                { hl: ['GitHub', 'GitLab', 'Azure DevOps'], note: 'Backlog and pull request fixes on all three. Pull request fixes are triggered from SonarQube.' },
+              ]],
+              ['Languages', [
+                { hl: ['Java', 'JavaScript / TypeScript', 'Python', 'C#'], note: 'Reliability, maintainability and selected security issues, plus secrets. Same on Cloud and Server.' },
+              ]],
+            ],
+          },
+          notes: { title: 'Good to know', items: [
+            'Every fix is <b>re-analyzed by Sonar</b> before the pull request opens; fixes that fail are never shown',
+            'The agent <b>never merges</b>: your reviewers and branch protection rules still apply',
+            'Affected code goes to <b>your own LLM provider</b>, under your account, on Server too',
+            '<em class="only">Cloud</em>Also fixes <b>dependency risks</b> by bumping versions: npm & yarn, pip, Maven & Gradle',
+            '<em class="only">Cloud</em>If CI fails on its pull request, the agent reads the <b>GitHub Actions</b> logs and pushes a fix, up to 3 times',
+            '<em class="only">Server</em>Agents can’t run on <b>Docker Desktop or ZIP</b> installs',
+          ] },
+        },
+      },
     ],
   },
 ];
@@ -1074,7 +1096,7 @@ const LOOPS = [
    Geometry constants & helpers
    ===================================================================== */
 const R = 10, GAP = 21.5, S = 0.01;              // loop radius, loop spacing, CSS px → world units
-const ANG = { verify: 90, solve: -35, guide: 215 }; // stage node angles (deg)
+const ANG = { verify: 90, solve: -35, guide: 215 }; // stage node angles (deg), overridable per loop with `ang`
 const BLUE = new THREE.Color('#126ED3'), AMBER = new THREE.Color('#F5A524');
 const BG = 0xF3F6FB, FLOW_SPEED = 1.3;
 
@@ -1177,8 +1199,9 @@ LOOPS.forEach((L, i) => {
     },
   });
 
+  L.ang = L.ang || ANG;
   L.nodes = {};
-  for (const [type, a] of Object.entries(ANG)) {
+  for (const [type, a] of Object.entries(L.ang)) {
     const n = makeNode(nodePos(L, a)); n.type = type; n.loop = i;
     nodes.push(n); L.nodes[type] = n;
   }
@@ -1309,8 +1332,8 @@ function advanceToken(tk, dt) {
       if (tk.journey && n.type === 'solve') tk.target = BLUE;   // fixed → verified
     }
   }
-  if (tk.journey) for (const c of connectors) {
-    if (c.node.pulse < 0.35 && Math.hypot(_v.x - c.marker.x, _v.y - c.marker.y) < 0.6) {
+  if (tk.journey) for (const c of connectors) {   // labels only flash while tokens are visible (overview)
+    if (tokensShown && c.node.pulse < 0.35 && Math.hypot(_v.x - c.marker.x, _v.y - c.marker.y) < 0.6) {
       c.node.pulse = 1;
       c.labelEl.classList.add('flash');
       setTimeout(() => c.labelEl.classList.remove('flash'), 500);
@@ -1359,8 +1382,13 @@ const wordmark = p => p.logo
   : `<span class="wm"><img class="mk" src="${LOGO(p.mark)}" alt="" draggable="false"><span class="wt"><span><b>Sonar</b><em>${p.brand}</em></span>${p.sub ? `<small>${p.sub}</small>` : ''}</span></span>`;
 
 // overview headline: the observation behind the three loops. Clicking it isolates it (`headline` level), zooming out restores the overview
+const FORMULA = ['Intent', 'Guiderails', 'Verification', 'Evidence'];   // Code Confidence = the product of these terms
 const headline = css3d(`<h1>Writing code <span class="ne">≠</span> shipping code</h1>
-  <p>Sonar builds <b>code confidence</b> in the <b>agentic software factory</b>.</p>`, 'ttl', 0, 16.7, 0, { kind: 'title', act: 'headline' });
+  <p>Sonar builds <b class="act" data-act="formula">code confidence</b> in the <b>agentic software factory</b>.</p>
+  <div class="fx" data-act="formula"><span class="lhs">Code Confidence</span><span class="op">=</span>${
+    FORMULA.map(t => `<span class="t">${t}</span>`).join('<span class="op">×</span>')}</div>`, 'ttl', 0, 16.7, 0, { kind: 'title', act: 'headline' });
+// stagger the formula terms so they appear left to right
+[...headline.el.querySelector('.fx').children].forEach((e, i) => { e.style.transitionDelay = `${i * 0.12}s`; });
 
 connectors.forEach(c => {
   const it = css3d(`<span>${c.label}</span>`, 'gitl', c.labelPos[0], c.labelPos[1], 1.2, { kind: 'connector' });
@@ -1651,10 +1679,16 @@ LOOPS.forEach(L => L.products.forEach(p => {
 LOOPS.forEach((L, i) => {
   // overview-level, always present (dimmed when another loop is in focus)
   css3d(L.title, 'lbox', L.cx, 2.2, 0.08, { kind: 'loopStatic', loop: i, act: `loop:${i}` });
-  const vp = nodePos(L, ANG.verify), gp = nodePos(L, ANG.guide), sp = nodePos(L, ANG.solve);
-  css3d('Verify', 'stl', vp.x, vp.y - 1.35, 0.08, { kind: 'loopStatic', loop: i });
-  css3d('Guide', 'stl', gp.x + 2.15, gp.y + 0.35, 0.08, { kind: 'loopStatic', loop: i });
-  css3d('Solve', 'stl', sp.x - 2.05, sp.y + 0.35, 0.08, { kind: 'loopStatic', loop: i });
+  // stage labels, placed by node slot: top (90°), lower left (215°) or lower right (-35°)
+  const stages = Object.entries(L.ang).map(([type, a]) => ({
+    type, name: type[0].toUpperCase() + type.slice(1), p: nodePos(L, a),
+    slot: a === 90 ? 'top' : Math.cos(deg(a)) < 0 ? 'left' : 'right',
+  }));
+  stages.forEach(({ name, p, slot }) => {
+    if (slot === 'top') css3d(name, 'stl', p.x, p.y - 1.35, 0.08, { kind: 'loopStatic', loop: i });
+    else if (slot === 'left') css3d(name, 'stl', p.x + 2.15, p.y + 0.35, 0.08, { kind: 'loopStatic', loop: i });
+    else css3d(name, 'stl', p.x - 2.05, p.y + 0.35, 0.08, { kind: 'loopStatic', loop: i });
+  });
 
   // overview wordmarks (fade out as the loop's cards fade in)
   L.products.forEach((p, j) => css3d(wordmark(p), 'wmhit', L.cx + p.pos[0], p.pos[1], 0.08, { kind: 'wordmark', loop: i, act: `prod:${i}:${j}` }));
@@ -1662,9 +1696,12 @@ LOOPS.forEach((L, i) => {
   // loop-focus level
   css3d(L.stage, 'chip', L.cx, 7.05, 0.08, { kind: 'focus', loop: i });
   css3d(L.tagline, 'tagline', L.cx, 5.15, 0.08, { kind: 'focus', loop: i });
-  css3d(`<b>Verify</b>${L.caps.verify}`, 'cap top', L.cx, 12.05, 0.1, { kind: 'focus', loop: i });
-  css3d(`<b>Guide</b>${L.caps.guide}`, 'cap r', gp.x - 0.6 - 3.7, gp.y - 2.0, 0.1, { kind: 'focus', loop: i });
-  css3d(`<b>Solve</b>${L.caps.solve}`, 'cap', sp.x + 0.6 + 3.7, sp.y - 2.0, 0.1, { kind: 'focus', loop: i });
+  stages.forEach(({ type, name, p, slot }) => {
+    const html = `<b>${name}</b>${L.caps[type]}`;
+    if (slot === 'top') css3d(html, 'cap top', L.cx, 12.05, 0.1, { kind: 'focus', loop: i });
+    else if (slot === 'left') css3d(html, 'cap r', p.x - 0.6 - 3.7, p.y - 2.0, 0.1, { kind: 'focus', loop: i });
+    else css3d(html, 'cap', p.x + 0.6 + 3.7, p.y - 2.0, 0.1, { kind: 'focus', loop: i });
+  });
 
   const lay = CARD_LAYOUT[L.products.length];
   L.products.forEach((p, j) => {
@@ -1809,10 +1846,13 @@ function go(st) {
   panels.forEach(p => { p.target = ((st.level === 'product' || st.level === 'deep') && mine(p)) ? 1 : 0; });
   deeps.forEach(p => { p.target = (st.level === 'deep' && mine(p) && p.subIdx === st.sub) ? 1 : 0; });
   document.body.classList.toggle('solo', st.level === 'headline');
+  headline.el.classList.toggle('formula', !!st.formula);
   if (st.level === 'overview') flyTo({ x: 0, y: OY, z: Zo });
-  else if (st.level === 'headline') {   // frame the headline text, left-aligned in its block
-    const o = headline.o, w = Math.max(...[...headline.el.children].map(c => c.offsetWidth)) * S, h = headline.el.offsetHeight * S;
-    flyTo({ x: o.position.x - headline.el.offsetWidth * S / 2 + w / 2, y: o.position.y, z: fitZ(w * 1.2, h * 1.6) }, 1.2);
+  else if (st.level === 'headline') {   // frame the headline text (plus the formula when shown), left-aligned in its block
+    const o = headline.o, fx = headline.el.querySelector('.fx');
+    const w = Math.max(...[...headline.el.children].filter(c => st.formula || c !== fx).map(c => c.offsetWidth)) * S;
+    const H = headline.el.offsetHeight, h = (st.formula ? fx.offsetTop + fx.offsetHeight : H) * S;
+    flyTo({ x: o.position.x - headline.el.offsetWidth * S / 2 + w / 2, y: o.position.y + (H * S - h) / 2, z: fitZ(w * 1.2, h * 1.6) }, 1.2);
   }
   else if (st.level === 'loop') flyTo({ x: LOOPS[st.loop].cx, y: FY, z: Zf });
   else if (st.level === 'product') {   // taller panels (e.g. the Remediation Agent feed diagram) back the camera off to fit
@@ -1824,6 +1864,7 @@ function go(st) {
     flyTo({ x: LOOPS[st.loop].cx, y: PY, z: PZ + DZ + Math.max(Zd, fitZ(20, h + 1.6)) }, 1.1);
   }
   updateHud();
+  scheduleAutoplay();   // any navigation (manual or automatic) restarts the auto-advance countdown
 }
 function step(d) {
   let k = tour.findIndex(t => sameState(t, state.level === 'headline' ? { level: 'overview' } : state));
@@ -1857,16 +1898,26 @@ function updateHud() {
 
 /* ---------- input ---------- */
 const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
-const pointer = { x: 0, y: 0, down: null, moved: false };
+const pointer = { down: null, moved: false };
 let hovered = -1;
 
-/* ---------- sway toggle ---------- */
-const swayToggleEl = document.getElementById('swayToggle');
-let swayOn = false;
-swayToggleEl.addEventListener('click', () => {
-  swayOn = !swayOn;
-  swayToggleEl.classList.toggle('on', swayOn);
-  swayToggleEl.setAttribute('aria-pressed', String(swayOn));
+/* ---------- autoplay ---------- */
+const autoplayToggleEl = document.querySelector('#autoplay .toggle'), autoplaySecsEl = document.getElementById('autoplaySecs');
+let autoplayOn = false, autoplaySecs = +autoplaySecsEl.value, autoplayTimer = null;
+function scheduleAutoplay() {
+  clearTimeout(autoplayTimer);
+  if (autoplayOn) autoplayTimer = setTimeout(() => step(1), autoplaySecs * 1000);
+}
+autoplayToggleEl.addEventListener('click', () => {
+  autoplayOn = !autoplayOn;
+  autoplayToggleEl.classList.toggle('on', autoplayOn);
+  autoplayToggleEl.setAttribute('aria-pressed', String(autoplayOn));
+  scheduleAutoplay();
+});
+autoplaySecsEl.addEventListener('input', () => {
+  const v = clamp(Math.round(+autoplaySecsEl.value || 1), +autoplaySecsEl.min, +autoplaySecsEl.max);
+  autoplaySecs = v;
+  if (autoplayOn) scheduleAutoplay();   // restart the countdown with the new delay
 });
 
 function act(a) {
@@ -1878,6 +1929,7 @@ function act(a) {
   else if (k === 'step') go(tour[+x]);
   else if (k === 'overview') go({ level: 'overview' });
   else if (k === 'headline') go({ level: state.level === 'headline' ? 'overview' : 'headline' });
+  else if (k === 'formula') go({ level: 'headline', formula: !state.formula });   // "code confidence" shows / hides its formula
   else if (k === 'close') back();
   else if (k === 'next') step(1);
   else if (k === 'prev') step(-1);
@@ -1903,7 +1955,6 @@ function syncStateFromCamera() {
 }
 
 addEventListener('pointermove', e => {
-  pointer.x = e.clientX / innerWidth * 2 - 1; pointer.y = e.clientY / innerHeight * 2 - 1;
   if (pointer.down) {
     const dx = e.clientX - pointer.down.x, dy = e.clientY - pointer.down.y;
     if (Math.hypot(dx, dy) > 5) { pointer.moved = true; document.body.classList.add('dragging'); }
@@ -1913,11 +1964,11 @@ addEventListener('pointermove', e => {
     }
     return;
   }
-  hovered = state.level === 'headline' || e.target.closest('#hud,#legend,#swayToggle') ? -1 : pickLoop(e.clientX, e.clientY);
+  hovered = state.level === 'headline' || e.target.closest('#hud,#legend,#autoplay') ? -1 : pickLoop(e.clientX, e.clientY);
   document.body.style.cursor = hovered >= 0 && !(state.level === 'loop' && state.loop === hovered) ? 'pointer' : '';
 });
 addEventListener('pointerdown', e => {
-  if (e.button !== 0 || e.target.closest('#hud,#legend,.slider,.demo,#swayToggle')) return;
+  if (e.button !== 0 || e.target.closest('#hud,#legend,.slider,.demo,#autoplay')) return;
   pointer.down = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; pointer.moved = false;
 });
 addEventListener('pointerup', e => {
@@ -1928,7 +1979,7 @@ addEventListener('pointerup', e => {
   const i = pickLoop(e.clientX, e.clientY);
   if (i >= 0 && !(state.level === 'loop' && state.loop === i)) go({ level: 'loop', loop: i });
 });
-addEventListener('dblclick', e => { if (!e.target.closest('[data-act],#hud,.slider,.demo,#swayToggle')) back(); });
+addEventListener('dblclick', e => { if (!e.target.closest('[data-act],#hud,.slider,.demo,#autoplay')) back(); });
 addEventListener('wheel', e => {
   e.preventDefault();
   flight = null;
@@ -1946,6 +1997,7 @@ addEventListener('wheel', e => {
   syncStateFromCamera();
 }, { passive: false });
 addEventListener('keydown', e => {
+  if (e.target.matches('input,textarea') || e.target.isContentEditable) return;   // let the seconds field (and any other input) be typed in normally
   if (demoOn) {   // an open example takes ←/→ (pause autoplay and step through it, → on the last step closes it) and Esc
     const d = ['ArrowRight', 'PageDown', ' '].includes(e.key) ? 1 : ['ArrowLeft', 'PageUp'].includes(e.key) ? -1 : 0;
     if (d || e.key === 'Escape' || e.key === 'Backspace') {
@@ -1980,7 +2032,7 @@ onResize();
    ===================================================================== */
 const clock = new THREE.Clock();
 const _p = new THREE.Vector3(), _t = new THREE.Vector3();
-let spawnTimer = 0.4, elapsed = 0;
+let spawnTimer = 0.4;
 // deep links: #2 → loop 2, #2.1 → loop 2, first product, #2.2.1 → that product's first deep dive
 function stateFromHash() {
   const m = location.hash.match(/^#([1-3])(?:\.([1-9])(?:\.([1-9]))?)?$/);
@@ -1999,6 +2051,8 @@ if (new URLSearchParams(location.search).has('instant')) {   // skip intro fligh
   Object.assign(cam, flight.to); flight = null; [...panels, ...deeps].forEach(p => { p.k = p.target; });
 }
 
+const legendEl = document.getElementById('legend');
+let tokensShown = true;   // set in frame(): false once the camera zooms into a loop
 function setOpacity(item, a) {
   const vis = a > 0.01;
   item.el.style.opacity = a.toFixed(3);
@@ -2008,7 +2062,6 @@ function setOpacity(item, a) {
 
 function frame() {
   const dt = Math.min(clock.getDelta(), 0.05);
-  elapsed += dt;
 
   // camera flight
   if (flight) {
@@ -2019,15 +2072,7 @@ function frame() {
     cam.z = lerp(flight.from.z, flight.to.z, k) + flight.lift * Math.sin(Math.PI * k);
     if (flight.t >= 1) flight = null;
   }
-  if (swayOn) {
-    const sway = 0.012 * cam.z;
-    camera.position.set(
-      cam.x + pointer.x * cam.z * 0.035 + Math.sin(elapsed * 0.23) * sway,
-      cam.y - pointer.y * cam.z * 0.035 + Math.cos(elapsed * 0.19) * sway * 0.6,
-      cam.z);
-  } else {
-    camera.position.set(cam.x, cam.y, cam.z);
-  }
+  camera.position.set(cam.x, cam.y, cam.z);
   camera.lookAt(cam.x, cam.y, 0);
 
   // semantic zoom weights
@@ -2040,6 +2085,10 @@ function frame() {
   solo = clamp(solo + (state.level === 'headline' ? dt : -dt) * 2.4, 0, 1);
   const rest = 1 - ease(solo);           // everything but the headline fades out while it is isolated
   const flowDt = dt * run;
+  const ov = smooth(0.35, 0.8, tz) * rest;   // tokens (and their legend) only show at the overview level
+  legendEl.style.opacity = ov.toFixed(3);
+  tokensShown = ov > 0.5;
+  const arrowDt = flowDt * lerp(0.35, 1, ov);   // dashes and arrowheads turn slower once zoomed into a loop
 
   // WebGL dimming, hover & flow
   LOOPS.forEach((L, i) => {
@@ -2048,12 +2097,12 @@ function frame() {
     L.halo.material.opacity = 0.05 * d + (hovered === i ? 0.08 : 0);
     L.glow.material.opacity = (0.35 + 0.65 * d) * rest;
     L.hover.material.opacity = lerp(L.hover.material.opacity, hovered === i ? 1 : 0, Math.min(1, dt * 6));
-    L.ring.material.dashOffset = (L.ring.material.dashOffset - FLOW_SPEED * flowDt) % 0.4189;
+    L.ring.material.dashOffset = (L.ring.material.dashOffset - FLOW_SPEED * arrowDt) % 0.4189;
   });
   connectors.forEach(c => {
     const d = Math.min(dims[c.between[0]], dims[c.between[1]]) * (1 - 0.6 * Math.max(detail[c.between[0]], detail[c.between[1]])) * rest;
     c.line.material.opacity = d; c.arrow.material.opacity = d; c.head.material.opacity = d; c.node.mat.opacity = d;
-    c.line.material.dashOffset = (c.line.material.dashOffset - FLOW_SPEED * flowDt) % 0.4189;
+    c.line.material.dashOffset = (c.line.material.dashOffset - FLOW_SPEED * arrowDt) % 0.4189;
     c.dim = d;
   });
   for (const n of [...nodes, ...connectors.map(c => c.node)]) {
@@ -2061,7 +2110,7 @@ function frame() {
     if (n.loop !== undefined) n.mat.opacity = dims[n.loop] * (1 - 0.55 * detail[n.loop]) * rest;
   }
   flows.forEach(f => {
-    f.phase = (f.phase + FLOW_SPEED * flowDt / f.len) % 1;
+    f.phase = (f.phase + FLOW_SPEED * arrowDt / f.len) % 1;
     const base = f.connector ? f.connector.dim : dims[f.loop] * (1 - 0.55 * detail[f.loop]) * rest;
     f.chev.forEach((m, k) => {
       const u = (f.phase + k / f.n) % 1;
@@ -2077,7 +2126,7 @@ function frame() {
   if (spawnTimer <= 0) { spawnJourney(); spawnTimer = 3.4; }
   tokens.forEach(tk => advanceToken(tk, flowDt));
   for (let k = tokens.length - 1; k >= 0; k--) if (tokens[k].fade <= 0) tokens.splice(k, 1);
-  writeTokens(dims, run * rest);
+  writeTokens(dims, run * ov);
 
   // CSS3D opacity per semantic level
   for (const it of cssItems) {
