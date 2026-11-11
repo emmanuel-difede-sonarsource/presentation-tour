@@ -28,7 +28,7 @@ The official Sonar brand guide (zeroheight) is the source of truth for logos, co
 curl -sL https://zeroheight.com/3bcff7bd1/p/8307fd-colors.md
 ```
 
-- Image links in these pages are pre-signed S3 URLs that expire: download the asset into `assets/logos/` (kept as the reference source) and embed it in `index.html` as a base64 data URI in `LOGOS` (e.g. `base64 -i assets/logos/logo.png`) instead of hotlinking it, so the page stays a single self-contained file. Keep both in sync when a logo changes. Never recolor or stretch logos.
+- Image links in these pages are pre-signed S3 URLs that expire: download the asset into `assets/logos/` (kept as the reference source) and embed it in `index.html` as a base64 data URI in `LOGOS` (e.g. `base64 -i assets/logos/logo.png`) instead of hotlinking it, so the page stays a single self-contained file. Keep both in sync when a logo changes. The favicon follows the same rule: `assets/favicon.png` is the source, embedded as a data URI in the `<link rel="icon">` and `<link rel="apple-touch-icon">` tags. Never recolor or stretch logos.
 - Iconography: no direct `.md` link yet. Ask the user for it before introducing brand icons.
 
 ## Language
