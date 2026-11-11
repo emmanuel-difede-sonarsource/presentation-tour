@@ -551,8 +551,7 @@
   #dots i.on { background: var(--blue); transform: scale(1.25); }
   #legend { position: fixed; top: 22px; right: 28px; display: flex; gap: 18px; font: 500 12px 'IBM Plex Mono', monospace; letter-spacing: 1px;
             color: var(--n8); background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 9px 16px; }
-  #legend { transition: opacity .4s; }
-  body.solo #legend { opacity: 0; }
+  #legend { pointer-events: none; }   /* opacity follows the tokens' overview weight, set in frame() */
   #legend span { display: inline-flex; align-items: center; gap: 7px; }
   #legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   #help { font: 400 12px Inter, sans-serif; color: var(--label); text-align: right; line-height: 1.6; transition: opacity 1s; }
@@ -1333,8 +1332,8 @@ function advanceToken(tk, dt) {
       if (tk.journey && n.type === 'solve') tk.target = BLUE;   // fixed → verified
     }
   }
-  if (tk.journey) for (const c of connectors) {
-    if (c.node.pulse < 0.35 && Math.hypot(_v.x - c.marker.x, _v.y - c.marker.y) < 0.6) {
+  if (tk.journey) for (const c of connectors) {   // labels only flash while tokens are visible (overview)
+    if (tokensShown && c.node.pulse < 0.35 && Math.hypot(_v.x - c.marker.x, _v.y - c.marker.y) < 0.6) {
       c.node.pulse = 1;
       c.labelEl.classList.add('flash');
       setTimeout(() => c.labelEl.classList.remove('flash'), 500);
@@ -2052,6 +2051,8 @@ if (new URLSearchParams(location.search).has('instant')) {   // skip intro fligh
   Object.assign(cam, flight.to); flight = null; [...panels, ...deeps].forEach(p => { p.k = p.target; });
 }
 
+const legendEl = document.getElementById('legend');
+let tokensShown = true;   // set in frame(): false once the camera zooms into a loop
 function setOpacity(item, a) {
   const vis = a > 0.01;
   item.el.style.opacity = a.toFixed(3);
@@ -2084,6 +2085,10 @@ function frame() {
   solo = clamp(solo + (state.level === 'headline' ? dt : -dt) * 2.4, 0, 1);
   const rest = 1 - ease(solo);           // everything but the headline fades out while it is isolated
   const flowDt = dt * run;
+  const ov = smooth(0.35, 0.8, tz) * rest;   // tokens (and their legend) only show at the overview level
+  legendEl.style.opacity = ov.toFixed(3);
+  tokensShown = ov > 0.5;
+  const arrowDt = flowDt * lerp(0.35, 1, ov);   // dashes and arrowheads turn slower once zoomed into a loop
 
   // WebGL dimming, hover & flow
   LOOPS.forEach((L, i) => {
@@ -2092,12 +2097,12 @@ function frame() {
     L.halo.material.opacity = 0.05 * d + (hovered === i ? 0.08 : 0);
     L.glow.material.opacity = (0.35 + 0.65 * d) * rest;
     L.hover.material.opacity = lerp(L.hover.material.opacity, hovered === i ? 1 : 0, Math.min(1, dt * 6));
-    L.ring.material.dashOffset = (L.ring.material.dashOffset - FLOW_SPEED * flowDt) % 0.4189;
+    L.ring.material.dashOffset = (L.ring.material.dashOffset - FLOW_SPEED * arrowDt) % 0.4189;
   });
   connectors.forEach(c => {
     const d = Math.min(dims[c.between[0]], dims[c.between[1]]) * (1 - 0.6 * Math.max(detail[c.between[0]], detail[c.between[1]])) * rest;
     c.line.material.opacity = d; c.arrow.material.opacity = d; c.head.material.opacity = d; c.node.mat.opacity = d;
-    c.line.material.dashOffset = (c.line.material.dashOffset - FLOW_SPEED * flowDt) % 0.4189;
+    c.line.material.dashOffset = (c.line.material.dashOffset - FLOW_SPEED * arrowDt) % 0.4189;
     c.dim = d;
   });
   for (const n of [...nodes, ...connectors.map(c => c.node)]) {
@@ -2105,7 +2110,7 @@ function frame() {
     if (n.loop !== undefined) n.mat.opacity = dims[n.loop] * (1 - 0.55 * detail[n.loop]) * rest;
   }
   flows.forEach(f => {
-    f.phase = (f.phase + FLOW_SPEED * flowDt / f.len) % 1;
+    f.phase = (f.phase + FLOW_SPEED * arrowDt / f.len) % 1;
     const base = f.connector ? f.connector.dim : dims[f.loop] * (1 - 0.55 * detail[f.loop]) * rest;
     f.chev.forEach((m, k) => {
       const u = (f.phase + k / f.n) % 1;
@@ -2121,7 +2126,7 @@ function frame() {
   if (spawnTimer <= 0) { spawnJourney(); spawnTimer = 3.4; }
   tokens.forEach(tk => advanceToken(tk, flowDt));
   for (let k = tokens.length - 1; k >= 0; k--) if (tokens[k].fade <= 0) tokens.splice(k, 1);
-  writeTokens(dims, run * rest);
+  writeTokens(dims, run * ov);
 
   // CSS3D opacity per semantic level
   for (const it of cssItems) {
