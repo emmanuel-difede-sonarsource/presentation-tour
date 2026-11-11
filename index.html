@@ -658,9 +658,9 @@ const LOOPS = [
     title: 'Agentic loop', dir: -1, stage: 'Before the commit',
     tagline: 'Verification inside the coding agent’s own loop — before a single line is pushed.',
     caps: {
-      guide: 'Agents receive your coding guidelines, architecture rules and dependency health context before they write a line.',
-      verify: 'Every change the agent makes is analyzed on the spot — <code>sonar analyze agentic</code>, wired into the agent through CLI hooks or a local MCP server.',
-      solve: 'The agent fixes confirmed issues itself and re-verifies, so what reaches git push is already clean.',
+      guide: 'Agents get your standards before they write a line.',
+      verify: 'Every change the agent makes is analyzed on the spot.',
+      solve: 'The agent fixes issues itself before the push.',
     },
     products: [{
       key: 'vortex', logo: 'sonar-vortex', name: 'Sonar Vortex', pos: [0, -0.5],
@@ -735,9 +735,9 @@ const LOOPS = [
     ang: { guide: 215, verify: -35, solve: 90 },   // counter-clockwise flow: Guide → Verify → Solve
     tagline: 'Every pull request is verified, algorithmically and agentically, before it can merge.',
     caps: {
-      guide: 'Quality profiles and quality gates define what “mergeable” means for every repository.',
-      verify: 'Each PR is analyzed against 8,000+ rules, taint analysis and the quality gate. Algorithmic and agentic verification work together.',
-      solve: 'Findings land on the PR with automatic fixes, so issues are resolved before the merge.',
+      guide: 'Quality gates define what “mergeable” means.',
+      verify: 'Every pull request is analyzed against the quality gate.',
+      solve: 'Issues are fixed on the PR before the merge.',
     },
     products: [
       {
@@ -851,9 +851,9 @@ const LOOPS = [
     title: 'Code maintenance loop', dir: -1, stage: 'Once code is merged',
     tagline: 'Continuously pay down debt and hunt the flaws static analysis can’t see.',
     caps: {
-      guide: 'Your standards and backlog priorities decide which issues and debt the agents take on.',
-      verify: 'Merged code is re-verified, and agentic discovery looks for flaws beyond pattern-based rules.',
-      solve: 'Agents open fix PRs that follow your standards and are verified before they reach review.',
+      guide: 'Your priorities decide which debt the agents take on.',
+      verify: 'Agents hunt the flaws rules can’t see.',
+      solve: 'Agents open verified fix PRs.',
     },
     products: [
       {
