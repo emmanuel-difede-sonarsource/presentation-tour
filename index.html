@@ -21,6 +21,7 @@
     --label: #8A94A3;
     --amber: #F5A524;
     --red: #D3121D;
+    --green: #1F883D;   /* "checks passed" in the GitHub pull request example only: not a Sonar brand color */
   }
   html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--n8); font-family: Inter, system-ui, sans-serif; }
   #stage { position: fixed; inset: 0; touch-action: none; }
@@ -366,6 +367,106 @@
   .demo.nav .task { margin-bottom: 18px; }
   .demo.nav .res { padding: 12px 20px; }
   .demo.nav .dsteps i:last-child.on { background: var(--blue); }
+  /* Gitar pull request example (`demos` with `pr`): an illustrative GitHub PR, events revealed step by step,
+     past events collapsed to their header, checks and merge box updated at each step */
+  .demo.ghpr { padding-top: 56px; }
+  .demo .gh-h { margin: 22px 0 22px; }
+  .demo .gh-h h3 { margin: 0 0 12px; font: 600 46px/1.2 Inter, sans-serif; color: var(--n8); }
+  .demo .gh-h h3 span { font-weight: 400; color: var(--label); }
+  .demo .gh-m { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font: 400 25px Inter, sans-serif; color: var(--label); }
+  .demo .gh-m b { color: var(--n8); font-weight: 600; }
+  .demo .gh-m code, .demo .gh code { font: 500 0.88em 'IBM Plex Mono', monospace; color: var(--blue); background: rgba(18,110,211,.08); padding: 2px 10px; border-radius: 8px; }
+  .demo .gh-st { display: inline-flex; align-items: center; gap: 10px; padding: 8px 22px; border-radius: 999px; background: var(--green); color: #fff; font: 600 23px Inter, sans-serif; }
+  .demo .gh-st svg { width: 22px; height: 22px; }
+  .demo .gh-sp { display: flex; gap: 8px; margin-bottom: 26px; padding-bottom: 22px; border-bottom: 3px solid #E3E9F2; }
+  .demo .gh-sp button { flex: 1; padding: 12px 6px; border: 0; border-bottom: 6px solid #E3E9F2; background: none; cursor: pointer; white-space: nowrap;
+                        font: 600 19px 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; color: var(--label); transition: color .3s, border-color .3s; }
+  .demo .gh-sp button.on { color: var(--purple); border-bottom-color: var(--uranium); }
+  .demo .gh-sp button.cur { color: var(--blue); border-bottom-color: var(--blue); }
+  .demo .gh-sp button:hover { color: var(--blue); }
+  .demo .gh { display: grid; grid-template-columns: 1fr 520px; gap: 40px; align-items: start; min-height: 0; }
+  .demo .tl { position: relative; display: flex; flex-direction: column; gap: 14px; padding-left: 34px; }
+  .demo .tl::before { content: ''; position: absolute; left: 10px; top: 20px; bottom: 20px; border-left: 3px solid #E3E9F2; }
+  .demo .ev { position: relative; display: none; border: 3px solid #E3E9F2; border-radius: 20px; background: #fff; }
+  .demo .ev.on { display: block; animation: ev-in .45s ease; }
+  @keyframes ev-in { from { opacity: 0; transform: translateY(14px); } }
+  .demo .ev::before { content: ''; position: absolute; left: -34px; top: 28px; width: 18px; height: 18px; border-radius: 50%; background: var(--n6); box-shadow: 0 0 0 5px #fff; }
+  .demo .ev.cur { border-color: var(--uranium); box-shadow: 0 6px 24px rgba(18,40,80,.10); }
+  .demo .ev.cur::before { background: var(--blue); }
+  .demo .eh { display: flex; align-items: center; gap: 16px; padding: 14px 22px; font: 400 24px Inter, sans-serif; color: var(--label); }
+  .demo .ev.cur .eh { background: var(--bg); border-radius: 17px 17px 0 0; border-bottom: 3px solid #E3E9F2; }
+  .demo .eh b { color: var(--n8); font-weight: 600; }
+  .demo .eh .gl { display: block; height: 32px; flex: none; }
+  .demo .av { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--purple); color: #fff; font: 600 21px Inter, sans-serif; }
+  .demo .chip { margin-left: auto; flex: none; padding: 5px 16px; border-radius: 999px; font: 600 17px 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; color: #fff; background: var(--blue); }
+  .demo .chip.sec { background: var(--red); }
+  .demo .chip.ci { background: var(--amber); color: var(--purple); }
+  .demo .chip.rule { background: var(--purple); }
+  .demo .chip.fix { background: var(--green); }
+  .demo .chip.kb { background: var(--uranium); color: var(--purple); }
+  .demo .rsv { display: none; flex: none; font: 600 19px 'IBM Plex Mono', monospace; color: var(--green); }
+  .demo.done .ev.f .rsv { display: block; }
+  .demo.done .ev.f .chip { margin-left: 0; }
+  .demo.done .ev.f .eh { margin-right: 0; }
+  .demo .eh .chip + .rsv { margin-left: 4px; }
+  .demo .eb { display: none; padding: 20px 26px 24px; font: 400 27px/1.45 Inter, sans-serif; color: var(--n8); }
+  .demo .ev.cur .eb { display: block; }
+  .demo .eb p { margin: 0; }
+  .demo .eb b { font-weight: 600; color: var(--purple); }
+  .demo .eb .cd { margin-bottom: 18px; border: 3px solid #E3E9F2; border-radius: 16px; overflow: hidden; }
+  .demo .eb .cd pre { padding: 10px 0; font-size: 19px; }
+  .demo .eb .cd pre span.hl { background: rgba(211,18,29,.08); border-left-color: var(--red); }
+  .demo .eb .cd pre span.add { background: rgba(31,136,61,.10); border-left-color: var(--green); }
+  .demo .eb .fh { padding: 10px 22px; font-size: 18px; }
+  .demo .eb ul { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .demo .eb li { display: flex; align-items: baseline; gap: 14px; padding: 0; }
+  .demo .eb li::before { content: none; }
+  .demo .eb li.ok { padding-left: 44px; }
+  .demo .eb li.ok::before { content: ''; left: 6px; top: .3em; width: 20px; height: 10px; border-left: 5px solid var(--green); border-bottom: 5px solid var(--green); }
+  .demo .th { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+  .demo .tm { display: grid; grid-template-columns: 120px 1fr; column-gap: 16px; align-items: start; }
+  .demo .tm .gl { height: 32px; margin-top: 4px; }
+  .demo .tm .av { grid-row: 1; }
+  .demo .tm .av + b { display: none; }
+  .demo .tm:first-child p { color: var(--label); }   /* the original finding, answered below */
+  .demo .tm + .tm { padding-top: 14px; border-top: 2px solid #EEF2F7; }
+  .demo .kbc { padding: 14px 22px; border-left: 7px solid var(--blue); border-radius: 12px; background: rgba(18,110,211,.06); font: 500 25px/1.4 Inter, sans-serif; color: var(--purple); }
+  .demo .kbc small { display: block; margin-bottom: 4px; font: 600 17px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); }
+  .demo .log { margin-bottom: 18px; padding: 12px 20px; border-radius: 14px; background: #24292F; font: 400 19px/1.7 'IBM Plex Mono', monospace; color: #D0D7DE; }
+  .demo .log div { display: flex; gap: 14px; }
+  .demo .log span { flex: 1; min-width: 0; }
+  .demo .log em { font-style: normal; color: #8C959F; }
+  .demo .log i { font-style: normal; color: #FF8182; }
+  .demo .log div.flaky i { color: #D4A72C; }
+  .demo .rq { margin-bottom: 18px; padding: 14px 22px; border-left: 7px solid var(--purple); border-radius: 12px; background: var(--bg); font: italic 500 26px/1.4 Inter, sans-serif; color: var(--purple); }
+  .demo .rq small { display: block; margin-bottom: 4px; font: normal 600 17px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--label); }
+  .demo .ask { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; font: 400 25px Inter, sans-serif; color: var(--label); }
+  .demo .ask q { font-style: italic; color: var(--purple); }
+  .demo .side-ck { display: flex; flex-direction: column; gap: 22px; }
+  .demo .ckb, .demo .mg { border: 3px solid #E3E9F2; border-radius: 20px; overflow: hidden; }
+  .demo .ckb h5 { margin: 0; padding: 14px 24px; background: var(--bg); border-bottom: 3px solid #E3E9F2; font: 600 19px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--label); }
+  .demo .ck { display: flex; align-items: center; gap: 16px; padding: 16px 24px; font: 600 24px Inter, sans-serif; color: var(--n8); }
+  .demo .ck + .ck { border-top: 2px solid #EEF2F7; }
+  .demo .ck img { display: block; height: 30px; }
+  .demo .ck > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .demo .ck small { font: 400 20px Inter, sans-serif; color: var(--label); }
+  .demo .ck > i, .demo .mg > i { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; font: normal 700 20px Inter, sans-serif; color: #fff; box-sizing: border-box; }
+  .demo [data-st="run"] > i { border: 4px solid var(--amber); border-right-color: transparent; animation: ck-spin 1s linear infinite; }
+  .demo [data-st="fail"] > i { background: var(--red); }
+  .demo [data-st="fail"] > i::before { content: '✕'; }
+  .demo [data-st="ok"] > i { background: var(--green); }
+  .demo [data-st="ok"] > i::before { content: '✓'; }
+  .demo .ck[data-st="fail"] small { color: var(--red); }
+  .demo .ck[data-st="ok"] small { color: var(--green); }
+  @keyframes ck-spin { to { transform: rotate(360deg); } }
+  .demo .mg { display: flex; align-items: center; gap: 16px; padding: 20px 24px; transition: border-color .4s, background .4s; }
+  .demo .mg span { flex: 1; font: 600 24px/1.3 Inter, sans-serif; color: var(--n8); }
+  .demo .mg span small { display: block; font: 400 20px Inter, sans-serif; color: var(--label); }
+  .demo .mg button { flex: none; padding: 12px 26px; border: 0; border-radius: 12px; background: #E3E9F2; color: var(--label); font: 600 22px Inter, sans-serif; transition: background .4s, color .4s; }
+  .demo .mg[data-st="ok"] { border-color: var(--green); background: rgba(31,136,61,.06); }
+  .demo .mg[data-st="ok"] button { background: var(--green); color: #fff; }
+  .demo .mg[data-st="fail"] { border-color: rgba(211,18,29,.35); }
+  .demo.ghpr .dcap { padding-top: 24px; }
   .deeper.try { gap: 14px; align-items: center; }
   .deeper.try svg { width: 20px; height: 20px; }
   .feed { margin-bottom: 40px; font: 400 22px/1.3 Inter, sans-serif; }
@@ -636,7 +737,10 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    Sonar Vortex semantic navigation example (`demos`) follows the AC/DC
    "Sonar Vortex context" page (semantic navigation), Oct 2026, on a
    fictional task; its commands are those of `sonar context navigation`
-   (SonarQube CLI 1.10.0), shown on fictional code and numbers.
+   (SonarQube CLI 1.10.0), shown on fictional code and numbers. The Gitar
+   pull request example (`demos` with `pr`) illustrates the Gitar
+   capabilities listed in its panel on a fictional GitHub pull request
+   (fictional repositories, code and people).
    ===================================================================== */
 // Official logos from the Sonar brand guide (zeroheight), light-background variants,
 // embedded as base64 PNG data URIs so the page is a single self-contained file.
@@ -844,6 +948,89 @@ const LOOPS = [
         statsRow: true,   // stats side by side in a full-width row below the columns
         stat: [['', 'Catch <b>real bugs and security issues</b> reviewers might have missed.'],
                ['“', 'Gitar has dramatically shortened our time to merge in mobile CI by quickly identifying CI failures and providing insightful AI-powered remediations.<small>Phil Rabin, Director of Engineering, Mobile, SoFi</small>']],
+        // illustrative GitHub pull request, browsed step by step (button under "What it does"): each step adds one event
+        // to the PR timeline (past events collapse to their header) and sets the checks, [state, text] per check,
+        // state = run | fail | ok. kind = open | sec | xpr | xrepo | ci | rule | kb | fix (chip label in `chip`).
+        // An event body can hold `ask` (the author's request), `code` ([file, first line number, lines, highlighted
+        // index, a line starting with '+' = added]), `log` (CI output: [flaky?, test, result]), `rule` (a team rule),
+        // `thread` (a comment thread: [who, text]), `kb` (the note saved to the knowledge base), `text` and `list`
+        // (what got fixed, ticked).
+        demos: [{
+          cta: 'See Gitar in a pull request',
+          tag: 'Example',
+          note: 'Illustrative pull request on GitHub',
+          pr: { num: 482, title: 'Add partial refunds to the payments API', author: 'dana', repo: 'acme/payments-api',
+                from: 'feature/partial-refunds', into: 'main', files: '4 files changed' },
+          checks: [['', 'CI', 'Build & tests'], ['sonarqube-server-mark', 'SonarQube', 'Quality gate'], ['gitar', '', 'Code review']],
+          steps: [{
+            step: 'PR opened', kind: 'open', who: 'dana', head: 'opened this pull request',
+            text: 'Adds <code>POST /refunds</code> so support can refund part of an order, and emits a <code>refund.created</code> event.',
+            checks: [['run', 'Running…'], ['run', 'Waiting for analysis'], ['run', 'Reviewing…']],
+            cap: 'A developer opens a pull request: partial refunds for the payments API.',
+          }, {
+            step: 'Security', kind: 'sec', chip: 'Security', who: 'gitar', head: 'commented on <code>refunds.ts</code>',
+            code: ['src/routes/refunds.ts', 14, ['router.post(\'/refunds\', auth, async (req, res) => {',
+                                                '  const { orderId, amount } = req.body;',
+                                                '  const charge = await Charges.forOrder(orderId);',
+                                                '  await payments.refund(charge.id, amount);'], 3],
+            text: '<code>amount</code> comes straight from the request and is never checked against what was charged: <b>any signed-in customer can refund more than they paid</b>.',
+            checks: [['run', 'Running…'], ['ok', 'Passed'], ['fail', '5 findings']],
+            cap: 'Security: the refund amount comes straight from the request, so a customer could get back more than they paid.',
+          }, {
+            step: 'Cross-PR', kind: 'xpr', chip: 'Cross-PR', who: 'gitar', head: 'commented on <code>amounts.ts</code>',
+            code: ['src/lib/amounts.ts', 3, ['export function toMinorUnits(amount: number) {',
+                                             '  return Math.floor(amount * 100);',
+                                             '}'], 1],
+            text: '<b>#476</b>, merged last week, added <code>toCents()</code> to fix this exact rounding bug: <code>Math.floor(0.29 * 100)</code> gives 28 cents. Reuse it.',
+            checks: [['run', 'Running…'], ['ok', 'Passed'], ['fail', '5 findings']],
+            cap: 'Cross-PR: a fix merged last week already solved this bug, and Gitar remembers it.',
+          }, {
+            step: 'Cross-repo', kind: 'xrepo', chip: 'Cross-repo', who: 'gitar', head: 'commented on <code>refund-created.ts</code>',
+            code: ['src/events/refund-created.ts', 8, ['emit(\'refund.created\', {',
+                                                       '  refundId: refund.id,',
+                                                       '  amount: refund.amountCents,',
+                                                       '});'], 2],
+            text: '<code>acme/billing-worker</code> still reads <code>amount_cents</code> from this event: renaming it to <code>amount</code> <b>breaks refund reconciliation in invoicing</b>.',
+            checks: [['run', 'Running…'], ['ok', 'Passed'], ['fail', '5 findings']],
+            cap: 'Cross-repo: another service reads this event and would break on the renamed field.',
+          }, {
+            step: 'CI failure', kind: 'ci', chip: 'CI failure', who: 'gitar', head: 'diagnosed the failing CI run',
+            log: [[0, 'refunds.spec.ts › rejects a cancelled order', 'expected 409, got 500'],
+                  [1, 'checkout.e2e.ts › applies a coupon', 'timeout'],
+                  [1, 'checkout.e2e.ts › shows the order summary', 'timeout']],
+            text: '<b>1 real failure, caused by this PR</b>: the refund runs before the order status check, so a cancelled order throws. The 2 others are one known flaky test, unrelated: re-run, passed.',
+            checks: [['fail', '3 failing'], ['ok', 'Passed'], ['fail', '5 findings · CI diagnosed']],
+            cap: 'CI failure: Gitar isolates the one real failure from the flaky noise and explains its root cause.',
+          }, {
+            step: 'Custom rule', kind: 'rule', chip: 'Custom rule', who: 'gitar', head: 'commented on <code>refunds.ts</code>',
+            rule: 'Every endpoint that moves money must write an audit log entry.',
+            code: ['src/routes/refunds.ts', 17, ['  await payments.refund(charge.id, amount);',
+                                                '  res.status(201).json({ ok: true });',
+                                                '});'], 0],
+            text: '<code>POST /refunds</code> moves money but never calls <code>audit.record()</code>.',
+            checks: [['fail', '3 failing'], ['ok', 'Passed'], ['fail', '5 findings · CI diagnosed']],
+            cap: 'Custom rule: a policy your team wrote in plain language, no scripts or YAML, enforced on every PR.',
+          }, {
+            step: 'Knowledge base', kind: 'kb', chip: 'Knowledge base', who: 'dana', head: 'replied on <code>refunds.ts</code>',
+            thread: [['gitar', 'A retried request could refund the same order twice: nothing makes <code>POST /refunds</code> idempotent.'],
+                     ['dana', 'Not an issue here: our API gateway requires an <code>Idempotency-Key</code> header and drops retried requests before they reach this service.'],
+                     ['gitar', 'Thanks, that context isn’t in this repository. Saved to the knowledge base for later reviews.']],
+            kb: 'Retries are de-duplicated by the API gateway (<code>Idempotency-Key</code>): services behind it don’t need their own idempotency check.',
+            checks: [['fail', '3 failing'], ['ok', 'Passed'], ['fail', '4 findings · 1 dismissed']],
+            cap: 'Knowledge base: a developer explains why a finding doesn’t apply, and Gitar keeps that context for later reviews.',
+          }, {
+            step: 'All green', kind: 'fix', chip: 'Fixed', who: 'gitar', head: 'pushed 1 commit',
+            ask: '“Gitar, please fix”',
+            code: ['src/routes/refunds.ts', 17, ['+  if (amount > charge.remaining) return res.status(422).end();',
+                                                '  await payments.refund(charge.id, amount);',
+                                                '+  await audit.record(\'refund\', { orderId, amount });'], -1],
+            list: ['Refund capped at the amount left on the charge', 'Reuses <code>toCents()</code> from #476',
+                   'Keeps <code>amount_cents</code> in <code>refund.created</code>', 'Checks the order status first: the test passes',
+                   'Writes the audit entry'],
+            checks: [['ok', 'All tests passed'], ['ok', 'Passed'], ['ok', 'All findings resolved']],
+            cap: 'Gitar fixes every finding and the failing test in one commit: all checks pass, the PR is ready to merge.',
+          }],
+        }],
       },
     ],
   },
@@ -1653,6 +1840,54 @@ function navDemo(D, p) {
   </div>`;
 }
 
+// Gitar pull request example shown over the product panel: an illustrative GitHub PR whose timeline grows one event
+// per step (the current one expanded), with its checks and merge box updated by prShow()
+const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+function prDemo(D, p) {
+  const R = D.pr, FIND = ['sec', 'xpr', 'xrepo', 'ci', 'rule'];
+  const code = ([file, at, lines, hl]) => { let n = at; return `<div class="cd"><div class="fh">${file}</div><pre>${lines.map((l, k) => {
+    const add = l.startsWith('+');
+    return `<span class="${k === hl ? 'hl' : add ? 'add' : ''}"><em>${add ? '+' : n++}</em>${esc(add ? l.slice(1) : l)}</span>`; }).join('')}</pre></div>`; };
+  const who = s => s.who === 'gitar' ? `<img class="gl" src="${LOGO('gitar')}" alt="Gitar" draggable="false">` : `<span class="av">${s.who[0].toUpperCase()}</span><b>${s.who}</b>`;
+  const ev = (s, k) => `<div class="ev${FIND.includes(s.kind) ? ' f' : ''}" data-s="${k}">
+        <div class="eh">${who(s)}<span>${s.head}</span>${s.chip ? `<span class="chip ${s.kind}">${s.chip}</span>` : ''}<span class="rsv">✓ Resolved</span></div>
+        <div class="eb">${s.ask ? `<div class="ask"><span class="av">${R.author[0].toUpperCase()}</span><b>${R.author}</b><q>${s.ask.replace(/[“”]/g, '')}</q></div>` : ''}${
+          s.rule ? `<div class="rq"><small>Team rule · plain language</small>${s.rule}</div>` : ''}${s.code ? code(s.code) : ''}${
+          s.log ? `<div class="log">${s.log.map(([f, t, r]) => `<div class="${f ? 'flaky' : ''}"><i>✕</i><span>${t}</span><em>${r}${f ? ' · flaky' : ''}</em></div>`).join('')}</div>` : ''}${
+          s.thread ? `<div class="th">${s.thread.map(([w, t]) => `<div class="tm">${w === 'gitar' ? `<img class="gl" src="${LOGO('gitar')}" alt="Gitar" draggable="false">`
+            : `<span class="av">${w[0].toUpperCase()}</span><b>${w}</b>`}<p>${t}</p></div>`).join('')}</div>` : ''}${
+          s.kb ? `<div class="kbc"><small>Saved to the Gitar knowledge base</small>${s.kb}</div>` : ''}${
+          s.text ? `<p>${s.text}</p>` : ''}${s.list ? `<ul>${s.list.map(l => `<li class="ok">${l}</li>`).join('')}</ul>` : ''}</div>
+      </div>`;
+  return `<div class="demo ghpr">
+    <button class="x act" data-act="demo-close" title="Close (Esc)">✕</button>
+    <div class="dh"><span class="tagp">${D.tag}</span><span class="nt">${D.note}</span></div>
+    <div class="gh-h"><h3>${R.title} <span>#${R.num}</span></h3>
+      <div class="gh-m"><span class="gh-st">${PR_ICON}Open</span><span><b>${R.author}</b> wants to merge into <code>${R.into}</code> from <code>${R.from}</code></span><span>· ${R.repo} · ${R.files}</span></div></div>
+    <div class="gh-sp">${D.steps.map((s, k) => `<button class="act" data-act="demo-step:${k}" data-s="${k}">${s.step}</button>`).join('')}</div>
+    <div class="gh">
+      <div class="tl">${D.steps.map(ev).join('')}</div>
+      <div class="side-ck">
+        <div class="ckb"><h5>Checks</h5>${D.checks.map(([l, n, t]) => `<div class="ck"><i></i>${l ? `<img src="${LOGO(l)}" alt="${n || 'Gitar'}" draggable="false">` : ''}<span>${n ? `${n} · ` : ''}${t}<small></small></span></div>`).join('')}</div>
+        <div class="mg"><i></i><span></span><button tabindex="-1">Merge</button></div>
+      </div>
+    </div>
+    <p class="dcap"></p>
+    <div class="dctl"><span><kbd>←</kbd> <kbd>→</kbd> step · <kbd>Esc</kbd> close</span>
+      <div class="dbtns"><button class="pp act" data-act="demo-toggle" title="Pause / resume autoplay" aria-label="Pause / resume autoplay">${PAUSE}${PLAY}</button>
+        <button class="act" data-act="demo-replay">↻ Replay</button></div></div>
+  </div>`;
+}
+const MERGE = { run: ['Some checks haven’t completed yet', 'Waiting for CI and reviews'], fail: ['Some checks were not successful', 'Merging is blocked'],
+                ok: ['All checks have passed', 'This branch can be merged'] };
+function prShow(el, D, k) {
+  const st = D.steps[k].checks;
+  el.querySelectorAll('.ck').forEach((c, n) => { c.dataset.st = st[n][0]; c.querySelector('small').innerHTML = st[n][1]; });
+  const m = st.some(c => c[0] === 'fail') ? 'fail' : st.every(c => c[0] === 'ok') ? 'ok' : 'run', mg = el.querySelector('.mg');
+  mg.dataset.st = m; mg.querySelector('span').innerHTML = `${MERGE[m][0]}<small>${MERGE[m][1]}</small>`;
+  el.classList.toggle('done', k === D.last);
+}
+
 function pipeline(P, id) {
   const X = [112, 355, 598], ah = (x, y) => `<path d="M${x - 9} ${y - 11}L${x} ${y}L${x + 9} ${y - 11}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
   const fan = out => `<svg viewBox="0 0 710 64">${X.map(x => `<path class="dash" d="${out ? `M355 0C355 34 ${x} 22 ${x} 60` : `M${x} 0C${x} 38 355 26 355 60`}" fill="none" stroke="currentColor" stroke-width="4"/>${out ? ah(x, 62) : ''}`).join('')}${out ? '' : ah(355, 62)}</svg>`;
@@ -1672,7 +1907,10 @@ LOOPS.forEach(L => L.products.forEach(p => {
   p.deeps = [].concat(p.deep || []);
   p.demos = p.demos || p.pipeline?.demos || [];
   // caption shown at each step, the last step explaining the outcome
-  p.demos.forEach(D => { D.caps = D.sides ? [...D.steps.map(s => s[2]), D.done] : [...D.steps.map(s => s[4]), D.finding[2]]; });
+  p.demos.forEach(D => {
+    D.caps = D.pr ? D.steps.map(s => s.cap) : D.sides ? [...D.steps.map(s => s[2]), D.done] : [...D.steps.map(s => s[4]), D.finding[2]];
+    D.last = D.caps.length - 1;   // index of the last step (the PR example has no extra outcome step)
+  });
 }));
 
 LOOPS.forEach((L, i) => {
@@ -1715,8 +1953,8 @@ LOOPS.forEach((L, i) => {
       <div class="ph">${panelMark(p)}<div class="lc">${L.title}<br>${L.stage}</div></div>
       <h2>${p.tag}</h2>
       <div class="cols">
-        <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deeps.length || p.demos.some(D => D.sides) ? `
-          <div class="deepers">${p.deeps.map((D, d) => `<button class="deeper act" data-act="deep:${i}:${j}:${d}" title="Deep dive">${D.cta}</button>`).join('')}${p.demos.map((D, k) => D.sides ? `
+        <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deeps.length || p.demos.some(D => D.sides || D.pr) ? `
+          <div class="deepers">${p.deeps.map((D, d) => `<button class="deeper act" data-act="deep:${i}:${j}:${d}" title="Deep dive">${D.cta}</button>`).join('')}${p.demos.map((D, k) => D.sides || D.pr ? `
             <button class="deeper try act" data-act="demo:${i}:${j}:${k}" title="Watch an example">${PLAY}${D.cta}</button>` : '').join('')}</div>` : ''}${p.pipeline || p.feed || p.context || p.sca ? stats(p) : ''}</div>
         <div>
           ${p.feed ? feed(p) : p.context ? context(p) : p.cycle ? cycle(p.cycle) : p.pipeline ? pipeline(p.pipeline, `${i}:${j}`) : `
@@ -1735,7 +1973,7 @@ LOOPS.forEach((L, i) => {
         <input type="range" min="0" max="100" value="0" aria-label="${p.slider.title}">
         <div class="stops">${p.slider.stops.map(([t]) => `<span>${t}</span>`).join('')}</div>${autonomy(p.slider)}
         <p></p>
-      </div>` : ''}${p.demos.map(D => D.sides ? navDemo(D, p) : demo(D, p.logo)).join('')}`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
+      </div>` : ''}${p.demos.map(D => D.pr ? prDemo(D, p) : D.sides ? navDemo(D, p) : demo(D, p.logo)).join('')}`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
     panel.k = 0; panel.target = 0; panel.from = card.o.position.clone(); panel.fromScale = S * lay.w * (lay.zoom || 1) / 1700;
     panel.loopIdx = i; panel.prodIdx = j;
     panels.push(panel);
@@ -1804,14 +2042,15 @@ const sameState = (a, b) => a.level === b.level && a.loop === b.loop && a.prod =
 /* ---------- example animations (Hunter Agent lanes, Sonar Vortex semantic navigation) ---------- */
 let demoOn = null;   // { el, D, k, auto, timer } of the open example
 function demoShow(k) {
-  const { el, D } = demoOn, last = D.steps.length;
+  const { el, D } = demoOn, last = D.last;
   clearTimeout(demoOn.timer);
   demoOn.k = k = clamp(k, 0, last);
   el.querySelectorAll('[data-s]').forEach(e => { e.classList.toggle('on', +e.dataset.s <= k); e.classList.toggle('cur', +e.dataset.s === k); });
   // caption: the latest one at or before this step (the last step explains the outcome)
   el.querySelector('.dcap').innerHTML = D.caps.slice(0, k + 1).reverse().find(Boolean);
+  if (D.pr) prShow(el, D, k);
   if (k === last) demoAuto(false);   // played to the end: the button offers to play it again
-  else if (demoOn.auto) demoOn.timer = setTimeout(() => demoShow(k + 1), D.sides ? 3400 : D.caps[k] ? 2800 : 1700);   // longer pause on steps with a caption to read, longest with two sides
+  else if (demoOn.auto) demoOn.timer = setTimeout(() => demoShow(k + 1), D.pr ? 4600 : D.sides ? 3400 : D.caps[k] ? 2800 : 1700);   // longer pause on steps with a caption to read, longest with two sides
 }
 // autoplay on by default, paused by ←/→, toggled by the play/pause button
 function demoAuto(on) {
@@ -1933,8 +2172,9 @@ function act(a) {
   else if (k === 'prev') step(-1);
   else if (k === 'demo') { const p = LOOPS[+x].products[+y]; demoPlay(p.panel.el.querySelectorAll('.demo')[+z], p.demos[+z]); }
   else if (k === 'demo-replay') demoPlay(demoOn.el, demoOn.D);
-  else if (k === 'demo-toggle') demoOn.auto ? demoAuto(false) : demoOn.k === demoOn.D.steps.length ? demoPlay(demoOn.el, demoOn.D) : demoAuto(true);
+  else if (k === 'demo-toggle') demoOn.auto ? demoAuto(false) : demoOn.k === demoOn.D.last ? demoPlay(demoOn.el, demoOn.D) : demoAuto(true);
   else if (k === 'demo-close') demoClose();
+  else if (k === 'demo-step') { demoAuto(false); demoShow(+x); }   // PR example stepper: jump to a step
   else if (k === 'demo-view') { demoOn.el.classList.toggle('tools', x === '1'); if (x === '1') demoAuto(false); }
   return true;
 }
@@ -2001,7 +2241,7 @@ addEventListener('keydown', e => {
     if (d || e.key === 'Escape' || e.key === 'Backspace') {
       e.preventDefault();
       if (d && demoOn.el.classList.contains('tools')) demoOn.el.classList.remove('tools');   // the toolkit view: ←/→ go back to the example
-      else if (!d || (d > 0 && demoOn.k === demoOn.D.steps.length)) demoClose(); else { demoAuto(false); demoShow(demoOn.k + d); }
+      else if (!d || (d > 0 && demoOn.k === demoOn.D.last)) demoClose(); else { demoAuto(false); demoShow(demoOn.k + d); }
       return;
     }
   }
