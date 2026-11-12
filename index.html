@@ -547,7 +547,6 @@
   #dots { display: flex; gap: 6px; padding: 0 4px; }
   #dots i { width: 8px; height: 8px; border-radius: 50%; background: #D3DAE5; cursor: pointer; transition: background .2s, transform .2s; }
   #dots i.loop { width: 12px; border-radius: 4px; }
-  #dots i.sub { width: 5px; height: 5px; align-self: center; }
   #dots i.on { background: var(--blue); transform: scale(1.25); }
   #legend { position: fixed; top: 22px; right: 28px; display: flex; gap: 18px; font: 500 12px 'IBM Plex Mono', monospace; letter-spacing: 1px;
             color: var(--n8); background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 9px 16px; }
@@ -1759,7 +1758,7 @@ LOOPS.forEach((L, i) => {
       show();
     }
 
-    // each deep dive is its own level below the panel, opened only by its button (or ←/→)
+    // each deep dive is its own level below the panel, opened only by its button (not part of the ←/→ tour)
     panel.deeps = p.deeps.map((D, d) => {
       const deep = css3d(`
       <button class="x act" data-act="close" title="Back (Esc)">✕</button>
@@ -1798,10 +1797,7 @@ let solo = 0;                        // 0 → 1 while the headline is isolated
 const tour = [{ level: 'overview' }];
 LOOPS.forEach((L, i) => {
   tour.push({ level: 'loop', loop: i });
-  L.products.forEach((p, j) => {
-    tour.push({ level: 'product', loop: i, prod: j });
-    p.deeps.forEach((_, d) => tour.push({ level: 'deep', loop: i, prod: j, sub: d }));
-  });
+  L.products.forEach((_, j) => tour.push({ level: 'product', loop: i, prod: j }));   // deep dives are left out: opened only by their buttons
 });
 const sameState = (a, b) => a.level === b.level && a.loop === b.loop && a.prod === b.prod && a.sub === b.sub;
 
@@ -1866,8 +1862,11 @@ function go(st) {
   updateHud();
   scheduleAutoplay();   // any navigation (manual or automatic) restarts the auto-advance countdown
 }
+// the tour position of a state: the headline counts as the overview, a deep dive as its product
+const tourIdx = st => tour.findIndex(t => sameState(t, st.level === 'headline' ? { level: 'overview' }
+  : st.level === 'deep' ? { level: 'product', loop: st.loop, prod: st.prod } : st));
 function step(d) {
-  let k = tour.findIndex(t => sameState(t, state.level === 'headline' ? { level: 'overview' } : state));
+  let k = tourIdx(state);
   k = k < 0 ? 0 : (k + d + tour.length) % tour.length;
   go(tour[k]);
 }
@@ -1881,9 +1880,8 @@ function back() {
 const crumbsEl = document.getElementById('crumbs'), dotsEl = document.getElementById('dots');
 const prodOf = st => LOOPS[st.loop].products[st.prod];
 const deepOf = st => prodOf(st).deeps[st.sub];
-dotsEl.innerHTML = tour.map((t, k) => `<i data-act="step:${k}" class="${{ product: '', deep: 'sub' }[t.level] ?? 'loop'}" title="${
-  t.level === 'overview' ? 'Overview' : t.level === 'loop' ? LOOPS[t.loop].title
-  : t.level === 'product' ? prodOf(t).name : `${prodOf(t).name} · ${deepOf(t).name}`}"></i>`).join('');
+dotsEl.innerHTML = tour.map((t, k) => `<i data-act="step:${k}" class="${t.level === 'product' ? '' : 'loop'}" title="${
+  t.level === 'overview' ? 'Overview' : t.level === 'loop' ? LOOPS[t.loop].title : prodOf(t).name}"></i>`).join('');
 function updateHud() {
   const top = state.level === 'overview' || state.level === 'headline';
   const parts = [`<a data-act="overview" class="${top ? 'cur' : ''}">Overview</a>`];
@@ -1891,7 +1889,7 @@ function updateHud() {
   if (state.level === 'product') parts.push(`<a class="cur">${prodOf(state).name}</a>`);
   if (state.level === 'deep') parts.push(`<a data-act="prod:${state.loop}:${state.prod}">${prodOf(state).name}</a>`, `<a class="cur">${deepOf(state).name}</a>`);
   crumbsEl.innerHTML = parts.join('<span>›</span>');
-  const k = top ? 0 : tour.findIndex(t => sameState(t, state));
+  const k = tourIdx(state);
   history.replaceState(null, '', location.pathname + location.search + (top ? '' : `#${state.loop + 1}${state.level === 'loop' ? '' : '.' + (state.prod + 1)}${state.level === 'deep' ? '.' + (state.sub + 1) : ''}`));
   [...dotsEl.children].forEach((d, i) => d.classList.toggle('on', i === k));
 }
