@@ -497,48 +497,70 @@
   .feed .out img { height: 40px; }
   .ctx { width: 710px; margin-bottom: 40px; font: 400 21px/1.3 Inter, sans-serif; }
   .ctx .co { border: 3px solid var(--purple); border-radius: 24px; padding: 20px 22px 22px; background: #fff; }
-  .ctx .co-h { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
-  .ctx .co-h > span { display: flex; align-items: center; gap: 14px; font: 600 28px Poppins, Inter, sans-serif; color: var(--purple); white-space: nowrap; }
-  .ctx .co-h > span svg { width: 52px; height: 52px; }
-  .ctx .co-h .sq { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; font: 500 16px Inter, sans-serif; color: var(--label); }
+  .ctx .co-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .ctx .co-h > span { display: flex; align-items: center; gap: 12px; font: 600 26px Poppins, Inter, sans-serif; color: var(--purple); white-space: nowrap; }
+  .ctx .co-h > span svg { width: 44px; height: 44px; }
+  .ctx .co-h .sq { display: flex; align-items: center; font: 500 18px Inter, sans-serif; color: var(--label); }
   .ctx .co-h .sq span { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
-  .ctx .co-h .sq img { height: 30px; }
+  .ctx .co-h .sq img { height: 38px; }
   .ctx .rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .ctx .rule { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; background: var(--bg); border-radius: 18px;
-               padding: 14px 10px; animation: ctx-glow var(--T) ease-out infinite; animation-delay: var(--d); }
+               padding: 14px 10px; animation: ctx-glow var(--H) ease-out infinite; animation-delay: var(--d); }
   .ctx .rule svg { width: 40px; height: 40px; color: var(--blue); }
-  .ctx .rule b { font: 600 20px/1.2 Inter, sans-serif; color: var(--purple); }
-  .ctx .rule small { font: 400 16px/1.3 Inter, sans-serif; color: var(--n8); }
+  .ctx .rule b { font: 600 22px/1.2 Inter, sans-serif; color: var(--purple); }
+  .ctx .rule small { font: 400 17px/1.3 Inter, sans-serif; color: var(--n8); }
   @keyframes ctx-glow { 0% { box-shadow: 0 0 0 0 rgba(18,110,211,.45); } 12%, 100% { box-shadow: 0 0 0 16px rgba(18,110,211,0); } }
   .ctx > svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--blue); }
-  .ctx > svg .dash { stroke-dasharray: 10 9; animation: hunt-flow 1.1s linear infinite; }
-  .ctx .ags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-  .ctx .ag { border: 3px solid #DFE6F0; border-top: 7px solid var(--blue); border-radius: 20px; padding: 16px 20px 18px; background: #fff; }
-  .ctx .ag-h { display: flex; align-items: center; gap: 12px; font: 600 23px Inter, sans-serif; color: var(--purple); }
-  .ctx .ag-h svg { width: 42px; height: 42px; color: var(--purple); }
-  .ctx .task { margin: 10px 0 12px; font: 500 17px 'IBM Plex Mono', monospace; color: var(--blue); background: var(--bg); border-radius: 10px; padding: 6px 12px; }
-  .ctx .vx { border: 3px dashed var(--blue); border-radius: 16px; padding: 10px 14px 12px; background: var(--bg); }
-  .ctx .vx-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
-  .ctx .vx-h img { display: block; height: 28px; }
-  .ctx .vx-h em { font: italic 500 15px Inter, sans-serif; color: var(--blue); white-space: nowrap; }
-  .ctx .ag small { display: block; margin-bottom: 8px; font: 500 15px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--label); }
-  .ctx .aw { display: flex; align-items: center; gap: 8px; padding: 4px 0; font: 500 17px Inter, sans-serif; color: var(--purple); white-space: nowrap;
-             animation: ctx-aware var(--T) ease-out var(--d) infinite backwards; }
-  .ctx .aw i { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--blue); position: relative; }
-  .ctx .aw i::after { content: ''; position: absolute; left: 7px; top: 6px; width: 10px; height: 6px; border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(-45deg); }
-  .ctx .ag small b { margin-right: 10px; padding: 2px 10px; border-radius: 8px; background: var(--blue); color: #fff; letter-spacing: 1px; }
-  .ctx .ag small.vf-h { margin-top: 14px; padding-top: 12px; border-top: 2px dashed #C9D6E8; }
-  /* Verify steps light up in turn after Guide, then dim before the next cycle */
-  .ctx .vf { display: flex; align-items: center; gap: 10px; padding: 4px 0; font: 500 18px/1.25 Inter, sans-serif; color: var(--purple);
-             animation: ctx-verify var(--T) ease-out var(--d) infinite backwards; }
-  .ctx .vf i { flex: none; width: 26px; height: 26px; border-radius: 50%; position: relative; }
-  .ctx .vf.chg i { background: var(--amber); }
-  .ctx .vf.res i { background: var(--blue); }
-  .ctx .vf.res i::after { content: ''; position: absolute; left: 7px; top: 6px; width: 10px; height: 6px; border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(-45deg); }
+  .ctx > svg .dash, .ctx .link .dash { stroke-dasharray: 10 9; animation: hunt-flow 1.1s linear infinite; }
+  /* the connection the rules flow through: a chip on the arrow, above the line and its tokens */
+  .ctx .link { position: relative; }
+  .ctx .link svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--blue); }
+  .ctx .link .via { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -58%); display: flex; align-items: center; gap: 12px;
+                    padding: 8px 18px; border: 3px solid var(--blue); border-radius: 14px; background: #fff; white-space: nowrap;
+                    font: 500 20px Inter, sans-serif; color: var(--n8); box-shadow: 0 6px 18px rgba(18,110,211,.12); }
+  .ctx .link .via svg { flex: none; width: 30px; height: 30px; color: var(--blue); }
+  .ctx .link .via b { font-weight: 600; color: var(--purple); }
+  /* one coding agent, its tasks played in turn (tabs); Guide, Verify and Solve rows light up in turn (keyframes generated by context()) */
+  .ctx .ag { border: 3px solid #DFE6F0; border-top: 7px solid var(--blue); border-radius: 20px; padding: 16px 20px 20px; background: #fff; }
+  .ctx .ag-h { display: flex; align-items: center; gap: 12px; font: 600 25px Inter, sans-serif; color: var(--purple); white-space: nowrap; }
+  .ctx .ag-h > svg { flex: none; width: 44px; height: 44px; color: var(--purple); }
+  .ctx .tabs { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+  .ctx .tabs span { display: flex; flex-direction: column; gap: 4px; padding: 8px 14px; border: 2px solid currentColor; border-radius: 12px;
+                    font: 500 17px/1.2 'IBM Plex Mono', monospace; white-space: nowrap; }
+  .ctx .tabs.one span { flex-direction: row; align-items: baseline; gap: 14px; font-size: 21px; }   /* a single task: one line, no tab look */
+  .ctx .tabs b { font: 600 14px Inter, sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+  .ctx .vx { margin-top: 14px; border: 3px solid var(--blue); border-radius: 16px; padding: 12px 14px 14px; background: rgba(18,110,211,.07); }
+  .ctx .vx-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .ctx .vx-h img { display: block; height: 30px; }
+  .ctx .vx-h em { font: italic 500 17px Inter, sans-serif; color: var(--blue); white-space: nowrap; }
+  .ctx .stg { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 16px; align-items: center; padding: 10px 14px; border-radius: 14px;
+              border: 2px solid currentColor; }
+  .ctx .stg + .stg { margin-top: 10px; }
+  .ctx .stg-l b { display: inline-block; padding: 3px 12px; border-radius: 8px; background: currentColor; font: 600 18px 'IBM Plex Mono', monospace;
+                  letter-spacing: 2px; text-transform: uppercase; }
+  .ctx .stg-l b span { color: #fff; }
+  .ctx .stg-l small { display: block; margin-top: 6px; font: 500 17px/1.25 Inter, sans-serif; color: var(--n8); }
+  .ctx .aw, .ctx .vf { display: flex; align-items: center; gap: 10px; padding: 4px 0; font: 500 22px/1.25 Inter, sans-serif; color: var(--purple); }
+  .ctx .aw i, .ctx .vf i { flex: none; width: 26px; height: 26px; border-radius: 50%; position: relative; }
+  .ctx .aw i, .ctx .vf.res i { background: var(--blue); }
+  .ctx .aw i::after, .ctx .vf.res i::after { content: ''; position: absolute; left: 7px; top: 6px; width: 10px; height: 6px; border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(-45deg); }
+  .ctx .vf.chg i, .ctx .vf.iss i { background: var(--amber); }
+  .ctx .vf.iss i::after { content: '!'; position: absolute; inset: 0; text-align: center; font: 700 18px/26px Inter, sans-serif; color: #fff; }
+  .ctx .vf.run { background: none; border-radius: 0; }   /* not the global `.run` card */
   .ctx .vf.run svg { flex: none; width: 26px; height: 26px; color: var(--blue); }
-  .ctx .vf.run code { font: 500 16px 'IBM Plex Mono', monospace; color: var(--blue); background: #fff; border-radius: 8px; padding: 3px 10px; }
-  @keyframes ctx-verify { 0% { opacity: .22; transform: translateX(-6px); } 4%, 52% { opacity: 1; transform: none; } 60%, 100% { opacity: .22; transform: translateX(-6px); } }
-  @keyframes ctx-aware { 0% { opacity: .22; transform: translateX(-6px); } 4%, 88% { opacity: 1; transform: none; } 96%, 100% { opacity: .22; transform: translateX(-6px); } }
+  .ctx .vf.run code { font: 500 19px 'IBM Plex Mono', monospace; color: var(--blue); background: var(--bg); border-radius: 8px; padding: 3px 10px; }
+  .ctx .stack { display: grid; }
+  /* how the coding guidelines were picked for the task: under the "Coding guidelines" line, task nature and issue history as chips */
+  .ctx .pick { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0 0 8px 36px; font: 500 17px/1.3 Inter, sans-serif; color: var(--n8); }
+  .ctx .pick span { flex-basis: 100%; }
+  .ctx .pick b { padding: 2px 10px; border-radius: 8px; background: var(--bg); border: 2px solid #C9D6E8; font-weight: 600; color: var(--blue); }
+  .ctx .stack > * { grid-area: 1 / 1; }
+  /* hovering a company rule points at the line the agent is aware of */
+  .ctx .rule, .ctx .aw { transition: outline-color .2s; outline: 3px solid transparent; outline-offset: 2px; border-radius: 10px; }
+  .ctx .rule:hover { outline-color: var(--blue); }
+  .ctx:has(.rule[data-k="0"]:hover) .aw[data-k="0"] { outline-color: var(--blue); }
+  .ctx:has(.rule[data-k="1"]:hover) .aw[data-k="1"] { outline-color: var(--blue); }
+  .ctx:has(.rule[data-k="2"]:hover) .aw[data-k="2"] { outline-color: var(--blue); }
   .diagram { display: block; width: 100%; height: auto; margin-bottom: 40px; }
   .cycle { overflow: visible; }
   .cycle .lp { fill: none; stroke: var(--blue); stroke-width: 14; stroke-linejoin: round; }
@@ -735,6 +757,9 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    ("What it detects") and the Hunter Agent product page, Oct 2026. The
    Hunter Agent example animations (pipeline `demos`) each illustrate one
    CWE of that list, per its MITRE definition, on fictional code. The
+   Sonar Vortex coding guidelines (`context`: Sonar rules picked from the
+   project's issue history and the nature of the task) follow the AC/DC
+   "Sonar Vortex context" page (Coding Guidelines), Nov 2026. The
    Sonar Vortex semantic navigation example (`demos`) follows the AC/DC
    "Sonar Vortex context" page (semantic navigation), Oct 2026, on a
    fictional task; its commands are those of `sonar context navigation`
@@ -775,20 +800,25 @@ const LOOPS = [
              '<b>Dependency health & safety</b> before a third-party package gets pulled in',
              '<b>On-the-fly Sonar analysis</b> of every change the agent makes, as it writes it',
              'Delivered through the SonarQube <b>CLI & MCP Server</b>, with agents such as Claude Code'],
-      // animated diagram shown instead of `runs`: the company's standards, defined once in SonarQube, flow into every coding agent's task (Guide),
-      // then each change the agent writes is analyzed on the spot (Verify)
+      // animated diagram shown instead of `runs`: the company's standards, defined once in SonarQube, flow into the coding agent (Guide),
+      // each change it writes is analyzed on the spot (Verify), and issues are fixed by the agent before the push (Solve).
+      // One agent card, its tasks played in turn (tabs, when there are several); the rule titles match the "What it does" bullets and are what the agent is aware of.
       context: {
-        title: 'Guide every agent, verify every change',
+        title: 'Inside the agent’s own loop',
         org: 'Your company', sq: ['sonarqube-server', 'sonarqube-cloud'],
         // [icon, title, description], icon one of quality / architecture / package
-        rules: [['quality', 'Quality profile', 'Your definition of code quality'],
-                ['architecture', 'Architecture & Semantic Navigation', 'The shape of your codebase, navigable by agents'],
-                ['package', 'Authorized Dependencies', 'The open source your company approves']],
-        agents: ['Add a payment endpoint', 'Refactor the order service'],   // one task per coding agent
-        aware: ['Quality profile', 'Architecture & Navigation', 'Authorized Dependencies'],   // what each agent is aware of, same order as `rules`
-        // Verify: the agent's change (amber) is analyzed by `cmd`, then comes out verified (blue); one illustrative result per agent
-        verify: { change: 'Change written by the agent', cmd: 'sonar analyze agentic',
-                  results: ['No new issues: ready to push', '1 issue found, fixed by the agent and re-verified'] },
+        rules: [['quality', 'Coding guidelines', 'Your Sonar rules and your project’s issue history'],
+                ['architecture', 'Architecture & semantic navigation', 'The shape of your codebase, navigable by agents'],
+                ['package', 'Dependency health & safety', 'The open source your company approves']],
+        agent: 'Coding agent', running: 'running inside the agent',
+        via: ['SonarQube CLI', 'or MCP Server'],   // how Vortex inside the agent connects to SonarQube, shown on the arrow the rules flow through
+        // [stage, caption], in the loop's guide / verify / solve order
+        stages: [['Guide', 'Aware of your standards'], ['Verify', 'Every change, on the spot'], ['Solve', 'Before the push']],
+        // Verify: the agent's change (amber) is analyzed by `cmd`; one illustrative task (several play in turn as tabs),
+        // with its analysis result (`ok` false = issue found, amber) and what happens in Solve
+        change: 'Change written by the agent', cmd: 'sonar analyze agentic',
+        // `picked`: [label, chips], shown under the agent's "Coding guidelines" line: what the guidelines were selected from for this task
+        tasks: [{ task: 'Refactor the order service', picked: ['Picked dynamically from', ['Task type: refactoring', 'Project issue history']], ok: false, verify: '1 new issue found', solve: 'Fixed by the agent, re-verified: ready to push' }],
       },
       // semantic navigation example (button under "What it does"): the same task played side by side, text search vs Vortex semantic navigation.
       // step: [left, right, caption], an action being [text, kind, tokens read, why, command, output, [tokens in, tokens out]] (kind = hit | waste | miss);
@@ -1643,6 +1673,7 @@ const ICONS = {
   package: '<path d="M21 7.5 12 3 3 7.5v9L12 21l9-4.5z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9M7.5 5.2l9 4.5"/>',
   agent: '<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V5M9 13v1.5M15 13v1.5M9.5 17.5h5M2 13v3M22 13v3"/><circle cx="12" cy="3.5" r="1.5"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/>',
+  terminal: '<rect x="2" y="3" width="20" height="18" rx="3"/><path d="M7 9l3 3-3 3M13 15h4"/>',
   cloud: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>',
   database: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>',
   tag: '<path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
@@ -1674,29 +1705,50 @@ function scale(E) {
       <div class="scale-ban">${E.banner}</div>`;
 }
 function context(p) {
-  const C = p.context, V = C.verify, T = 9, step = .6, D = 1.2;   // cycle (s), delay between rules, token travel time
-  const tv = [3.6, 4.4, 5.2];   // Verify: change written, analysis running, result (s into the cycle, after Guide)
-  const uid = `ctx-${p.key}`, X = [172.5, 537.5];   // agent card centers in the 710-wide column (20px grid gap)
-  const ah = x => `<path d="M${x - 9} 75L${x} 86L${x + 9} 75" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
-  // each rule sends one token per agent, then waits for the rest of the cycle
-  const token = (id, begin) => `<circle r="9" fill="var(--blue)" opacity="0"><animateMotion dur="${T}s" begin="${begin}s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;${D / T};1" calcMode="linear"><mpath href="#${id}"/></animateMotion>
-    <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;${(D - .1) / T};${D / T};1" dur="${T}s" begin="${begin}s" repeatCount="indefinite"/></circle>`;
-  return `<h4>${C.title}</h4><div class="ctx" style="--T:${T}s">
+  const C = p.context, H = 12, n = C.tasks.length, T = H * n;   // each task plays for H seconds, then the next tab takes over
+  const step = 1.2, D = 1.2;   // delay between rules (and between the agent's aware lines), token travel time
+  // seconds into a task's turn: Guide (rules flow in), Verify (change, analysis, result), Solve (result), end of the turn
+  const t = { guide: .2, aware: D, pick: D + .6, verify: 4.6, chg: 4.8, run: 5.8, res: 6.8, solve: 7.8, fix: 8, end: H - .6 };
+  const uid = `ctx-${p.key}`, pct = s => `${(s / T * 100).toFixed(2)}%`;
+  // per-element keyframes over the full cycle, written once per panel: `stops` are [seconds, css] pairs, the first and last css fill the edges
+  const css = [], kf = (name, stops) => (css.push(`@keyframes ${uid}-${name} { 0% { ${stops[0][1]} } ${stops.map(([s, v]) => `${pct(s)} { ${v} }`).join(' ')} 100% { ${stops.at(-1)[1]} } }`),
+    `animation:${uid}-${name} ${T}s linear infinite`);
+  const DIM = 'opacity:.25;transform:translateX(-6px)', ON = 'opacity:1;transform:none', OFF = 'opacity:0;transform:translateX(-6px)';
+  // lit from `from` to the end of every turn (shared lines), or only in its own task's turn, hidden otherwise (per-task lines)
+  const lit = (name, from) => kf(name, C.tasks.flatMap((_, a) => [[a * H + from, DIM], [a * H + from + .5, ON], [a * H + t.end, ON], [a * H + t.end + .5, DIM]]));
+  const own = (name, a, from) => kf(name, [[a * H, OFF], [a * H + .01, DIM], [a * H + from, DIM], [a * H + from + .5, ON], [a * H + t.end, ON], [a * H + t.end + .5, OFF]]);
+  // a stage row (or a task tab) is highlighted from `from` to `to` in each turn (`only`: in that task's turn alone)
+  const IDLE = 'color:#AFBCCD;background-color:rgba(255,255,255,.7)', ACT = 'color:var(--blue);background-color:#fff';
+  const hl = (name, from, to, only) => kf(name, C.tasks.flatMap((_, a) => only != null && only !== a ? [] :
+    [[a * H + from, IDLE], [a * H + from + .3, ACT], [a * H + to, ACT], [a * H + to + .3, IDLE]]));
+  const tokens = C.tasks.flatMap((_, a) => C.rules.map((_, k) => a * H + k * step)).map(b => `<circle r="9" fill="var(--blue)" opacity="0">
+    <animateMotion dur="${T}s" begin="${b}s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;${D / T};1" calcMode="linear"><mpath href="#${uid}-in"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.01;${(D - .1) / T};${D / T};1" dur="${T}s" begin="${b}s" repeatCount="indefinite"/></circle>`).join('');
+  const [G, V, R] = C.stages.map(([s, c]) => `<div class="stg-l"><b><span>${s}</span></b><small>${c}</small></div>`);
+  const html = `<h4>${C.title}</h4><div class="ctx" style="--H:${H}s">
     <div class="co">
-      <div class="co-h"><span>${icon('company')}${C.org}</span><span class="sq">Defined in<span>${C.sq.map(l => `<img src="${LOGO(l)}" alt="" draggable="false">`).join('or')}</span></span></div>
-      <div class="rules">${C.rules.map(([ic, t, d], k) => `<div class="rule" style="--d:${k * step}s">${icon(ic)}<b>${t}</b><small>${d}</small></div>`).join('')}</div>
+      <div class="co-h"><span>${icon('company')}${C.org}</span><span class="sq" title="Defined in SonarQube Server or SonarQube Cloud"><span>${C.sq.map(l => `<img src="${LOGO(l)}" alt="" draggable="false">`).join('or')}</span></span></div>
+      <div class="rules">${C.rules.map(([ic, ti, d], k) => `<div class="rule" data-k="${k}" style="--d:${k * step}s">${icon(ic)}<b>${ti}</b><small>${d}</small></div>`).join('')}</div>
     </div>
-    <svg viewBox="0 0 710 90" aria-hidden="true">${X.map((x, a) => `<path id="${uid}-${a}" class="dash" d="M355 0C355 48 ${x} 34 ${x} 84" fill="none" stroke="currentColor" stroke-width="4"/>${ah(x)}`).join('')}
-      ${X.map((_, a) => C.rules.map((_, k) => token(`${uid}-${a}`, k * step)).join('')).join('')}</svg>
-    <div class="ags">${C.agents.map((t, a) => `<div class="ag"><div class="ag-h">${icon('agent')}Coding agent</div><div class="task">Task: ${t}</div>
-      <div class="vx"><div class="vx-h"><img src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"><em>running inside</em></div>
-      <small><b>Guide</b>Aware of</small>
-      ${C.aware.map((w, k) => `<div class="aw" style="--d:${k * step + D}s"><i></i>${w}</div>`).join('')}
-      <small class="vf-h"><b>Verify</b>Every change, on the spot</small>
-      <div class="vf chg" style="--d:${tv[0]}s"><i></i>${V.change}</div>
-      <div class="vf run" style="--d:${tv[1]}s">${icon('search')}<code>${V.cmd}</code></div>
-      <div class="vf res" style="--d:${tv[2]}s"><i></i>${V.results[a]}</div></div></div>`).join('')}</div>
+    <div class="link"><svg viewBox="0 0 710 120" aria-hidden="true"><path id="${uid}-in" class="dash" d="M355 0V112" fill="none" stroke="currentColor" stroke-width="4"/>
+      <path d="M346 103L355 114L364 103" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>${tokens}</svg>
+      <div class="via">${icon('terminal')}<span><b>${C.via[0]}</b> ${C.via[1]}</span></div></div>
+    <div class="ag">
+      <div class="ag-h">${icon('agent')}${C.agent}</div><div class="tabs${n > 1 ? '' : ' one'}" style="--n:${n}">${C.tasks.map((k, a) => `<span style="${hl(`tab${a}`, 0, H - .3, a)}"><b>Task</b>${k.task}</span>`).join('')}</div>
+      <div class="vx"><div class="vx-h"><img src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"><em>${C.running}</em></div>
+        <div class="stg" style="${hl('g', t.guide, t.verify)}">${G}<div>${C.rules.map(([, ti], k) =>
+          `<div class="aw" data-k="${k}" style="${lit(`aw${k}`, t.aware + k * step)}"><i></i>${ti}</div>${k ? '' : `<div class="stack">${C.tasks.map(({ picked: pk }, a) => pk ?
+            `<div class="pick" style="${own(`pick${a}`, a, t.pick)}"><span>${pk[0]}</span>${pk[1].map(c => `<b>${c}</b>`).join('')}</div>` : '').join('')}</div>`}`).join('')}</div></div>
+        <div class="stg" style="${hl('v', t.verify, t.solve)}">${V}<div>
+          <div class="vf chg" style="${lit('chg', t.chg)}"><i></i>${C.change}</div>
+          <div class="vf run" style="${lit('run', t.run)}">${icon('search')}<code>${C.cmd}</code></div>
+          <div class="stack">${C.tasks.map((k, a) => `<div class="vf ${k.ok ? 'res' : 'iss'}" style="${own(`res${a}`, a, t.res)}"><i></i>${k.verify}</div>`).join('')}</div></div></div>
+        <div class="stg" style="${hl('s', t.solve, t.end)}">${R}<div>
+          <div class="stack">${C.tasks.map((k, a) => `<div class="vf res" style="${own(`fix${a}`, a, t.fix)}"><i></i>${k.solve}</div>`).join('')}</div></div></div>
+      </div>
+    </div>
   </div>`;
+  return `<style>${css.join('\n')}</style>${html}`;
 }
 
 // Advanced Security (see `sca` in LOOPS): SonarQube sends its dependencies (purple token) to the Sonar backend, which also
