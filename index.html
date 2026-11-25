@@ -531,6 +531,7 @@
                          5%, 25% { box-shadow: 0 0 0 3px var(--blue), 0 18px 44px rgba(18,110,211,.22); transform: translateY(-6px); } }
   @keyframes scale-wire { 0%, 30%, 100% { opacity: .25; } 5%, 25% { opacity: 1; } }
   .scale-ban { border-radius: 999px; padding: 20px 40px; text-align: center; background: var(--blue); color: #fff; font: 500 26px/1.4 Inter, sans-serif; }
+  .panel li em.st { display: block; font: normal 500 20px 'IBM Plex Mono', monospace; letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); margin-top: 2px; }
   .only { font: normal 500 17px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--blue);
           border: 2px solid var(--blue); border-radius: 999px; padding: 1px 10px; margin-right: 10px; vertical-align: 3px; }
 
@@ -779,10 +780,11 @@ const LOOPS = [
       },
       {
         key: 'advsec', mark: 'sonarqube-server-mark', brand: 'Qube', sub: 'advanced security', name: 'SonarQube Advanced Security', pos: [4.6, -0.5],
-        tag: 'Mitigate risks coming from open-source dependencies',
-        what: ['<b>SCA</b>: vulnerabilities, license policy and malicious-package risks across your dependencies',
-               'Real finding: <b>CVE-2024-23897</b> in Jenkins (CVSS 9.8)',
-               '<b>Configurable branch rescans</b> surface newly disclosed risks on unchanged code'],
+        tag: 'Secure the whole software supply chain, not only the code you write',
+        // one bullet per capability, each ending with its availability
+        what: ['<b>Dependencies (SCA)</b>: vulnerabilities, license policy and malicious-package risks, with reachability<em class="st">Enterprise and higher</em>',
+               '<b>Container images</b>: risks in the OS packages, runtimes and libraries you ship<em class="st">GA on Cloud, Server soon</em>',
+               '<b>Cryptography (CBOM)</b>: an inventory of the cryptography you use and your post-quantum readiness<em class="st">Alpha on Cloud, Server soon</em>'],
         // animated diagram shown instead of `runs`: SonarQube sends the dependencies found during analysis to the Sonar backend,
         // which matches them against public databases, enriches and processes them, then sends prioritized risks back
         sca: {
@@ -798,13 +800,14 @@ const LOOPS = [
         },
         stat: ['92%', 'of applications contain open-source components, and 70–90% of an average application is open-source code.'],
         // optional level below the product panel (#2.2.1)
-        deep: {
-          name: 'Detect, fix, govern', cta: 'Detect · Fix · Govern →',
+        deep: [{
+          name: 'Dependencies (SCA)', cta: 'Dependencies · SCA →',
           title: 'Dependency risk, from detection to governance',
           cols: [
             ['Detect', ['<b>Find vulnerabilities</b> in direct and transitive dependencies',
                         'Prioritize with <b>CVE, KEV, CVSS</b> and EPSS context',
-                        'Catch newly introduced risks in <b>PRs and branches</b>',
+                        'Catch newly introduced risks in <b>PRs and branches</b>, with <b>configurable rescans</b> for newly disclosed ones',
+                        'Real finding: <b>CVE-2024-23897</b> in Jenkins (CVSS 9.8)',
                         'Flag <b>reachable vulnerabilities</b> to reduce false positives',
                         'Search, filter and sort risks by severity and type']],
             ['Fix', ['<b>Recommend safe versions</b> of open-source components to upgrade',
@@ -817,7 +820,49 @@ const LOOPS = [
           ],
           ecosystems: ['Java', 'Kotlin', 'Scala', 'JavaScript', 'TypeScript', 'C#', 'Python', 'Go', 'Ruby', 'Rust', 'C', 'C++', 'PHP', 'VB.NET'],
           ecosystemsHl: ['Generic SBOM'],   // highlighted chips, shown after the languages
-        },
+          notes: { title: 'Availability', items: [
+            '<b>Enterprise and higher</b>',
+          ] },
+        }, {
+          name: 'Container images', cta: 'Containers →',
+          title: 'Extend the same protection to the images you ship',
+          cols: [
+            ['Inventory', ['What is <b>inside an image</b>: OS packages, language runtimes and application libraries',
+                           'Includes components your <b>dependency files never declare</b>']],
+            ['Detect', ['<b>Known vulnerabilities</b> in those components',
+                        '<b>Malicious packages</b> in the image',
+                        'Image risks shown <b>next to code and dependency risks</b>, in the same workflow']],
+            ['Protect', ['Runs in your <b>CI/CD pipeline</b>',
+                         'Stops a risky image <b>before it reaches a registry</b> or production',
+                         '<b>Re-checks analyzed images</b> as new vulnerabilities are published']],
+          ],
+          notes: { title: 'Availability', items: [
+            '<em class="only">Cloud</em><b>GA</b>',
+            '<em class="only">Server</em>Coming soon',
+          ] },
+        }, {
+          name: 'Cryptography (CBOM)', cta: 'Cryptography · CBOM →',
+          title: 'Know which cryptography you use, and how ready it is for post-quantum',
+          cols: [
+            ['Inventory', ['A <b>Cryptography Bill of Materials (CBOM)</b> generated with your usual CI analysis',
+                           '<b>CycloneDX</b> format: algorithms, keys, certificates, protocols and their libraries',
+                           'The <b>file and line</b> where each asset was found',
+                           'Downloaded from the project <b>Reports</b> menu, next to the SBOM']],
+            ['Posture', ['Each asset rated <b>PQC Ready, Needs Review or Not PQC Ready</b>, with the reason',
+                         'Built-in policies: <b>NIST IR 8547, CNSA 2.0, EU PQC Roadmap, ANSSI, BSI, UK NCSC</b> and more, or your own',
+                         '<b>“Evaluate as of”</b> a future date shows which assets break a deadline',
+                         'Top blocking algorithms to <b>prioritize the migration</b>']],
+            ['Portfolios', ['<b>One view across many projects</b>, with a scope selector to focus on one',
+                           'Shows which projects <b>still have no CBOM</b>',
+                           '<b>Upload a CycloneDX CBOM</b> from another tool to cover projects Sonar does not analyze']],
+          ],
+          ecosystems: ['Java', 'Kotlin', 'Python', 'Go', 'PHP', 'C', 'C++', 'TypeScript', 'JavaScript', 'C#', 'VB.NET'],
+          notes: { title: 'Availability', items: [
+            '<em class="only">Cloud</em><b>Alpha</b>: names, screens and rules may change',
+            '<em class="only">Server</em>Coming soon',
+            'Needs a <b>CI-based analysis</b>: projects with automatic analysis get no CBOM, so upload one instead',
+          ] },
+        }],
       },
       {
         key: 'gitar', logo: 'gitar', name: 'Gitar', pos: [0, -2.75],
