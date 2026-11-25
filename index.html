@@ -21,6 +21,7 @@
     --label: #8A94A3;
     --amber: #F5A524;
     --red: #D3121D;
+    --green: #1F883D;   /* "checks passed" in the GitHub pull request example only: not a Sonar brand color */
   }
   html, body { margin: 0; height: 100%; overflow: hidden; background: var(--bg); color: var(--n8); font-family: Inter, system-ui, sans-serif; }
   #stage { position: fixed; inset: 0; touch-action: none; }
@@ -366,6 +367,106 @@
   .demo.nav .task { margin-bottom: 18px; }
   .demo.nav .res { padding: 12px 20px; }
   .demo.nav .dsteps i:last-child.on { background: var(--blue); }
+  /* Gitar pull request example (`demos` with `pr`): an illustrative GitHub PR, events revealed step by step,
+     past events collapsed to their header, checks and merge box updated at each step */
+  .demo.ghpr { padding-top: 56px; }
+  .demo .gh-h { margin: 22px 0 22px; }
+  .demo .gh-h h3 { margin: 0 0 12px; font: 600 46px/1.2 Inter, sans-serif; color: var(--n8); }
+  .demo .gh-h h3 span { font-weight: 400; color: var(--label); }
+  .demo .gh-m { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font: 400 25px Inter, sans-serif; color: var(--label); }
+  .demo .gh-m b { color: var(--n8); font-weight: 600; }
+  .demo .gh-m code, .demo .gh code { font: 500 0.88em 'IBM Plex Mono', monospace; color: var(--blue); background: rgba(18,110,211,.08); padding: 2px 10px; border-radius: 8px; }
+  .demo .gh-st { display: inline-flex; align-items: center; gap: 10px; padding: 8px 22px; border-radius: 999px; background: var(--green); color: #fff; font: 600 23px Inter, sans-serif; }
+  .demo .gh-st svg { width: 22px; height: 22px; }
+  .demo .gh-sp { display: flex; gap: 8px; margin-bottom: 26px; padding-bottom: 22px; border-bottom: 3px solid #E3E9F2; }
+  .demo .gh-sp button { flex: 1; padding: 12px 6px; border: 0; border-bottom: 6px solid #E3E9F2; background: none; cursor: pointer; white-space: nowrap;
+                        font: 600 19px 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; color: var(--label); transition: color .3s, border-color .3s; }
+  .demo .gh-sp button.on { color: var(--purple); border-bottom-color: var(--uranium); }
+  .demo .gh-sp button.cur { color: var(--blue); border-bottom-color: var(--blue); }
+  .demo .gh-sp button:hover { color: var(--blue); }
+  .demo .gh { display: grid; grid-template-columns: 1fr 520px; gap: 40px; align-items: start; min-height: 0; }
+  .demo .tl { position: relative; display: flex; flex-direction: column; gap: 14px; padding-left: 34px; }
+  .demo .tl::before { content: ''; position: absolute; left: 10px; top: 20px; bottom: 20px; border-left: 3px solid #E3E9F2; }
+  .demo .ev { position: relative; display: none; border: 3px solid #E3E9F2; border-radius: 20px; background: #fff; }
+  .demo .ev.on { display: block; animation: ev-in .45s ease; }
+  @keyframes ev-in { from { opacity: 0; transform: translateY(14px); } }
+  .demo .ev::before { content: ''; position: absolute; left: -34px; top: 28px; width: 18px; height: 18px; border-radius: 50%; background: var(--n6); box-shadow: 0 0 0 5px #fff; }
+  .demo .ev.cur { border-color: var(--uranium); box-shadow: 0 6px 24px rgba(18,40,80,.10); }
+  .demo .ev.cur::before { background: var(--blue); }
+  .demo .eh { display: flex; align-items: center; gap: 16px; padding: 14px 22px; font: 400 24px Inter, sans-serif; color: var(--label); }
+  .demo .ev.cur .eh { background: var(--bg); border-radius: 17px 17px 0 0; border-bottom: 3px solid #E3E9F2; }
+  .demo .eh b { color: var(--n8); font-weight: 600; }
+  .demo .eh .gl { display: block; height: 32px; flex: none; }
+  .demo .av { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; background: var(--purple); color: #fff; font: 600 21px Inter, sans-serif; }
+  .demo .chip { margin-left: auto; flex: none; padding: 5px 16px; border-radius: 999px; font: 600 17px 'IBM Plex Mono', monospace; letter-spacing: 1px; text-transform: uppercase; color: #fff; background: var(--blue); }
+  .demo .chip.sec { background: var(--red); }
+  .demo .chip.ci { background: var(--amber); color: var(--purple); }
+  .demo .chip.rule { background: var(--purple); }
+  .demo .chip.fix { background: var(--green); }
+  .demo .chip.kb { background: var(--uranium); color: var(--purple); }
+  .demo .rsv { display: none; flex: none; font: 600 19px 'IBM Plex Mono', monospace; color: var(--green); }
+  .demo.done .ev.f .rsv { display: block; }
+  .demo.done .ev.f .chip { margin-left: 0; }
+  .demo.done .ev.f .eh { margin-right: 0; }
+  .demo .eh .chip + .rsv { margin-left: 4px; }
+  .demo .eb { display: none; padding: 20px 26px 24px; font: 400 27px/1.45 Inter, sans-serif; color: var(--n8); }
+  .demo .ev.cur .eb { display: block; }
+  .demo .eb p { margin: 0; }
+  .demo .eb b { font-weight: 600; color: var(--purple); }
+  .demo .eb .cd { margin-bottom: 18px; border: 3px solid #E3E9F2; border-radius: 16px; overflow: hidden; }
+  .demo .eb .cd pre { padding: 10px 0; font-size: 19px; }
+  .demo .eb .cd pre span.hl { background: rgba(211,18,29,.08); border-left-color: var(--red); }
+  .demo .eb .cd pre span.add { background: rgba(31,136,61,.10); border-left-color: var(--green); }
+  .demo .eb .fh { padding: 10px 22px; font-size: 18px; }
+  .demo .eb ul { margin: 16px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+  .demo .eb li { display: flex; align-items: baseline; gap: 14px; padding: 0; }
+  .demo .eb li::before { content: none; }
+  .demo .eb li.ok { padding-left: 44px; }
+  .demo .eb li.ok::before { content: ''; left: 6px; top: .3em; width: 20px; height: 10px; border-left: 5px solid var(--green); border-bottom: 5px solid var(--green); }
+  .demo .th { display: flex; flex-direction: column; gap: 14px; margin-bottom: 18px; }
+  .demo .tm { display: grid; grid-template-columns: 120px 1fr; column-gap: 16px; align-items: start; }
+  .demo .tm .gl { height: 32px; margin-top: 4px; }
+  .demo .tm .av { grid-row: 1; }
+  .demo .tm .av + b { display: none; }
+  .demo .tm:first-child p { color: var(--label); }   /* the original finding, answered below */
+  .demo .tm + .tm { padding-top: 14px; border-top: 2px solid #EEF2F7; }
+  .demo .kbc { padding: 14px 22px; border-left: 7px solid var(--blue); border-radius: 12px; background: rgba(18,110,211,.06); font: 500 25px/1.4 Inter, sans-serif; color: var(--purple); }
+  .demo .kbc small { display: block; margin-bottom: 4px; font: 600 17px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); }
+  .demo .log { margin-bottom: 18px; padding: 12px 20px; border-radius: 14px; background: #24292F; font: 400 19px/1.7 'IBM Plex Mono', monospace; color: #D0D7DE; }
+  .demo .log div { display: flex; gap: 14px; }
+  .demo .log span { flex: 1; min-width: 0; }
+  .demo .log em { font-style: normal; color: #8C959F; }
+  .demo .log i { font-style: normal; color: #FF8182; }
+  .demo .log div.flaky i { color: #D4A72C; }
+  .demo .rq { margin-bottom: 18px; padding: 14px 22px; border-left: 7px solid var(--purple); border-radius: 12px; background: var(--bg); font: italic 500 26px/1.4 Inter, sans-serif; color: var(--purple); }
+  .demo .rq small { display: block; margin-bottom: 4px; font: normal 600 17px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--label); }
+  .demo .ask { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; font: 400 25px Inter, sans-serif; color: var(--label); }
+  .demo .ask q { font-style: italic; color: var(--purple); }
+  .demo .side-ck { display: flex; flex-direction: column; gap: 22px; }
+  .demo .ckb, .demo .mg { border: 3px solid #E3E9F2; border-radius: 20px; overflow: hidden; }
+  .demo .ckb h5 { margin: 0; padding: 14px 24px; background: var(--bg); border-bottom: 3px solid #E3E9F2; font: 600 19px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--label); }
+  .demo .ck { display: flex; align-items: center; gap: 16px; padding: 16px 24px; font: 600 24px Inter, sans-serif; color: var(--n8); }
+  .demo .ck + .ck { border-top: 2px solid #EEF2F7; }
+  .demo .ck img { display: block; height: 30px; }
+  .demo .ck > span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .demo .ck small { font: 400 20px Inter, sans-serif; color: var(--label); }
+  .demo .ck > i, .demo .mg > i { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; font: normal 700 20px Inter, sans-serif; color: #fff; box-sizing: border-box; }
+  .demo [data-st="run"] > i { border: 4px solid var(--amber); border-right-color: transparent; animation: ck-spin 1s linear infinite; }
+  .demo [data-st="fail"] > i { background: var(--red); }
+  .demo [data-st="fail"] > i::before { content: '✕'; }
+  .demo [data-st="ok"] > i { background: var(--green); }
+  .demo [data-st="ok"] > i::before { content: '✓'; }
+  .demo .ck[data-st="fail"] small { color: var(--red); }
+  .demo .ck[data-st="ok"] small { color: var(--green); }
+  @keyframes ck-spin { to { transform: rotate(360deg); } }
+  .demo .mg { display: flex; align-items: center; gap: 16px; padding: 20px 24px; transition: border-color .4s, background .4s; }
+  .demo .mg span { flex: 1; font: 600 24px/1.3 Inter, sans-serif; color: var(--n8); }
+  .demo .mg span small { display: block; font: 400 20px Inter, sans-serif; color: var(--label); }
+  .demo .mg button { flex: none; padding: 12px 26px; border: 0; border-radius: 12px; background: #E3E9F2; color: var(--label); font: 600 22px Inter, sans-serif; transition: background .4s, color .4s; }
+  .demo .mg[data-st="ok"] { border-color: var(--green); background: rgba(31,136,61,.06); }
+  .demo .mg[data-st="ok"] button { background: var(--green); color: #fff; }
+  .demo .mg[data-st="fail"] { border-color: rgba(211,18,29,.35); }
+  .demo.ghpr .dcap { padding-top: 24px; }
   .deeper.try { gap: 14px; align-items: center; }
   .deeper.try svg { width: 20px; height: 20px; }
   .feed { margin-bottom: 40px; font: 400 22px/1.3 Inter, sans-serif; }
@@ -396,48 +497,70 @@
   .feed .out img { height: 40px; }
   .ctx { width: 710px; margin-bottom: 40px; font: 400 21px/1.3 Inter, sans-serif; }
   .ctx .co { border: 3px solid var(--purple); border-radius: 24px; padding: 20px 22px 22px; background: #fff; }
-  .ctx .co-h { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 18px; }
-  .ctx .co-h > span { display: flex; align-items: center; gap: 14px; font: 600 28px Poppins, Inter, sans-serif; color: var(--purple); white-space: nowrap; }
-  .ctx .co-h > span svg { width: 52px; height: 52px; }
-  .ctx .co-h .sq { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; font: 500 16px Inter, sans-serif; color: var(--label); }
+  .ctx .co-h { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .ctx .co-h > span { display: flex; align-items: center; gap: 12px; font: 600 26px Poppins, Inter, sans-serif; color: var(--purple); white-space: nowrap; }
+  .ctx .co-h > span svg { width: 44px; height: 44px; }
+  .ctx .co-h .sq { display: flex; align-items: center; font: 500 18px Inter, sans-serif; color: var(--label); }
   .ctx .co-h .sq span { display: flex; align-items: center; gap: 10px; white-space: nowrap; }
-  .ctx .co-h .sq img { height: 30px; }
+  .ctx .co-h .sq img { height: 38px; }
   .ctx .rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
   .ctx .rule { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; background: var(--bg); border-radius: 18px;
-               padding: 14px 10px; animation: ctx-glow var(--T) ease-out infinite; animation-delay: var(--d); }
+               padding: 14px 10px; animation: ctx-glow var(--H) ease-out infinite; animation-delay: var(--d); }
   .ctx .rule svg { width: 40px; height: 40px; color: var(--blue); }
-  .ctx .rule b { font: 600 20px/1.2 Inter, sans-serif; color: var(--purple); }
-  .ctx .rule small { font: 400 16px/1.3 Inter, sans-serif; color: var(--n8); }
+  .ctx .rule b { font: 600 22px/1.2 Inter, sans-serif; color: var(--purple); }
+  .ctx .rule small { font: 400 17px/1.3 Inter, sans-serif; color: var(--n8); }
   @keyframes ctx-glow { 0% { box-shadow: 0 0 0 0 rgba(18,110,211,.45); } 12%, 100% { box-shadow: 0 0 0 16px rgba(18,110,211,0); } }
   .ctx > svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--blue); }
-  .ctx > svg .dash { stroke-dasharray: 10 9; animation: hunt-flow 1.1s linear infinite; }
-  .ctx .ags { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-  .ctx .ag { border: 3px solid #DFE6F0; border-top: 7px solid var(--blue); border-radius: 20px; padding: 16px 20px 18px; background: #fff; }
-  .ctx .ag-h { display: flex; align-items: center; gap: 12px; font: 600 23px Inter, sans-serif; color: var(--purple); }
-  .ctx .ag-h svg { width: 42px; height: 42px; color: var(--purple); }
-  .ctx .task { margin: 10px 0 12px; font: 500 17px 'IBM Plex Mono', monospace; color: var(--blue); background: var(--bg); border-radius: 10px; padding: 6px 12px; }
-  .ctx .vx { border: 3px dashed var(--blue); border-radius: 16px; padding: 10px 14px 12px; background: var(--bg); }
-  .ctx .vx-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
-  .ctx .vx-h img { display: block; height: 28px; }
-  .ctx .vx-h em { font: italic 500 15px Inter, sans-serif; color: var(--blue); white-space: nowrap; }
-  .ctx .ag small { display: block; margin-bottom: 8px; font: 500 15px 'IBM Plex Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--label); }
-  .ctx .aw { display: flex; align-items: center; gap: 8px; padding: 4px 0; font: 500 17px Inter, sans-serif; color: var(--purple); white-space: nowrap;
-             animation: ctx-aware var(--T) ease-out var(--d) infinite backwards; }
-  .ctx .aw i { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--blue); position: relative; }
-  .ctx .aw i::after { content: ''; position: absolute; left: 7px; top: 6px; width: 10px; height: 6px; border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(-45deg); }
-  .ctx .ag small b { margin-right: 10px; padding: 2px 10px; border-radius: 8px; background: var(--blue); color: #fff; letter-spacing: 1px; }
-  .ctx .ag small.vf-h { margin-top: 14px; padding-top: 12px; border-top: 2px dashed #C9D6E8; }
-  /* Verify steps light up in turn after Guide, then dim before the next cycle */
-  .ctx .vf { display: flex; align-items: center; gap: 10px; padding: 4px 0; font: 500 18px/1.25 Inter, sans-serif; color: var(--purple);
-             animation: ctx-verify var(--T) ease-out var(--d) infinite backwards; }
-  .ctx .vf i { flex: none; width: 26px; height: 26px; border-radius: 50%; position: relative; }
-  .ctx .vf.chg i { background: var(--amber); }
-  .ctx .vf.res i { background: var(--blue); }
-  .ctx .vf.res i::after { content: ''; position: absolute; left: 7px; top: 6px; width: 10px; height: 6px; border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(-45deg); }
+  .ctx > svg .dash, .ctx .link .dash { stroke-dasharray: 10 9; animation: hunt-flow 1.1s linear infinite; }
+  /* the connection the rules flow through: a chip on the arrow, above the line and its tokens */
+  .ctx .link { position: relative; }
+  .ctx .link svg { display: block; width: 100%; height: auto; overflow: visible; color: var(--blue); }
+  .ctx .link .via { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -58%); display: flex; align-items: center; gap: 12px;
+                    padding: 8px 18px; border: 3px solid var(--blue); border-radius: 14px; background: #fff; white-space: nowrap;
+                    font: 500 20px Inter, sans-serif; color: var(--n8); box-shadow: 0 6px 18px rgba(18,110,211,.12); }
+  .ctx .link .via svg { flex: none; width: 30px; height: 30px; color: var(--blue); }
+  .ctx .link .via b { font-weight: 600; color: var(--purple); }
+  /* one coding agent, its tasks played in turn (tabs); Guide, Verify and Solve rows light up in turn (keyframes generated by context()) */
+  .ctx .ag { border: 3px solid #DFE6F0; border-top: 7px solid var(--blue); border-radius: 20px; padding: 16px 20px 20px; background: #fff; }
+  .ctx .ag-h { display: flex; align-items: center; gap: 12px; font: 600 25px Inter, sans-serif; color: var(--purple); white-space: nowrap; }
+  .ctx .ag-h > svg { flex: none; width: 44px; height: 44px; color: var(--purple); }
+  .ctx .tabs { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+  .ctx .tabs span { display: flex; flex-direction: column; gap: 4px; padding: 8px 14px; border: 2px solid currentColor; border-radius: 12px;
+                    font: 500 17px/1.2 'IBM Plex Mono', monospace; white-space: nowrap; }
+  .ctx .tabs.one span { flex-direction: row; align-items: baseline; gap: 14px; font-size: 21px; }   /* a single task: one line, no tab look */
+  .ctx .tabs b { font: 600 14px Inter, sans-serif; letter-spacing: 2px; text-transform: uppercase; }
+  .ctx .vx { margin-top: 14px; border: 3px solid var(--blue); border-radius: 16px; padding: 12px 14px 14px; background: rgba(18,110,211,.07); }
+  .ctx .vx-h { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+  .ctx .vx-h img { display: block; height: 30px; }
+  .ctx .vx-h em { font: italic 500 17px Inter, sans-serif; color: var(--blue); white-space: nowrap; }
+  .ctx .stg { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 16px; align-items: center; padding: 10px 14px; border-radius: 14px;
+              border: 2px solid currentColor; }
+  .ctx .stg + .stg { margin-top: 10px; }
+  .ctx .stg-l b { display: inline-block; padding: 3px 12px; border-radius: 8px; background: currentColor; font: 600 18px 'IBM Plex Mono', monospace;
+                  letter-spacing: 2px; text-transform: uppercase; }
+  .ctx .stg-l b span { color: #fff; }
+  .ctx .stg-l small { display: block; margin-top: 6px; font: 500 17px/1.25 Inter, sans-serif; color: var(--n8); }
+  .ctx .aw, .ctx .vf { display: flex; align-items: center; gap: 10px; padding: 4px 0; font: 500 22px/1.25 Inter, sans-serif; color: var(--purple); }
+  .ctx .aw i, .ctx .vf i { flex: none; width: 26px; height: 26px; border-radius: 50%; position: relative; }
+  .ctx .aw i, .ctx .vf.res i { background: var(--blue); }
+  .ctx .aw i::after, .ctx .vf.res i::after { content: ''; position: absolute; left: 7px; top: 6px; width: 10px; height: 6px; border-left: 3px solid #fff; border-bottom: 3px solid #fff; transform: rotate(-45deg); }
+  .ctx .vf.chg i, .ctx .vf.iss i { background: var(--amber); }
+  .ctx .vf.iss i::after { content: '!'; position: absolute; inset: 0; text-align: center; font: 700 18px/26px Inter, sans-serif; color: #fff; }
+  .ctx .vf.run { background: none; border-radius: 0; }   /* not the global `.run` card */
   .ctx .vf.run svg { flex: none; width: 26px; height: 26px; color: var(--blue); }
-  .ctx .vf.run code { font: 500 16px 'IBM Plex Mono', monospace; color: var(--blue); background: #fff; border-radius: 8px; padding: 3px 10px; }
-  @keyframes ctx-verify { 0% { opacity: .22; transform: translateX(-6px); } 4%, 52% { opacity: 1; transform: none; } 60%, 100% { opacity: .22; transform: translateX(-6px); } }
-  @keyframes ctx-aware { 0% { opacity: .22; transform: translateX(-6px); } 4%, 88% { opacity: 1; transform: none; } 96%, 100% { opacity: .22; transform: translateX(-6px); } }
+  .ctx .vf.run code { font: 500 19px 'IBM Plex Mono', monospace; color: var(--blue); background: var(--bg); border-radius: 8px; padding: 3px 10px; }
+  .ctx .stack { display: grid; }
+  /* how the coding guidelines were picked for the task: under the "Coding guidelines" line, task nature and issue history as chips */
+  .ctx .pick { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0 0 8px 36px; font: 500 17px/1.3 Inter, sans-serif; color: var(--n8); }
+  .ctx .pick span { flex-basis: 100%; }
+  .ctx .pick b { padding: 2px 10px; border-radius: 8px; background: var(--bg); border: 2px solid #C9D6E8; font-weight: 600; color: var(--blue); }
+  .ctx .stack > * { grid-area: 1 / 1; }
+  /* hovering a company rule points at the line the agent is aware of */
+  .ctx .rule, .ctx .aw { transition: outline-color .2s; outline: 3px solid transparent; outline-offset: 2px; border-radius: 10px; }
+  .ctx .rule:hover { outline-color: var(--blue); }
+  .ctx:has(.rule[data-k="0"]:hover) .aw[data-k="0"] { outline-color: var(--blue); }
+  .ctx:has(.rule[data-k="1"]:hover) .aw[data-k="1"] { outline-color: var(--blue); }
+  .ctx:has(.rule[data-k="2"]:hover) .aw[data-k="2"] { outline-color: var(--blue); }
   .diagram { display: block; width: 100%; height: auto; margin-bottom: 40px; }
   .cycle { overflow: visible; }
   .cycle .lp { fill: none; stroke: var(--blue); stroke-width: 14; stroke-linejoin: round; }
@@ -536,33 +659,33 @@
           border: 2px solid var(--blue); border-radius: 999px; padding: 1px 10px; margin-right: 10px; vertical-align: 3px; }
 
   /* ---------- HUD ---------- */
-  #hud { position: fixed; inset: auto 0 0 0; padding: 0 28px 22px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; pointer-events: none; }
+  #hud { position: fixed; inset: auto 0 0 0; padding: 0 28px 12px; display: flex; align-items: center; justify-content: space-between; gap: 20px; pointer-events: none; }
   #hud > * { pointer-events: auto; }
-  #crumbs { font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: 1.5px; text-transform: uppercase; color: var(--label);
-            background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 10px 18px; display: flex; gap: 10px; align-items: center; }
+  #help { flex: 1; } #crumbs, #nav, #autoplay { flex: none; }
+  #crumbs { font: 500 12px 'IBM Plex Mono', monospace; letter-spacing: 1.5px; text-transform: uppercase; color: var(--label);
+            background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 6px 14px; display: flex; gap: 10px; align-items: center; }
   #crumbs a { color: var(--label); text-decoration: none; cursor: pointer; }
   #crumbs a:hover, #crumbs a.cur { color: var(--purple); }
-  #nav { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 6px; }
-  #nav button { width: 36px; height: 36px; border-radius: 50%; border: none; background: transparent; color: var(--purple); font-size: 17px; cursor: pointer; }
+  #nav { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 3px; }
+  #nav button { width: 28px; height: 28px; border-radius: 50%; border: none; background: transparent; color: var(--purple); font-size: 17px; cursor: pointer; }
   #nav button:hover { background: var(--bg); color: var(--blue); }
   #dots { display: flex; gap: 6px; padding: 0 4px; }
   #dots i { width: 8px; height: 8px; border-radius: 50%; background: #D3DAE5; cursor: pointer; transition: background .2s, transform .2s; }
   #dots i.loop { width: 12px; border-radius: 4px; }
-  #dots i.sub { width: 5px; height: 5px; align-self: center; }
   #dots i.on { background: var(--blue); transform: scale(1.25); }
   #legend { position: fixed; top: 22px; right: 28px; display: flex; gap: 18px; font: 500 12px 'IBM Plex Mono', monospace; letter-spacing: 1px;
             color: var(--n8); background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 9px 16px; }
   #legend { pointer-events: none; }   /* opacity follows the tokens' overview weight, set in frame() */
   #legend span { display: inline-flex; align-items: center; gap: 7px; }
   #legend i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-  #help { font: 400 12px Inter, sans-serif; color: var(--label); text-align: right; line-height: 1.6; transition: opacity 1s; }
+  #help { font: 400 12px Inter, sans-serif; color: var(--label); text-align: center; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; transition: opacity 1s; }
   #help kbd { font: 500 11px 'IBM Plex Mono', monospace; background: #fff; border: 1px solid #DCE3EC; border-radius: 5px; padding: 1px 6px; color: var(--n8); }
   @media (max-width: 760px) { #help, #legend { display: none; } #hud { padding: 0 16px 16px; } }
 
   /* ---------- autoplay toggle ---------- */
-  #autoplay { position: fixed; right: 28px; bottom: 78px; z-index: 5; display: flex; align-items: center; gap: 10px;
+  #autoplay { display: flex; align-items: center; gap: 10px;
               font: 500 13px 'IBM Plex Mono', monospace; letter-spacing: 1px; color: var(--label);
-              background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 8px 14px 8px 8px; }
+              background: rgba(255,255,255,.85); backdrop-filter: blur(8px); border: 1px solid #E1E7F0; border-radius: 999px; padding: 5px 12px 5px 6px; }
   #autoplay .toggle { display: flex; align-items: center; gap: 9px; background: none; border: none; padding: 0; margin: 0; font: inherit; letter-spacing: inherit; color: inherit; cursor: pointer; }
   #autoplay .track { width: 30px; height: 17px; border-radius: 999px; background: #D3DAE5; position: relative; transition: background .2s; flex: none; }
   #autoplay .thumb { position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; transition: left .2s; }
@@ -586,22 +709,22 @@
   <span><i style="background:var(--amber)"></i>AI-generated change</span>
   <span><i style="background:var(--blue)"></i>Verified change</span>
 </div>
-<div id="autoplay">
-  <button class="toggle" title="Toggle auto-advance" aria-pressed="false">
-    <span class="track"><span class="thumb"></span></span>Auto
-  </button>
-  <label class="secs">every <input type="number" id="autoplaySecs" min="2" max="120" step="1" value="6" title="Seconds between steps">s</label>
-</div>
 <div id="hud">
   <div id="crumbs"></div>
   <div id="help">
-    <kbd>scroll</kbd> zoom · <kbd>drag</kbd> pan · click a loop or product<br>
+    <kbd>scroll</kbd> zoom · <kbd>drag</kbd> pan · click a loop or product ·
     <kbd>←</kbd> <kbd>→</kbd> present · <kbd>Esc</kbd> zoom out · <kbd>F</kbd> fullscreen
   </div>
   <div id="nav">
     <button data-act="prev" title="Previous (←)">←</button>
     <div id="dots"></div>
     <button data-act="next" title="Next (→)">→</button>
+  </div>
+  <div id="autoplay">
+    <button class="toggle" title="Toggle auto-advance" aria-pressed="false">
+      <span class="track"><span class="thumb"></span></span>Auto
+    </button>
+    <label class="secs">every <input type="number" id="autoplaySecs" min="2" max="120" step="1" value="6" title="Seconds between steps">s</label>
   </div>
 </div>
 
@@ -635,10 +758,16 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
    ("What it detects") and the Hunter Agent product page, Oct 2026. The
    Hunter Agent example animations (pipeline `demos`) each illustrate one
    CWE of that list, per its MITRE definition, on fictional code. The
+   Sonar Vortex coding guidelines (`context`: Sonar rules picked from the
+   project's issue history and the nature of the task) follow the AC/DC
+   "Sonar Vortex context" page (Coding Guidelines), Nov 2026. The
    Sonar Vortex semantic navigation example (`demos`) follows the AC/DC
    "Sonar Vortex context" page (semantic navigation), Oct 2026, on a
    fictional task; its commands are those of `sonar context navigation`
-   (SonarQube CLI 1.10.0), shown on fictional code and numbers.
+   (SonarQube CLI 1.10.0), shown on fictional code and numbers. The Gitar
+   pull request example (`demos` with `pr`) illustrates the Gitar
+   capabilities listed in its panel on a fictional GitHub pull request
+   (fictional repositories, code and people).
    ===================================================================== */
 // Official logos from the Sonar brand guide (zeroheight), light-background variants,
 // embedded as base64 PNG data URIs so the page is a single self-contained file.
@@ -672,20 +801,25 @@ const LOOPS = [
              '<b>Dependency health & safety</b> before a third-party package gets pulled in',
              '<b>On-the-fly Sonar analysis</b> of every change the agent makes, as it writes it',
              'Delivered through the SonarQube <b>CLI & MCP Server</b>, with agents such as Claude Code'],
-      // animated diagram shown instead of `runs`: the company's standards, defined once in SonarQube, flow into every coding agent's task (Guide),
-      // then each change the agent writes is analyzed on the spot (Verify)
+      // animated diagram shown instead of `runs`: the company's standards, defined once in SonarQube, flow into the coding agent (Guide),
+      // each change it writes is analyzed on the spot (Verify), and issues are fixed by the agent before the push (Solve).
+      // One agent card, its tasks played in turn (tabs, when there are several); the rule titles match the "What it does" bullets and are what the agent is aware of.
       context: {
-        title: 'Guide every agent, verify every change',
+        title: 'Inside the agent’s own loop',
         org: 'Your company', sq: ['sonarqube-server', 'sonarqube-cloud'],
         // [icon, title, description], icon one of quality / architecture / package
-        rules: [['quality', 'Quality profile', 'Your definition of code quality'],
-                ['architecture', 'Architecture & Semantic Navigation', 'The shape of your codebase, navigable by agents'],
-                ['package', 'Authorized Dependencies', 'The open source your company approves']],
-        agents: ['Add a payment endpoint', 'Refactor the order service'],   // one task per coding agent
-        aware: ['Quality profile', 'Architecture & Navigation', 'Authorized Dependencies'],   // what each agent is aware of, same order as `rules`
-        // Verify: the agent's change (amber) is analyzed by `cmd`, then comes out verified (blue); one illustrative result per agent
-        verify: { change: 'Change written by the agent', cmd: 'sonar analyze agentic',
-                  results: ['No new issues: ready to push', '1 issue found, fixed by the agent and re-verified'] },
+        rules: [['quality', 'Coding guidelines', 'Your Sonar rules and your project’s issue history'],
+                ['architecture', 'Architecture & semantic navigation', 'The shape of your codebase, navigable by agents'],
+                ['package', 'Dependency health & safety', 'The open source your company approves']],
+        agent: 'Coding agent', running: 'running inside the agent',
+        via: ['SonarQube CLI', 'or MCP Server'],   // how Vortex inside the agent connects to SonarQube, shown on the arrow the rules flow through
+        // [stage, caption], in the loop's guide / verify / solve order
+        stages: [['Guide', 'Aware of your standards'], ['Verify', 'Every change, on the spot'], ['Solve', 'Before the push']],
+        // Verify: the agent's change (amber) is analyzed by `cmd`; one illustrative task (several play in turn as tabs),
+        // with its analysis result (`ok` false = issue found, amber) and what happens in Solve
+        change: 'Change written by the agent', cmd: 'sonar analyze agentic',
+        // `picked`: [label, chips], shown under the agent's "Coding guidelines" line: what the guidelines were selected from for this task
+        tasks: [{ task: 'Refactor the order service', picked: ['Picked dynamically from', ['Task type: refactoring', 'Project issue history']], ok: false, verify: '1 new issue found', solve: 'Fixed by the agent, re-verified: ready to push' }],
       },
       // semantic navigation example (button under "What it does"): the same task played side by side, text search vs Vortex semantic navigation.
       // step: [left, right, caption], an action being [text, kind, tokens read, why, command, output, [tokens in, tokens out]] (kind = hit | waste | miss);
@@ -890,6 +1024,89 @@ const LOOPS = [
         statsRow: true,   // stats side by side in a full-width row below the columns
         stat: [['', 'Catch <b>real bugs and security issues</b> reviewers might have missed.'],
                ['“', 'Gitar has dramatically shortened our time to merge in mobile CI by quickly identifying CI failures and providing insightful AI-powered remediations.<small>Phil Rabin, Director of Engineering, Mobile, SoFi</small>']],
+        // illustrative GitHub pull request, browsed step by step (button under "What it does"): each step adds one event
+        // to the PR timeline (past events collapse to their header) and sets the checks, [state, text] per check,
+        // state = run | fail | ok. kind = open | sec | xpr | xrepo | ci | rule | kb | fix (chip label in `chip`).
+        // An event body can hold `ask` (the author's request), `code` ([file, first line number, lines, highlighted
+        // index, a line starting with '+' = added]), `log` (CI output: [flaky?, test, result]), `rule` (a team rule),
+        // `thread` (a comment thread: [who, text]), `kb` (the note saved to the knowledge base), `text` and `list`
+        // (what got fixed, ticked).
+        demos: [{
+          cta: 'See Gitar in a pull request',
+          tag: 'Example',
+          note: 'Illustrative pull request on GitHub',
+          pr: { num: 482, title: 'Add partial refunds to the payments API', author: 'dana', repo: 'acme/payments-api',
+                from: 'feature/partial-refunds', into: 'main', files: '4 files changed' },
+          checks: [['', 'CI', 'Build & tests'], ['sonarqube-server-mark', 'SonarQube', 'Quality gate'], ['gitar', '', 'Code review']],
+          steps: [{
+            step: 'PR opened', kind: 'open', who: 'dana', head: 'opened this pull request',
+            text: 'Adds <code>POST /refunds</code> so support can refund part of an order, and emits a <code>refund.created</code> event.',
+            checks: [['run', 'Running…'], ['run', 'Waiting for analysis'], ['run', 'Reviewing…']],
+            cap: 'A developer opens a pull request: partial refunds for the payments API.',
+          }, {
+            step: 'Security', kind: 'sec', chip: 'Security', who: 'gitar', head: 'commented on <code>refunds.ts</code>',
+            code: ['src/routes/refunds.ts', 14, ['router.post(\'/refunds\', auth, async (req, res) => {',
+                                                '  const { orderId, amount } = req.body;',
+                                                '  const charge = await Charges.forOrder(orderId);',
+                                                '  await payments.refund(charge.id, amount);'], 3],
+            text: '<code>amount</code> comes straight from the request and is never checked against what was charged: <b>any signed-in customer can refund more than they paid</b>.',
+            checks: [['run', 'Running…'], ['ok', 'Passed'], ['fail', '5 findings']],
+            cap: 'Security: the refund amount comes straight from the request, so a customer could get back more than they paid.',
+          }, {
+            step: 'Cross-PR', kind: 'xpr', chip: 'Cross-PR', who: 'gitar', head: 'commented on <code>amounts.ts</code>',
+            code: ['src/lib/amounts.ts', 3, ['+export function toMinorUnits(amount: number) {',
+                                             '+  return Math.floor(amount * 100);',
+                                             '+}'], 1],
+            text: '<b>#479</b>, still open, adds <code>toCents()</code> at the same place in <code>amounts.ts</code>: <b>whichever PR merges second will conflict</b>. It also rounds correctly, where <code>Math.floor(0.29 * 100)</code> gives 28 cents. Use <code>toCents()</code> instead of a second helper.',
+            checks: [['run', 'Running…'], ['ok', 'Passed'], ['fail', '5 findings']],
+            cap: 'Cross-PR: another open PR changes the same lines, and Gitar flags the conflict before either one merges.',
+          }, {
+            step: 'Cross-repo', kind: 'xrepo', chip: 'Cross-repo', who: 'gitar', head: 'commented on <code>refund-created.ts</code>',
+            code: ['src/events/refund-created.ts', 8, ['emit(\'refund.created\', {',
+                                                       '  refundId: refund.id,',
+                                                       '  amount: refund.amountCents,',
+                                                       '});'], 2],
+            text: '<code>acme/billing-worker</code> still reads <code>amount_cents</code> from this event: renaming it to <code>amount</code> <b>breaks refund reconciliation in invoicing</b>.',
+            checks: [['run', 'Running…'], ['ok', 'Passed'], ['fail', '5 findings']],
+            cap: 'Cross-repo: another service reads this event and would break on the renamed field.',
+          }, {
+            step: 'CI failure', kind: 'ci', chip: 'CI failure', who: 'gitar', head: 'diagnosed the failing CI run',
+            log: [[0, 'refunds.spec.ts › rejects a cancelled order', 'expected 409, got 500'],
+                  [1, 'checkout.e2e.ts › applies a coupon', 'timeout'],
+                  [1, 'checkout.e2e.ts › shows the order summary', 'timeout']],
+            text: '<b>1 real failure, caused by this PR</b>: the refund runs before the order status check, so a cancelled order throws. The 2 others are one known flaky test, unrelated: re-run, passed.',
+            checks: [['fail', '3 failing'], ['ok', 'Passed'], ['fail', '5 findings · CI diagnosed']],
+            cap: 'CI failure: Gitar isolates the one real failure from the flaky noise and explains its root cause.',
+          }, {
+            step: 'Custom rule', kind: 'rule', chip: 'Custom rule', who: 'gitar', head: 'commented on <code>refunds.ts</code>',
+            rule: 'Every endpoint that moves money must write an audit log entry.',
+            code: ['src/routes/refunds.ts', 17, ['  await payments.refund(charge.id, amount);',
+                                                '  res.status(201).json({ ok: true });',
+                                                '});'], 0],
+            text: '<code>POST /refunds</code> moves money but never calls <code>audit.record()</code>.',
+            checks: [['fail', '3 failing'], ['ok', 'Passed'], ['fail', '5 findings · CI diagnosed']],
+            cap: 'Custom rule: a policy your team wrote in plain language, no scripts or YAML, enforced on every PR.',
+          }, {
+            step: 'Knowledge base', kind: 'kb', chip: 'Knowledge base', who: 'dana', head: 'replied on <code>refunds.ts</code>',
+            thread: [['gitar', 'A retried request could refund the same order twice: nothing makes <code>POST /refunds</code> idempotent.'],
+                     ['dana', 'Not an issue here: our API gateway requires an <code>Idempotency-Key</code> header and drops retried requests before they reach this service.'],
+                     ['gitar', 'Thanks, that context isn’t in this repository. Saved to the knowledge base for later reviews.']],
+            kb: 'Retries are de-duplicated by the API gateway (<code>Idempotency-Key</code>): services behind it don’t need their own idempotency check.',
+            checks: [['fail', '3 failing'], ['ok', 'Passed'], ['fail', '4 findings · 1 dismissed']],
+            cap: 'Knowledge base: a developer explains why a finding doesn’t apply, and Gitar keeps that context for later reviews.',
+          }, {
+            step: 'All green', kind: 'fix', chip: 'Fixed', who: 'gitar', head: 'pushed 1 commit',
+            ask: '“Gitar, please fix”',
+            code: ['src/routes/refunds.ts', 17, ['+  if (amount > charge.remaining) return res.status(422).end();',
+                                                '  await payments.refund(charge.id, amount);',
+                                                '+  await audit.record(\'refund\', { orderId, amount });'], -1],
+            list: ['Refund capped at the amount left on the charge', 'Drops <code>toMinorUnits()</code>: no conflict with #479',
+                   'Keeps <code>amount_cents</code> in <code>refund.created</code>', 'Checks the order status first: the test passes',
+                   'Writes the audit entry'],
+            checks: [['ok', 'All tests passed'], ['ok', 'Passed'], ['ok', 'All findings resolved']],
+            cap: 'Gitar fixes every finding and the failing test in one commit: all checks pass, the PR is ready to merge.',
+          }],
+        }],
       },
     ],
   },
@@ -1501,6 +1718,7 @@ const ICONS = {
   package: '<path d="M21 7.5 12 3 3 7.5v9L12 21l9-4.5z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9M7.5 5.2l9 4.5"/>',
   agent: '<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V5M9 13v1.5M15 13v1.5M9.5 17.5h5M2 13v3M22 13v3"/><circle cx="12" cy="3.5" r="1.5"/>',
   search: '<circle cx="11" cy="11" r="7"/><path d="M16 16l5 5"/>',
+  terminal: '<rect x="2" y="3" width="20" height="18" rx="3"/><path d="M7 9l3 3-3 3M13 15h4"/>',
   cloud: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>',
   database: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/>',
   tag: '<path d="M12.6 2.6A2 2 0 0 0 11.2 2H4a2 2 0 0 0-2 2v7.2a2 2 0 0 0 .6 1.4l8.7 8.7a2.4 2.4 0 0 0 3.4 0l6.6-6.6a2.4 2.4 0 0 0 0-3.4z"/><circle cx="7.5" cy="7.5" r="1.5"/>',
@@ -1532,29 +1750,50 @@ function scale(E) {
       <div class="scale-ban">${E.banner}</div>`;
 }
 function context(p) {
-  const C = p.context, V = C.verify, T = 9, step = .6, D = 1.2;   // cycle (s), delay between rules, token travel time
-  const tv = [3.6, 4.4, 5.2];   // Verify: change written, analysis running, result (s into the cycle, after Guide)
-  const uid = `ctx-${p.key}`, X = [172.5, 537.5];   // agent card centers in the 710-wide column (20px grid gap)
-  const ah = x => `<path d="M${x - 9} 75L${x} 86L${x + 9} 75" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
-  // each rule sends one token per agent, then waits for the rest of the cycle
-  const token = (id, begin) => `<circle r="9" fill="var(--blue)" opacity="0"><animateMotion dur="${T}s" begin="${begin}s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;${D / T};1" calcMode="linear"><mpath href="#${id}"/></animateMotion>
-    <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.02;${(D - .1) / T};${D / T};1" dur="${T}s" begin="${begin}s" repeatCount="indefinite"/></circle>`;
-  return `<h4>${C.title}</h4><div class="ctx" style="--T:${T}s">
+  const C = p.context, H = 12, n = C.tasks.length, T = H * n;   // each task plays for H seconds, then the next tab takes over
+  const step = 1.2, D = 1.2;   // delay between rules (and between the agent's aware lines), token travel time
+  // seconds into a task's turn: Guide (rules flow in), Verify (change, analysis, result), Solve (result), end of the turn
+  const t = { guide: .2, aware: D, pick: D + .6, verify: 4.6, chg: 4.8, run: 5.8, res: 6.8, solve: 7.8, fix: 8, end: H - .6 };
+  const uid = `ctx-${p.key}`, pct = s => `${(s / T * 100).toFixed(2)}%`;
+  // per-element keyframes over the full cycle, written once per panel: `stops` are [seconds, css] pairs, the first and last css fill the edges
+  const css = [], kf = (name, stops) => (css.push(`@keyframes ${uid}-${name} { 0% { ${stops[0][1]} } ${stops.map(([s, v]) => `${pct(s)} { ${v} }`).join(' ')} 100% { ${stops.at(-1)[1]} } }`),
+    `animation:${uid}-${name} ${T}s linear infinite`);
+  const DIM = 'opacity:.25;transform:translateX(-6px)', ON = 'opacity:1;transform:none', OFF = 'opacity:0;transform:translateX(-6px)';
+  // lit from `from` to the end of every turn (shared lines), or only in its own task's turn, hidden otherwise (per-task lines)
+  const lit = (name, from) => kf(name, C.tasks.flatMap((_, a) => [[a * H + from, DIM], [a * H + from + .5, ON], [a * H + t.end, ON], [a * H + t.end + .5, DIM]]));
+  const own = (name, a, from) => kf(name, [[a * H, OFF], [a * H + .01, DIM], [a * H + from, DIM], [a * H + from + .5, ON], [a * H + t.end, ON], [a * H + t.end + .5, OFF]]);
+  // a stage row (or a task tab) is highlighted from `from` to `to` in each turn (`only`: in that task's turn alone)
+  const IDLE = 'color:#AFBCCD;background-color:rgba(255,255,255,.7)', ACT = 'color:var(--blue);background-color:#fff';
+  const hl = (name, from, to, only) => kf(name, C.tasks.flatMap((_, a) => only != null && only !== a ? [] :
+    [[a * H + from, IDLE], [a * H + from + .3, ACT], [a * H + to, ACT], [a * H + to + .3, IDLE]]));
+  const tokens = C.tasks.flatMap((_, a) => C.rules.map((_, k) => a * H + k * step)).map(b => `<circle r="9" fill="var(--blue)" opacity="0">
+    <animateMotion dur="${T}s" begin="${b}s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;${D / T};1" calcMode="linear"><mpath href="#${uid}-in"/></animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;.01;${(D - .1) / T};${D / T};1" dur="${T}s" begin="${b}s" repeatCount="indefinite"/></circle>`).join('');
+  const [G, V, R] = C.stages.map(([s, c]) => `<div class="stg-l"><b><span>${s}</span></b><small>${c}</small></div>`);
+  const html = `<h4>${C.title}</h4><div class="ctx" style="--H:${H}s">
     <div class="co">
-      <div class="co-h"><span>${icon('company')}${C.org}</span><span class="sq">Defined in<span>${C.sq.map(l => `<img src="${LOGO(l)}" alt="" draggable="false">`).join('or')}</span></span></div>
-      <div class="rules">${C.rules.map(([ic, t, d], k) => `<div class="rule" style="--d:${k * step}s">${icon(ic)}<b>${t}</b><small>${d}</small></div>`).join('')}</div>
+      <div class="co-h"><span>${icon('company')}${C.org}</span><span class="sq" title="Defined in SonarQube Server or SonarQube Cloud"><span>${C.sq.map(l => `<img src="${LOGO(l)}" alt="" draggable="false">`).join('or')}</span></span></div>
+      <div class="rules">${C.rules.map(([ic, ti, d], k) => `<div class="rule" data-k="${k}" style="--d:${k * step}s">${icon(ic)}<b>${ti}</b><small>${d}</small></div>`).join('')}</div>
     </div>
-    <svg viewBox="0 0 710 90" aria-hidden="true">${X.map((x, a) => `<path id="${uid}-${a}" class="dash" d="M355 0C355 48 ${x} 34 ${x} 84" fill="none" stroke="currentColor" stroke-width="4"/>${ah(x)}`).join('')}
-      ${X.map((_, a) => C.rules.map((_, k) => token(`${uid}-${a}`, k * step)).join('')).join('')}</svg>
-    <div class="ags">${C.agents.map((t, a) => `<div class="ag"><div class="ag-h">${icon('agent')}Coding agent</div><div class="task">Task: ${t}</div>
-      <div class="vx"><div class="vx-h"><img src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"><em>running inside</em></div>
-      <small><b>Guide</b>Aware of</small>
-      ${C.aware.map((w, k) => `<div class="aw" style="--d:${k * step + D}s"><i></i>${w}</div>`).join('')}
-      <small class="vf-h"><b>Verify</b>Every change, on the spot</small>
-      <div class="vf chg" style="--d:${tv[0]}s"><i></i>${V.change}</div>
-      <div class="vf run" style="--d:${tv[1]}s">${icon('search')}<code>${V.cmd}</code></div>
-      <div class="vf res" style="--d:${tv[2]}s"><i></i>${V.results[a]}</div></div></div>`).join('')}</div>
+    <div class="link"><svg viewBox="0 0 710 120" aria-hidden="true"><path id="${uid}-in" class="dash" d="M355 0V112" fill="none" stroke="currentColor" stroke-width="4"/>
+      <path d="M346 103L355 114L364 103" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>${tokens}</svg>
+      <div class="via">${icon('terminal')}<span><b>${C.via[0]}</b> ${C.via[1]}</span></div></div>
+    <div class="ag">
+      <div class="ag-h">${icon('agent')}${C.agent}</div><div class="tabs${n > 1 ? '' : ' one'}" style="--n:${n}">${C.tasks.map((k, a) => `<span style="${hl(`tab${a}`, 0, H - .3, a)}"><b>Task</b>${k.task}</span>`).join('')}</div>
+      <div class="vx"><div class="vx-h"><img src="${LOGO(p.logo)}" alt="${p.name}" draggable="false"><em>${C.running}</em></div>
+        <div class="stg" style="${hl('g', t.guide, t.verify)}">${G}<div>${C.rules.map(([, ti], k) =>
+          `<div class="aw" data-k="${k}" style="${lit(`aw${k}`, t.aware + k * step)}"><i></i>${ti}</div>${k ? '' : `<div class="stack">${C.tasks.map(({ picked: pk }, a) => pk ?
+            `<div class="pick" style="${own(`pick${a}`, a, t.pick)}"><span>${pk[0]}</span>${pk[1].map(c => `<b>${c}</b>`).join('')}</div>` : '').join('')}</div>`}`).join('')}</div></div>
+        <div class="stg" style="${hl('v', t.verify, t.solve)}">${V}<div>
+          <div class="vf chg" style="${lit('chg', t.chg)}"><i></i>${C.change}</div>
+          <div class="vf run" style="${lit('run', t.run)}">${icon('search')}<code>${C.cmd}</code></div>
+          <div class="stack">${C.tasks.map((k, a) => `<div class="vf ${k.ok ? 'res' : 'iss'}" style="${own(`res${a}`, a, t.res)}"><i></i>${k.verify}</div>`).join('')}</div></div></div>
+        <div class="stg" style="${hl('s', t.solve, t.end)}">${R}<div>
+          <div class="stack">${C.tasks.map((k, a) => `<div class="vf res" style="${own(`fix${a}`, a, t.fix)}"><i></i>${k.solve}</div>`).join('')}</div></div></div>
+      </div>
+    </div>
   </div>`;
+  return `<style>${css.join('\n')}</style>${html}`;
 }
 
 // Advanced Security (see `sca` in LOOPS): SonarQube sends its dependencies (purple token) to the Sonar backend, which also
@@ -1699,6 +1938,54 @@ function navDemo(D, p) {
   </div>`;
 }
 
+// Gitar pull request example shown over the product panel: an illustrative GitHub PR whose timeline grows one event
+// per step (the current one expanded), with its checks and merge box updated by prShow()
+const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+function prDemo(D, p) {
+  const R = D.pr, FIND = ['sec', 'xpr', 'xrepo', 'ci', 'rule'];
+  const code = ([file, at, lines, hl]) => { let n = at; return `<div class="cd"><div class="fh">${file}</div><pre>${lines.map((l, k) => {
+    const add = l.startsWith('+');
+    return `<span class="${k === hl ? 'hl' : add ? 'add' : ''}"><em>${add ? '+' : n++}</em>${esc(add ? l.slice(1) : l)}</span>`; }).join('')}</pre></div>`; };
+  const who = s => s.who === 'gitar' ? `<img class="gl" src="${LOGO('gitar')}" alt="Gitar" draggable="false">` : `<span class="av">${s.who[0].toUpperCase()}</span><b>${s.who}</b>`;
+  const ev = (s, k) => `<div class="ev${FIND.includes(s.kind) ? ' f' : ''}" data-s="${k}">
+        <div class="eh">${who(s)}<span>${s.head}</span>${s.chip ? `<span class="chip ${s.kind}">${s.chip}</span>` : ''}<span class="rsv">✓ Resolved</span></div>
+        <div class="eb">${s.ask ? `<div class="ask"><span class="av">${R.author[0].toUpperCase()}</span><b>${R.author}</b><q>${s.ask.replace(/[“”]/g, '')}</q></div>` : ''}${
+          s.rule ? `<div class="rq"><small>Team rule · plain language</small>${s.rule}</div>` : ''}${s.code ? code(s.code) : ''}${
+          s.log ? `<div class="log">${s.log.map(([f, t, r]) => `<div class="${f ? 'flaky' : ''}"><i>✕</i><span>${t}</span><em>${r}${f ? ' · flaky' : ''}</em></div>`).join('')}</div>` : ''}${
+          s.thread ? `<div class="th">${s.thread.map(([w, t]) => `<div class="tm">${w === 'gitar' ? `<img class="gl" src="${LOGO('gitar')}" alt="Gitar" draggable="false">`
+            : `<span class="av">${w[0].toUpperCase()}</span><b>${w}</b>`}<p>${t}</p></div>`).join('')}</div>` : ''}${
+          s.kb ? `<div class="kbc"><small>Saved to the Gitar knowledge base</small>${s.kb}</div>` : ''}${
+          s.text ? `<p>${s.text}</p>` : ''}${s.list ? `<ul>${s.list.map(l => `<li class="ok">${l}</li>`).join('')}</ul>` : ''}</div>
+      </div>`;
+  return `<div class="demo ghpr">
+    <button class="x act" data-act="demo-close" title="Close (Esc)">✕</button>
+    <div class="dh"><span class="tagp">${D.tag}</span><span class="nt">${D.note}</span></div>
+    <div class="gh-h"><h3>${R.title} <span>#${R.num}</span></h3>
+      <div class="gh-m"><span class="gh-st">${PR_ICON}Open</span><span><b>${R.author}</b> wants to merge into <code>${R.into}</code> from <code>${R.from}</code></span><span>· ${R.repo} · ${R.files}</span></div></div>
+    <div class="gh-sp">${D.steps.map((s, k) => `<button class="act" data-act="demo-step:${k}" data-s="${k}">${s.step}</button>`).join('')}</div>
+    <div class="gh">
+      <div class="tl">${D.steps.map(ev).join('')}</div>
+      <div class="side-ck">
+        <div class="ckb"><h5>Checks</h5>${D.checks.map(([l, n, t]) => `<div class="ck"><i></i>${l ? `<img src="${LOGO(l)}" alt="${n || 'Gitar'}" draggable="false">` : ''}<span>${n ? `${n} · ` : ''}${t}<small></small></span></div>`).join('')}</div>
+        <div class="mg"><i></i><span></span><button tabindex="-1">Merge</button></div>
+      </div>
+    </div>
+    <p class="dcap"></p>
+    <div class="dctl"><span><kbd>←</kbd> <kbd>→</kbd> step · <kbd>Esc</kbd> close</span>
+      <div class="dbtns"><button class="pp act" data-act="demo-toggle" title="Pause / resume autoplay" aria-label="Pause / resume autoplay">${PAUSE}${PLAY}</button>
+        <button class="act" data-act="demo-replay">↻ Replay</button></div></div>
+  </div>`;
+}
+const MERGE = { run: ['Some checks haven’t completed yet', 'Waiting for CI and reviews'], fail: ['Some checks were not successful', 'Merging is blocked'],
+                ok: ['All checks have passed', 'This branch can be merged'] };
+function prShow(el, D, k) {
+  const st = D.steps[k].checks;
+  el.querySelectorAll('.ck').forEach((c, n) => { c.dataset.st = st[n][0]; c.querySelector('small').innerHTML = st[n][1]; });
+  const m = st.some(c => c[0] === 'fail') ? 'fail' : st.every(c => c[0] === 'ok') ? 'ok' : 'run', mg = el.querySelector('.mg');
+  mg.dataset.st = m; mg.querySelector('span').innerHTML = `${MERGE[m][0]}<small>${MERGE[m][1]}</small>`;
+  el.classList.toggle('done', k === D.last);
+}
+
 function pipeline(P, id) {
   const X = [112, 355, 598], ah = (x, y) => `<path d="M${x - 9} ${y - 11}L${x} ${y}L${x + 9} ${y - 11}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>`;
   const fan = out => `<svg viewBox="0 0 710 64">${X.map(x => `<path class="dash" d="${out ? `M355 0C355 34 ${x} 22 ${x} 60` : `M${x} 0C${x} 38 355 26 355 60`}" fill="none" stroke="currentColor" stroke-width="4"/>${out ? ah(x, 62) : ''}`).join('')}${out ? '' : ah(355, 62)}</svg>`;
@@ -1718,7 +2005,10 @@ LOOPS.forEach(L => L.products.forEach(p => {
   p.deeps = [].concat(p.deep || []);
   p.demos = p.demos || p.pipeline?.demos || [];
   // caption shown at each step, the last step explaining the outcome
-  p.demos.forEach(D => { D.caps = D.sides ? [...D.steps.map(s => s[2]), D.done] : [...D.steps.map(s => s[4]), D.finding[2]]; });
+  p.demos.forEach(D => {
+    D.caps = D.pr ? D.steps.map(s => s.cap) : D.sides ? [...D.steps.map(s => s[2]), D.done] : [...D.steps.map(s => s[4]), D.finding[2]];
+    D.last = D.caps.length - 1;   // index of the last step (the PR example has no extra outcome step)
+  });
 }));
 
 LOOPS.forEach((L, i) => {
@@ -1761,8 +2051,8 @@ LOOPS.forEach((L, i) => {
       <div class="ph">${panelMark(p)}<div class="lc">${L.title}<br>${L.stage}</div></div>
       <h2>${p.tag}</h2>
       <div class="cols">
-        <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deeps.length || p.demos.some(D => D.sides) ? `
-          <div class="deepers">${p.deeps.map((D, d) => `<button class="deeper act" data-act="deep:${i}:${j}:${d}" title="Deep dive">${D.cta}</button>`).join('')}${p.demos.map((D, k) => D.sides ? `
+        <div><h4>What it does</h4><ul>${p.what.map(w => `<li>${w}</li>`).join('')}</ul>${p.deeps.length || p.demos.some(D => D.sides || D.pr) ? `
+          <div class="deepers">${p.deeps.map((D, d) => `<button class="deeper act" data-act="deep:${i}:${j}:${d}" title="Deep dive">${D.cta}</button>`).join('')}${p.demos.map((D, k) => D.sides || D.pr ? `
             <button class="deeper try act" data-act="demo:${i}:${j}:${k}" title="Watch an example">${PLAY}${D.cta}</button>` : '').join('')}</div>` : ''}${p.pipeline || p.feed || p.context || p.sca ? stats(p) : ''}</div>
         <div>
           ${p.feed ? feed(p) : p.context ? context(p) : p.cycle ? cycle(p.cycle) : p.pipeline ? pipeline(p.pipeline, `${i}:${j}`) : `
@@ -1781,7 +2071,7 @@ LOOPS.forEach((L, i) => {
         <input type="range" min="0" max="100" value="0" aria-label="${p.slider.title}">
         <div class="stops">${p.slider.stops.map(([t]) => `<span>${t}</span>`).join('')}</div>${autonomy(p.slider)}
         <p></p>
-      </div>` : ''}${p.demos.map(D => D.sides ? navDemo(D, p) : demo(D, p.logo)).join('')}`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
+      </div>` : ''}${p.demos.map(D => D.pr ? prDemo(D, p) : D.sides ? navDemo(D, p) : demo(D, p.logo)).join('')}`, 'panel', L.cx, 0.6, 4, { kind: 'panel', loop: i });
     panel.k = 0; panel.target = 0; panel.from = card.o.position.clone(); panel.fromScale = S * lay.w * (lay.zoom || 1) / 1700;
     panel.loopIdx = i; panel.prodIdx = j;
     panels.push(panel);
@@ -1804,7 +2094,7 @@ LOOPS.forEach((L, i) => {
       show();
     }
 
-    // each deep dive is its own level below the panel, opened only by its button (or ←/→)
+    // each deep dive is its own level below the panel, opened only by its button (not part of the ←/→ tour)
     panel.deeps = p.deeps.map((D, d) => {
       const deep = css3d(`
       <button class="x act" data-act="close" title="Back (Esc)">✕</button>
@@ -1843,24 +2133,22 @@ let solo = 0;                        // 0 → 1 while the headline is isolated
 const tour = [{ level: 'overview' }];
 LOOPS.forEach((L, i) => {
   tour.push({ level: 'loop', loop: i });
-  L.products.forEach((p, j) => {
-    tour.push({ level: 'product', loop: i, prod: j });
-    p.deeps.forEach((_, d) => tour.push({ level: 'deep', loop: i, prod: j, sub: d }));
-  });
+  L.products.forEach((_, j) => tour.push({ level: 'product', loop: i, prod: j }));   // deep dives are left out: opened only by their buttons
 });
 const sameState = (a, b) => a.level === b.level && a.loop === b.loop && a.prod === b.prod && a.sub === b.sub;
 
 /* ---------- example animations (Hunter Agent lanes, Sonar Vortex semantic navigation) ---------- */
 let demoOn = null;   // { el, D, k, auto, timer } of the open example
 function demoShow(k) {
-  const { el, D } = demoOn, last = D.steps.length;
+  const { el, D } = demoOn, last = D.last;
   clearTimeout(demoOn.timer);
   demoOn.k = k = clamp(k, 0, last);
   el.querySelectorAll('[data-s]').forEach(e => { e.classList.toggle('on', +e.dataset.s <= k); e.classList.toggle('cur', +e.dataset.s === k); });
   // caption: the latest one at or before this step (the last step explains the outcome)
   el.querySelector('.dcap').innerHTML = D.caps.slice(0, k + 1).reverse().find(Boolean);
+  if (D.pr) prShow(el, D, k);
   if (k === last) demoAuto(false);   // played to the end: the button offers to play it again
-  else if (demoOn.auto) demoOn.timer = setTimeout(() => demoShow(k + 1), D.sides ? 3400 : D.caps[k] ? 2800 : 1700);   // longer pause on steps with a caption to read, longest with two sides
+  else if (demoOn.auto) demoOn.timer = setTimeout(() => demoShow(k + 1), D.pr ? 4600 : D.sides ? 3400 : D.caps[k] ? 2800 : 1700);   // longer pause on steps with a caption to read, longest with two sides
 }
 // autoplay on by default, paused by ←/→, toggled by the play/pause button
 function demoAuto(on) {
@@ -1884,6 +2172,14 @@ function demoClose() {
   clearTimeout(demoOn.timer); demoOn.el.classList.remove('open'); demoOn = null;
 }
 
+// the open card's plane and its framed camera distance: taller panels and deep dives (e.g. the Remediation Agent
+// feed diagram, the Hunter Agent requirements) back the camera off to fit
+function cardFit(st) {
+  const p = LOOPS[st.loop].products[st.prod].panel, plane = st.level === 'deep' ? PZ + DZ : PZ;
+  const d = Math.max(Zd, fitZ(20, (st.level === 'deep' ? p.deeps[st.sub] : p).el.offsetHeight * S + 1.6));
+  return { plane, d, z: plane + d };
+}
+const CARD_MIN = 0.5;   // zooming out shrinks an open card freely; it only closes below this share of its framed size
 function go(st) {
   demoClose();
   state = st;
@@ -1900,19 +2196,16 @@ function go(st) {
     flyTo({ x: o.position.x - headline.el.offsetWidth * S / 2 + w / 2, y: o.position.y + (H * S - h) / 2, z: fitZ(w * 1.2, h * 1.6) }, 1.2);
   }
   else if (st.level === 'loop') flyTo({ x: LOOPS[st.loop].cx, y: FY, z: Zf });
-  else if (st.level === 'product') {   // taller panels (e.g. the Remediation Agent feed diagram) back the camera off to fit
-    const h = LOOPS[st.loop].products[st.prod].panel.el.offsetHeight * S;
-    flyTo({ x: LOOPS[st.loop].cx, y: PY, z: PZ + Math.max(Zd, fitZ(20, h + 1.6)) }, 1.3);
-  }
-  else {   // taller deep dives (e.g. the Hunter Agent requirements) back the camera off to fit
-    const h = LOOPS[st.loop].products[st.prod].panel.deeps[st.sub].el.offsetHeight * S;
-    flyTo({ x: LOOPS[st.loop].cx, y: PY, z: PZ + DZ + Math.max(Zd, fitZ(20, h + 1.6)) }, 1.1);
-  }
+  else if (st.level === 'product') flyTo({ x: LOOPS[st.loop].cx, y: PY, z: cardFit(st).z }, 1.3);
+  else flyTo({ x: LOOPS[st.loop].cx, y: PY, z: cardFit(st).z }, 1.1);
   updateHud();
   scheduleAutoplay();   // any navigation (manual or automatic) restarts the auto-advance countdown
 }
+// the tour position of a state: the headline counts as the overview, a deep dive as its product
+const tourIdx = st => tour.findIndex(t => sameState(t, st.level === 'headline' ? { level: 'overview' }
+  : st.level === 'deep' ? { level: 'product', loop: st.loop, prod: st.prod } : st));
 function step(d) {
-  let k = tour.findIndex(t => sameState(t, state.level === 'headline' ? { level: 'overview' } : state));
+  let k = tourIdx(state);
   k = k < 0 ? 0 : (k + d + tour.length) % tour.length;
   go(tour[k]);
 }
@@ -1926,9 +2219,8 @@ function back() {
 const crumbsEl = document.getElementById('crumbs'), dotsEl = document.getElementById('dots');
 const prodOf = st => LOOPS[st.loop].products[st.prod];
 const deepOf = st => prodOf(st).deeps[st.sub];
-dotsEl.innerHTML = tour.map((t, k) => `<i data-act="step:${k}" class="${{ product: '', deep: 'sub' }[t.level] ?? 'loop'}" title="${
-  t.level === 'overview' ? 'Overview' : t.level === 'loop' ? LOOPS[t.loop].title
-  : t.level === 'product' ? prodOf(t).name : `${prodOf(t).name} · ${deepOf(t).name}`}"></i>`).join('');
+dotsEl.innerHTML = tour.map((t, k) => `<i data-act="step:${k}" class="${t.level === 'product' ? '' : 'loop'}" title="${
+  t.level === 'overview' ? 'Overview' : t.level === 'loop' ? LOOPS[t.loop].title : prodOf(t).name}"></i>`).join('');
 function updateHud() {
   const top = state.level === 'overview' || state.level === 'headline';
   const parts = [`<a data-act="overview" class="${top ? 'cur' : ''}">Overview</a>`];
@@ -1936,7 +2228,7 @@ function updateHud() {
   if (state.level === 'product') parts.push(`<a class="cur">${prodOf(state).name}</a>`);
   if (state.level === 'deep') parts.push(`<a data-act="prod:${state.loop}:${state.prod}">${prodOf(state).name}</a>`, `<a class="cur">${deepOf(state).name}</a>`);
   crumbsEl.innerHTML = parts.join('<span>›</span>');
-  const k = top ? 0 : tour.findIndex(t => sameState(t, state));
+  const k = tourIdx(state);
   history.replaceState(null, '', location.pathname + location.search + (top ? '' : `#${state.loop + 1}${state.level === 'loop' ? '' : '.' + (state.prod + 1)}${state.level === 'deep' ? '.' + (state.sub + 1) : ''}`));
   [...dotsEl.children].forEach((d, i) => d.classList.toggle('on', i === k));
 }
@@ -1980,8 +2272,9 @@ function act(a) {
   else if (k === 'prev') step(-1);
   else if (k === 'demo') { const p = LOOPS[+x].products[+y]; demoPlay(p.panel.el.querySelectorAll('.demo')[+z], p.demos[+z]); }
   else if (k === 'demo-replay') demoPlay(demoOn.el, demoOn.D);
-  else if (k === 'demo-toggle') demoOn.auto ? demoAuto(false) : demoOn.k === demoOn.D.steps.length ? demoPlay(demoOn.el, demoOn.D) : demoAuto(true);
+  else if (k === 'demo-toggle') demoOn.auto ? demoAuto(false) : demoOn.k === demoOn.D.last ? demoPlay(demoOn.el, demoOn.D) : demoAuto(true);
   else if (k === 'demo-close') demoClose();
+  else if (k === 'demo-step') { demoAuto(false); demoShow(+x); }   // PR example stepper: jump to a step
   else if (k === 'demo-view') { demoOn.el.classList.toggle('tools', x === '1'); if (x === '1') demoAuto(false); }
   return true;
 }
@@ -2030,15 +2323,18 @@ addEventListener('wheel', e => {
   flight = null;
   const factor = Math.exp(e.deltaY * (e.ctrlKey ? 0.01 : 0.0016));
   if (factor > 1 && state.level === 'headline') { go({ level: 'overview' }); return; }   // zooming out brings the whole overview back
-  if (factor > 1 && (state.level === 'product' || state.level === 'deep')) {
-    demoClose();
-    [...panels, ...deeps].forEach(p => { p.target = 0; }); state = { level: 'loop', loop: state.loop }; updateHud();
-  }
   const halfH = cam.z * Math.tan(deg(camera.fov / 2));
   const px = cam.x + (e.clientX / innerWidth * 2 - 1) * halfH * camera.aspect;
   const py = cam.y - (e.clientY / innerHeight * 2 - 1) * halfH;
   const z = clamp(cam.z * factor, 6, Zo * 1.7), k = z / cam.z;
   cam.x = px + (cam.x - px) * k; cam.y = py + (cam.y - py) * k; cam.z = z;
+  if (factor > 1 && (state.level === 'product' || state.level === 'deep')) {   // the card got too small: close it
+    const f = cardFit(state);
+    if (f.d / (cam.z - f.plane) < CARD_MIN) {
+      demoClose();
+      [...panels, ...deeps].forEach(p => { p.target = 0; }); state = { level: 'loop', loop: state.loop }; updateHud();
+    }
+  }
   syncStateFromCamera();
 }, { passive: false });
 addEventListener('keydown', e => {
@@ -2048,7 +2344,7 @@ addEventListener('keydown', e => {
     if (d || e.key === 'Escape' || e.key === 'Backspace') {
       e.preventDefault();
       if (d && demoOn.el.classList.contains('tools')) demoOn.el.classList.remove('tools');   // the toolkit view: ←/→ go back to the example
-      else if (!d || (d > 0 && demoOn.k === demoOn.D.steps.length)) demoClose(); else { demoAuto(false); demoShow(demoOn.k + d); }
+      else if (!d || (d > 0 && demoOn.k === demoOn.D.last)) demoClose(); else { demoAuto(false); demoShow(demoOn.k + d); }
       return;
     }
   }
